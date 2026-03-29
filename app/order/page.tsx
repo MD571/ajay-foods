@@ -302,18 +302,63 @@ function OrderInner() {
           </div>
           <div className="p-6 space-y-3 text-sm">
             {[
-              { label: "Name",     value: form.name },
-              { label: "Phone",    value: `+91 ${form.phone}` },
-              { label: "Event",    value: `${form.eventType} · ${form.eventDate}` },
-              { label: "Package",  value: pkg.name },
-              { label: "Extras",   value: selectedExtras.length > 0 ? `${selectedExtras.length} items added` : "None" },
-              { label: "Guests",   value: `${guests} persons` },
+              { label: "Name",   value: form.name },
+              { label: "Phone",  value: `+91 ${form.phone}` },
+              { label: "Event",  value: `${form.eventType} · ${form.eventDate}` },
+              { label: "Guests", value: `${guests} persons` },
             ].map(({ label, value }) => (
               <div key={label} className="flex justify-between py-2 border-b border-[#f0e6d3]">
                 <span className="text-[#888]">{label}</span>
                 <span className="font-semibold text-right max-w-[60%]">{value}</span>
               </div>
             ))}
+
+            {/* Package with full includes */}
+            <div className="py-2 border-b border-[#f0e6d3]">
+              <div className="flex justify-between mb-2">
+                <span className="text-[#888]">Package</span>
+                <span className="font-semibold text-[#8B4513]">{pkg.name} — ₹{pkg.price}/person</span>
+              </div>
+              <ul className="space-y-0.5 pl-2">
+                {pkg.includes.map((inc, i) => (
+                  <li key={i} className="flex items-start gap-1.5 text-xs text-[#555]">
+                    <span className="text-[#D4A853] flex-shrink-0">✓</span>{inc}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Meal preferences */}
+            {Object.keys(preferences).filter(k => (preferences[k] ?? []).length > 0).length > 0 && (
+              <div className="py-2 border-b border-[#f0e6d3]">
+                <span className="text-[#888] block mb-1.5">Your Choices</span>
+                {(pkg.choiceGroups ?? []).map(g => {
+                  const sel = preferences[g.id] ?? []
+                  if (sel.length === 0) return null
+                  return (
+                    <div key={g.id} className="flex justify-between text-xs mb-1">
+                      <span className="text-[#888]">{g.label}</span>
+                      <span className="font-semibold text-right max-w-[55%]">{sel.join(", ")}</span>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+
+            {/* Extras */}
+            {selectedExtras.length > 0 && (
+              <div className="py-2 border-b border-[#f0e6d3]">
+                <span className="text-[#888] block mb-1.5">Extra Dishes ({selectedExtras.length})</span>
+                <div className="flex flex-wrap gap-1">
+                  {selectedExtras.map(item => (
+                    <span key={item.id} className="flex items-center gap-1 text-xs bg-[#FDF6EC] border border-[#e0d0bc] px-2 py-0.5 rounded-full text-[#555]">
+                      {item.emoji} {item.name} <span className="text-[#8B4513] font-semibold">+₹{item.price}</span>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div className="flex justify-between py-3 bg-[#FDF6EC] rounded-2xl px-4 -mx-4 mt-2">
               <span className="font-bold text-[#8B4513] text-base">Estimated Total</span>
               <span className="font-bold text-[#8B4513] text-base">₹{grandTotal.toLocaleString("en-IN")}</span>
@@ -351,20 +396,45 @@ function OrderInner() {
             {/* LEFT: Order Summary */}
             <div className="flex-1 space-y-4">
               {/* Package */}
-              <div className={`bg-gradient-to-r ${pkg.color} rounded-2xl p-5 text-white`}>
-                <div className="flex items-center justify-between">
+              <div className={`bg-gradient-to-r ${pkg.color} rounded-2xl overflow-hidden text-white`}>
+                <div className="flex items-center justify-between p-5">
                   <div>
                     <div className="flex items-center gap-2 mb-1">
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${pkg.badgeColor}`}>{pkg.tag}</span>
                       <span className="text-white/70 text-xs">Selected Package</span>
                     </div>
                     <h3 className="font-playfair text-xl font-bold">{pkg.name}</h3>
-                    <p className="text-white/70 text-xs mt-0.5">{pkg.includes.slice(0, 3).join(" · ")}</p>
                   </div>
                   <div className="text-right">
                     <p className="text-3xl font-bold">₹{pkg.price}</p>
                     <p className="text-white/70 text-xs">per person</p>
                   </div>
+                </div>
+                {/* Package includes */}
+                <div className="bg-black/20 px-5 py-3">
+                  <p className="text-[10px] font-bold text-white/60 uppercase tracking-wider mb-2">Includes</p>
+                  <ul className="grid grid-cols-2 gap-x-4 gap-y-1">
+                    {pkg.includes.map((item, i) => (
+                      <li key={i} className="flex items-start gap-1.5 text-xs text-white/90">
+                        <span className="text-[#D4A853] flex-shrink-0 mt-0.5">✓</span>{item}
+                      </li>
+                    ))}
+                  </ul>
+                  {/* Meal preferences summary */}
+                  {Object.keys(preferences).filter(k => (preferences[k] ?? []).length > 0).length > 0 && (
+                    <div className="mt-2 pt-2 border-t border-white/20">
+                      <p className="text-[10px] font-bold text-white/60 uppercase tracking-wider mb-1.5">Your Choices</p>
+                      {(pkg.choiceGroups ?? []).map(g => {
+                        const sel = preferences[g.id] ?? []
+                        if (sel.length === 0) return null
+                        return (
+                          <p key={g.id} className="text-xs text-white/80 mb-0.5">
+                            <span className="font-semibold text-[#D4A853]">{g.label}:</span> {sel.join(", ")}
+                          </p>
+                        )
+                      })}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -486,49 +556,48 @@ function OrderInner() {
                     {errors.eventDate && <p className="text-red-500 text-xs mt-1">{errors.eventDate}</p>}
                   </div>
 
-                  {/* Meal Preferences — choice groups from selected package */}
+                  {/* Meal Preferences — structured field dropdowns per choice group */}
                   {(pkg?.choiceGroups ?? []).length > 0 && (
                     <div>
-                      <label className="block text-xs font-semibold text-[#555] mb-3 uppercase tracking-wider">🎯 Meal Preferences</label>
-                      <div className="space-y-3">
+                      <label className="block text-xs font-semibold text-[#555] mb-1 uppercase tracking-wider">🎯 Meal Preferences</label>
+                      <p className="text-[10px] text-[#aaa] mb-3">Select your preferred items for this package</p>
+                      <div className="space-y-3 bg-[#fffbf2] border border-[#D4A853]/40 rounded-2xl p-4">
                         {(pkg.choiceGroups ?? []).map((group) => {
                           const selected = preferences[group.id] ?? []
+                          // For pick=1 use a single select; for pick>1 use multiple selects
+                          const selects = Array.from({ length: group.pick }, (_, i) => i)
                           return (
-                            <div key={group.id} className="bg-[#fffbf2] rounded-xl p-3 border border-[#D4A853]/40">
-                              <p className="text-xs font-semibold text-[#555] mb-2">
+                            <div key={group.id}>
+                              <label className="block text-xs font-semibold text-[#555] mb-1.5">
                                 {group.label}
-                                <span className="ml-2 text-[10px] font-normal text-[#aaa]">
-                                  {selected.length}/{group.pick} selected
-                                  {selected.length < group.pick && <span className="text-amber-500 ml-1">· pick {group.pick - selected.length} more</span>}
-                                </span>
-                              </p>
-                              <div className="flex flex-wrap gap-1.5">
-                                {group.options.map((opt) => {
-                                  const isSelected = selected.includes(opt)
-                                  const canSelect = isSelected || selected.length < group.pick
-                                  return (
-                                    <button key={opt} type="button"
-                                      onClick={() => {
-                                        setPreferences(prev => {
-                                          const cur = prev[group.id] ?? []
-                                          const next = cur.includes(opt)
-                                            ? cur.filter(o => o !== opt)
-                                            : cur.length < group.pick ? [...cur, opt] : cur
-                                          return { ...prev, [group.id]: next }
-                                        })
-                                      }}
-                                      className={`text-xs px-3 py-1.5 rounded-full border font-medium transition-all ${
-                                        isSelected
-                                          ? "bg-[#8B4513] text-white border-[#8B4513]"
-                                          : canSelect
-                                            ? "bg-white border-[#e0d0bc] text-[#555] hover:border-[#8B4513] hover:text-[#8B4513]"
-                                            : "bg-white border-[#e0d0bc] text-[#ccc] cursor-not-allowed"
-                                      }`}
-                                    >
-                                      {opt}
-                                    </button>
-                                  )
-                                })}
+                                {selected.filter(Boolean).length < group.pick && (
+                                  <span className="ml-2 text-amber-500 font-normal text-[10px]">· {group.pick - selected.filter(Boolean).length} remaining</span>
+                                )}
+                                {selected.filter(Boolean).length === group.pick && (
+                                  <span className="ml-2 text-green-600 font-normal text-[10px]">✓ done</span>
+                                )}
+                              </label>
+                              <div className={`grid gap-2 ${group.pick > 1 ? "grid-cols-2" : "grid-cols-1"}`}>
+                                {selects.map((i) => (
+                                  <select key={i} value={selected[i] ?? ""}
+                                    onChange={(e) => {
+                                      setPreferences(prev => {
+                                        const cur = [...(prev[group.id] ?? [])]
+                                        cur[i] = e.target.value
+                                        return { ...prev, [group.id]: cur }
+                                      })
+                                    }}
+                                    className="w-full border border-[#e0d0bc] rounded-xl px-3 py-2.5 text-sm bg-white focus:outline-none focus:border-[#8B4513] focus:ring-2 focus:ring-[#8B4513]/10 text-[#333]"
+                                  >
+                                    <option value="">— Select {group.pick > 1 ? `option ${i + 1}` : "option"} —</option>
+                                    {group.options
+                                      .filter(opt => opt === selected[i] || !selected.includes(opt))
+                                      .map((opt) => (
+                                        <option key={opt} value={opt}>{opt}</option>
+                                      ))
+                                    }
+                                  </select>
+                                ))}
                               </div>
                             </div>
                           )

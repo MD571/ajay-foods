@@ -418,18 +418,32 @@ function PackagesTab({ packages, onSave }: { packages: AdminPackage[]; onSave: (
                   <p className="text-white/60 text-xs">/person</p>
                 </div>
               </div>
-              {/* Includes preview (collapsed) */}
-              {editId !== pkg.id && (
-                <div className="mt-3 flex flex-wrap gap-1">
-                  {pkg.includes.slice(0, 4).map((inc, i) => (
-                    <span key={i} className="bg-white/20 text-white text-[10px] px-2 py-0.5 rounded-full">{inc}</span>
-                  ))}
-                  {pkg.includes.length > 4 && (
-                    <span className="bg-white/10 text-white/70 text-[10px] px-2 py-0.5 rounded-full">+{pkg.includes.length - 4} more</span>
-                  )}
-                </div>
-              )}
             </div>
+
+            {/* Includes list — always visible below header */}
+            {editId !== pkg.id && (
+              <div className="px-4 py-3 bg-[#fdf9f5] border-b border-[#f0e6d3]">
+                <p className="text-[10px] font-bold text-[#aaa] uppercase tracking-wider mb-2">What&apos;s Included</p>
+                <ul className="space-y-1">
+                  {pkg.includes.map((inc, i) => (
+                    <li key={i} className="flex items-start gap-2 text-xs text-[#444]">
+                      <span className="w-3.5 h-3.5 rounded-full bg-[#D4A853]/30 flex items-center justify-center text-[#8B4513] text-[8px] flex-shrink-0 mt-0.5 font-bold">✓</span>
+                      {inc}
+                    </li>
+                  ))}
+                </ul>
+                {(pkg.choiceGroups ?? []).length > 0 && (
+                  <div className="mt-2 pt-2 border-t border-[#f0e6d3]">
+                    <p className="text-[10px] font-bold text-[#aaa] uppercase tracking-wider mb-1.5">Choice Options</p>
+                    {(pkg.choiceGroups ?? []).map(g => (
+                      <p key={g.id} className="text-[10px] text-[#666] mb-0.5">
+                        <span className="font-semibold text-[#8B4513]">🎯 {g.label}:</span> {g.options.slice(0, 4).join(", ")}{g.options.length > 4 ? ` +${g.options.length - 4} more` : ""}
+                      </p>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Action bar */}
             <div className="flex border-b border-[#f0e6d3]">
