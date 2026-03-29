@@ -556,56 +556,6 @@ function OrderInner() {
                     {errors.eventDate && <p className="text-red-500 text-xs mt-1">{errors.eventDate}</p>}
                   </div>
 
-                  {/* Meal Preferences — structured field dropdowns per choice group */}
-                  {(pkg?.choiceGroups ?? []).length > 0 && (
-                    <div>
-                      <label className="block text-xs font-semibold text-[#555] mb-1 uppercase tracking-wider">🎯 Meal Preferences</label>
-                      <p className="text-[10px] text-[#aaa] mb-3">Select your preferred items for this package</p>
-                      <div className="space-y-3 bg-[#fffbf2] border border-[#D4A853]/40 rounded-2xl p-4">
-                        {(pkg.choiceGroups ?? []).map((group) => {
-                          const selected = preferences[group.id] ?? []
-                          // For pick=1 use a single select; for pick>1 use multiple selects
-                          const selects = Array.from({ length: group.pick }, (_, i) => i)
-                          return (
-                            <div key={group.id}>
-                              <label className="block text-xs font-semibold text-[#555] mb-1.5">
-                                {group.label}
-                                {selected.filter(Boolean).length < group.pick && (
-                                  <span className="ml-2 text-amber-500 font-normal text-[10px]">· {group.pick - selected.filter(Boolean).length} remaining</span>
-                                )}
-                                {selected.filter(Boolean).length === group.pick && (
-                                  <span className="ml-2 text-green-600 font-normal text-[10px]">✓ done</span>
-                                )}
-                              </label>
-                              <div className={`grid gap-2 ${group.pick > 1 ? "grid-cols-2" : "grid-cols-1"}`}>
-                                {selects.map((i) => (
-                                  <select key={i} value={selected[i] ?? ""}
-                                    onChange={(e) => {
-                                      setPreferences(prev => {
-                                        const cur = [...(prev[group.id] ?? [])]
-                                        cur[i] = e.target.value
-                                        return { ...prev, [group.id]: cur }
-                                      })
-                                    }}
-                                    className="w-full border border-[#e0d0bc] rounded-xl px-3 py-2.5 text-sm bg-white focus:outline-none focus:border-[#8B4513] focus:ring-2 focus:ring-[#8B4513]/10 text-[#333]"
-                                  >
-                                    <option value="">— Select {group.pick > 1 ? `option ${i + 1}` : "option"} —</option>
-                                    {group.options
-                                      .filter(opt => opt === selected[i] || !selected.includes(opt))
-                                      .map((opt) => (
-                                        <option key={opt} value={opt}>{opt}</option>
-                                      ))
-                                    }
-                                  </select>
-                                ))}
-                              </div>
-                            </div>
-                          )
-                        })}
-                      </div>
-                    </div>
-                  )}
-
                   <div>
                     <label className="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wider">Special Requests</label>
                     <textarea rows={3} placeholder="Any other dietary requirements or special notes…" value={form.notes}
@@ -810,6 +760,50 @@ function OrderInner() {
                 <p className="text-xs text-[#aaa] text-center py-2">No extras selected yet — tap items on the left!</p>
               )}
             </div>
+
+            {/* Meal Preference Dropdowns — shown in sidebar on step 2 */}
+            {(pkg.choiceGroups ?? []).length > 0 && (
+              <div className="border-t border-[#f0e6d3] px-5 py-4 space-y-3">
+                <p className="text-[10px] font-bold text-[#aaa] uppercase tracking-wider">🎯 Your Meal Choices</p>
+                {(pkg.choiceGroups ?? []).map((group) => {
+                  const selected = preferences[group.id] ?? []
+                  const selects = Array.from({ length: group.pick }, (_, i) => i)
+                  return (
+                    <div key={group.id}>
+                      <label className="block text-[10px] font-semibold text-[#555] mb-1">
+                        {group.label}
+                        {selected.filter(Boolean).length === group.pick
+                          ? <span className="ml-1.5 text-green-600 font-normal">✓</span>
+                          : <span className="ml-1.5 text-amber-500 font-normal">(pick {group.pick})</span>
+                        }
+                      </label>
+                      <div className={`grid gap-1.5 ${group.pick > 1 ? "grid-cols-2" : "grid-cols-1"}`}>
+                        {selects.map((i) => (
+                          <select key={i} value={selected[i] ?? ""}
+                            onChange={(e) => {
+                              setPreferences(prev => {
+                                const cur = [...(prev[group.id] ?? [])]
+                                cur[i] = e.target.value
+                                return { ...prev, [group.id]: cur }
+                              })
+                            }}
+                            className="w-full border border-[#e0d0bc] rounded-lg px-2 py-1.5 text-xs bg-white focus:outline-none focus:border-[#8B4513] focus:ring-1 focus:ring-[#8B4513]/20 text-[#333]"
+                          >
+                            <option value="">— {group.pick > 1 ? `Choice ${i + 1}` : "Select"} —</option>
+                            {group.options
+                              .filter(opt => opt === selected[i] || !selected.includes(opt))
+                              .map((opt) => (
+                                <option key={opt} value={opt}>{opt}</option>
+                              ))
+                            }
+                          </select>
+                        ))}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
 
             <div className="border-t border-[#f0e6d3] bg-[#FDF6EC] px-5 py-3 text-xs text-[#888]">
               <p>Base: ₹{pkg.price}/person {extraCostPerPerson > 0 && `+ extras: ₹${extraCostPerPerson}/person`}</p>

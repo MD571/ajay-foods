@@ -369,20 +369,6 @@ function PackagesInner() {
                     ))}
                   </ul>
 
-                  {/* Choice groups */}
-                  {((pkg as { choiceGroups?: { id: string; label: string; pick: number; options: string[] }[] }).choiceGroups ?? []).map((group) => (
-                    <div key={group.id} className={`mt-3 rounded-xl border border-[#D4A853]/40 bg-[#fffbf2] p-2.5`}>
-                      <p className="text-[10px] font-bold text-[#8B4513] uppercase tracking-wider mb-1.5 flex items-center gap-1">
-                        <span>🎯</span> {group.label}
-                      </p>
-                      <div className="flex flex-wrap gap-1">
-                        {group.options.map((opt) => (
-                          <span key={opt} className="text-[10px] bg-white border border-[#D4A853]/50 text-[#555] px-2 py-0.5 rounded-full">{opt}</span>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-
                   {/* CTA */}
                   <button
                     onClick={() => router.push(`/order?pkg=${pkg.id}`)}
