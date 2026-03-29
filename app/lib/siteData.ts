@@ -66,7 +66,7 @@ export interface ChoiceGroup {
 
 // ─── Storage Keys ─────────────────────────────────────────────────────────────
 const KEYS = {
-  packages:   "ajayfoods_packages_v1",
+  packages:   "ajayfoods_packages_v2",   // bumped: adds choiceGroups
   menu:       "ajayfoods_menu_v1",
   extras:     "ajayfoods_extras_v1",
   adminPin:   "ajayfoods_admin_pin",
@@ -77,12 +77,31 @@ export const DEFAULT_PACKAGES: AdminPackage[] = [
   {
     id: "veg-basic", tag: "VEG", name: "Veg Basic", tagline: "Simple & Wholesome",
     price: 100, popular: false, ideal: "Ideal for 50–200 guests",
-    includes: ["White Rice (Unlimited)", "Sambar + Rasam + Curd", "1 Dal (Papu) of your choice", "1 Iguru (Vegetable Curry)", "1 Pachadi / Chutney", "1 Thalimpu (Stir-fry)", "Papad"],
+    includes: ["White Rice (Unlimited)", "Sambar + Rasam + Curd", "1 Dal (Papu) — your choice", "1 Iguru / Vepudu — your choice", "1 Pachadi / Chutney — your choice", "1 Thalimpu (Stir-fry) — your choice", "Papad"],
     choiceGroups: [
-      { id: "dal",     label: "Dal (pick 1)",         pick: 1, options: ["Kandi Pappu", "Tomato Pappu", "Dosakaya Papu", "Pesara Pappu", "Chana Dal"] },
-      { id: "iguru",   label: "Iguru / Curry (pick 1)",pick: 1, options: ["Aloo Vepudu", "Beans Vepudu", "Cabbage Vepudu", "Gutti Vankaya", "Bendakaya Pulusu", "Aloo Iguru"] },
-      { id: "pachadi", label: "Pachadi (pick 1)",      pick: 1, options: ["Gongura Pachadi", "Tomato Pachadi", "Coconut Chutney", "Perugu Pachadi", "Peanut Chutney"] },
-      { id: "thalimpu",label: "Thalimpu (pick 1)",     pick: 1, options: ["Aloo Thalimpu", "Beans Thalimpu", "Cabbage Vepudu", "Vankaya Vepudu"] },
+      { id: "dal", label: "Dal / Papu (pick 1)", pick: 1, options: [
+        "Kandi Pappu (Toor Dal)", "Pesara Pappu (Moong Dal)", "Senaga Pappu (Chana Dal)",
+        "Tomato Pappu", "Dosakaya Papu (Yellow Cucumber Dal)", "Mudda Pappu (Plain Toor Dal)",
+        "Palakura Pappu (Spinach Dal)", "Gongura Pappu (Sorrel Dal)",
+      ]},
+      { id: "iguru", label: "Iguru / Vepudu (pick 1)", pick: 1, options: [
+        "Aloo Vepudu (Potato Stir-fry)", "Beans Vepudu", "Cabbage Vepudu",
+        "Gutti Vankaya (Stuffed Brinjal)", "Bendakaya Vepudu (Okra)",
+        "Beerakaya Vepudu (Ridge Gourd)", "Thotakura Vepudu (Amaranth)",
+        "Anapakaya Vepudu (Bottle Gourd)", "Gummadikaya Vepudu (Pumpkin)",
+        "Munagakaya Vepudu (Drumstick)",
+      ]},
+      { id: "pachadi", label: "Pachadi / Chutney (pick 1)", pick: 1, options: [
+        "Gongura Pachadi", "Tomato Pachadi", "Coconut Chutney",
+        "Perugu Pachadi (Curd Chutney)", "Peanut Chutney",
+        "Allam Pachadi (Ginger Chutney)", "Vankaya Pachadi (Brinjal)",
+        "Dosakaya Pachadi (Yellow Cucumber)",
+      ]},
+      { id: "thalimpu", label: "Thalimpu / Stir-fry (pick 1)", pick: 1, options: [
+        "Aloo Thalimpu", "Beans Thalimpu", "Cabbage Vepudu",
+        "Vankaya Vepudu (Brinjal)", "Goru Chikkudu Vepudu (Cluster Beans)",
+        "Kakara Vepudu (Bitter Gourd)", "Sorakkaya Vepudu (Ash Gourd)",
+      ]},
     ],
     color: "from-[#2d6a4f] to-[#40916c]", lightColor: "bg-[#d8f3dc]", textColor: "text-[#1b4332]",
     badgeColor: "bg-green-100 text-green-800",
@@ -91,12 +110,31 @@ export const DEFAULT_PACKAGES: AdminPackage[] = [
   {
     id: "veg-premium", tag: "VEG", name: "Veg Premium", tagline: "Rich & Flavourful",
     price: 140, popular: true, ideal: "Ideal for weddings & functions",
-    includes: ["White Rice + Pulihora / Ghee Rice", "Sambar + Rasam + Curd", "2 Dals of your choice", "2 Iguru (Vegetable Curries)", "2 Pachadis / Chutneys", "2 Thalimpu (Stir-fries)", "1 Sweet Dish", "Papad"],
+    includes: ["White Rice + Pulihora / Ghee Rice", "Sambar + Rasam + Curd", "2 Dals — your choice", "2 Iguru / Vepudu — your choice", "2 Pachadis / Chutneys — your choice", "2 Thalimpu (Stir-fries) — your choice", "1 Sweet Dish", "Papad"],
     choiceGroups: [
-      { id: "dal",     label: "Dal (pick 2)",          pick: 2, options: ["Kandi Pappu", "Tomato Pappu", "Dosakaya Papu", "Pesara Pappu", "Chana Dal", "Palak Dal"] },
-      { id: "iguru",   label: "Iguru / Curry (pick 2)",pick: 2, options: ["Aloo Vepudu", "Beans Vepudu", "Cabbage Vepudu", "Gutti Vankaya", "Bendakaya Pulusu", "Aloo Iguru", "Beerakaya Koora"] },
-      { id: "pachadi", label: "Pachadi (pick 2)",      pick: 2, options: ["Gongura Pachadi", "Tomato Pachadi", "Coconut Chutney", "Perugu Pachadi", "Peanut Chutney", "Allam Pachadi"] },
-      { id: "thalimpu",label: "Thalimpu (pick 2)",     pick: 2, options: ["Aloo Thalimpu", "Beans Thalimpu", "Cabbage Vepudu", "Vankaya Vepudu", "Goru Chikkudu Vepudu"] },
+      { id: "dal", label: "Dal / Papu (pick 2)", pick: 2, options: [
+        "Kandi Pappu (Toor Dal)", "Pesara Pappu (Moong Dal)", "Senaga Pappu (Chana Dal)",
+        "Tomato Pappu", "Dosakaya Papu (Yellow Cucumber Dal)", "Mudda Pappu (Plain Toor Dal)",
+        "Palakura Pappu (Spinach Dal)", "Gongura Pappu (Sorrel Dal)",
+      ]},
+      { id: "iguru", label: "Iguru / Vepudu (pick 2)", pick: 2, options: [
+        "Aloo Vepudu (Potato Stir-fry)", "Beans Vepudu", "Cabbage Vepudu",
+        "Gutti Vankaya (Stuffed Brinjal)", "Bendakaya Vepudu (Okra)",
+        "Beerakaya Vepudu (Ridge Gourd)", "Thotakura Vepudu (Amaranth)",
+        "Anapakaya Vepudu (Bottle Gourd)", "Gummadikaya Vepudu (Pumpkin)",
+        "Munagakaya Vepudu (Drumstick)",
+      ]},
+      { id: "pachadi", label: "Pachadi / Chutney (pick 2)", pick: 2, options: [
+        "Gongura Pachadi", "Tomato Pachadi", "Coconut Chutney",
+        "Perugu Pachadi (Curd Chutney)", "Peanut Chutney",
+        "Allam Pachadi (Ginger Chutney)", "Vankaya Pachadi (Brinjal)",
+        "Dosakaya Pachadi (Yellow Cucumber)",
+      ]},
+      { id: "thalimpu", label: "Thalimpu / Stir-fry (pick 2)", pick: 2, options: [
+        "Aloo Thalimpu", "Beans Thalimpu", "Cabbage Vepudu",
+        "Vankaya Vepudu (Brinjal)", "Goru Chikkudu Vepudu (Cluster Beans)",
+        "Kakara Vepudu (Bitter Gourd)", "Sorakkaya Vepudu (Ash Gourd)",
+      ]},
     ],
     color: "from-[#e9c46a] to-[#f4a261]", lightColor: "bg-[#fff3cd]", textColor: "text-[#5c3d11]",
     badgeColor: "bg-yellow-100 text-yellow-800",
@@ -107,7 +145,10 @@ export const DEFAULT_PACKAGES: AdminPackage[] = [
     price: 150, popular: false, ideal: "Ideal for 30–150 guests",
     includes: ["Biryani (7 variants to choose)", "Sambar", "Gongura Pachadi", "Perugu (Curd) Chutney", "Raita", "Plates & Service Included"],
     choiceGroups: [
-      { id: "biryani", label: "Biryani Variant (pick 1)", pick: 1, options: ["Chicken Biryani (Ambur Dum)", "Mutton Biryani", "Prawn Biryani", "Fish Biryani", "Egg Biryani", "Veg Biryani", "Hyderabadi Chicken Biryani"] },
+      { id: "biryani", label: "Biryani Variant (pick 1)", pick: 1, options: [
+        "Chicken Biryani — Ambur Dum Style", "Chicken Biryani — Hyderabadi Style",
+        "Mutton Biryani", "Prawn Biryani", "Fish Biryani", "Egg Biryani", "Veg Biryani",
+      ]},
     ],
     color: "from-[#8B4513] to-[#b5601e]", lightColor: "bg-[#fce8d8]", textColor: "text-[#4a1a05]",
     badgeColor: "bg-red-100 text-red-800",
@@ -116,10 +157,16 @@ export const DEFAULT_PACKAGES: AdminPackage[] = [
   {
     id: "non-veg-premium", tag: "NON-VEG", name: "Non-Veg Premium", tagline: "Grand Celebration Feast",
     price: 180, popular: false, ideal: "Ideal for grand celebrations",
-    includes: ["Biryani (7 variants to choose)", "Curry of choice (Chicken / Mutton / Fish / Prawn)", "Sambar", "Gongura Pachadi + Curd Chutney", "Raita", "Plates & Service Included"],
+    includes: ["Biryani — your choice of variant", "Main Curry — your choice", "Sambar", "Gongura Pachadi + Curd Chutney", "Raita", "Plates & Service Included"],
     choiceGroups: [
-      { id: "biryani", label: "Biryani Variant (pick 1)", pick: 1, options: ["Chicken Biryani (Ambur Dum)", "Mutton Biryani", "Prawn Biryani", "Fish Biryani", "Egg Biryani", "Veg Biryani", "Hyderabadi Chicken Biryani"] },
-      { id: "curry",   label: "Main Curry (pick 1)",      pick: 1, options: ["Chicken Curry", "Mutton Curry", "Gongura Chicken", "Gongura Mutton", "Fish Curry", "Prawn Curry"] },
+      { id: "biryani", label: "Biryani Variant (pick 1)", pick: 1, options: [
+        "Chicken Biryani — Ambur Dum Style", "Chicken Biryani — Hyderabadi Style",
+        "Mutton Biryani", "Prawn Biryani", "Fish Biryani", "Egg Biryani", "Veg Biryani",
+      ]},
+      { id: "curry", label: "Main Curry (pick 1)", pick: 1, options: [
+        "Chicken Curry", "Mutton Curry", "Gongura Chicken", "Gongura Mutton",
+        "Fish Curry", "Prawn Curry", "Egg Masala",
+      ]},
     ],
     color: "from-[#3d1a07] to-[#6b2d0f]", lightColor: "bg-[#f5ddd0]", textColor: "text-[#2a0f03]",
     badgeColor: "bg-red-100 text-red-800",

@@ -241,24 +241,47 @@ function DashboardTab({ packages, menuSections, extraCats, setActiveTab }: {
         ))}
       </div>
 
-      {/* Package price summary */}
-      <div className="bg-white rounded-2xl border border-[#f0e6d3] shadow-sm p-6">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="font-playfair text-lg font-bold text-[#8B4513]">Package Prices</h3>
-          <button onClick={() => setActiveTab("packages")} className="text-xs text-[#8B4513] border border-[#8B4513] px-3 py-1 rounded-full hover:bg-[#8B4513] hover:text-white transition-colors font-semibold">Edit Prices</button>
+      {/* Package summary with full includes */}
+      <div className="bg-white rounded-2xl border border-[#f0e6d3] shadow-sm overflow-hidden">
+        <div className="px-6 py-4 border-b border-[#f0e6d3] flex items-center justify-between">
+          <h3 className="font-playfair text-lg font-bold text-[#8B4513]">Packages Overview</h3>
+          <button onClick={() => setActiveTab("packages")} className="text-xs text-[#8B4513] border border-[#8B4513] px-3 py-1 rounded-full hover:bg-[#8B4513] hover:text-white transition-colors font-semibold">Edit Packages →</button>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#f0e6d3]">
           {packages.map((p) => (
-            <div key={p.id} className={`rounded-xl p-4 bg-gradient-to-br ${p.color} text-white relative`}>
-              {p.popular && <span className="absolute top-2 right-2 text-[8px] bg-[#D4A853] text-[#3d1a07] font-bold px-1.5 py-0.5 rounded-full">★ Popular</span>}
-              <p className="text-white/70 text-[10px] font-semibold uppercase tracking-wider">{p.tag}</p>
-              <p className="font-playfair font-bold text-sm mt-0.5">{p.name}</p>
-              <p className="text-2xl font-bold mt-1">₹{p.price}</p>
-              <p className="text-white/60 text-[10px]">per person</p>
+            <div key={p.id} className="flex flex-col">
+              {/* Gradient header */}
+              <div className={`bg-gradient-to-br ${p.color} px-4 py-3 relative`}>
+                {p.popular && <span className="absolute top-2 right-2 text-[8px] bg-[#D4A853] text-[#3d1a07] font-bold px-1.5 py-0.5 rounded-full">★ Popular</span>}
+                <p className="text-white/70 text-[9px] font-bold uppercase tracking-wider">{p.tag}</p>
+                <p className="font-playfair font-bold text-base text-white mt-0.5">{p.name}</p>
+                <p className="text-xl font-bold text-white mt-1">₹{p.price} <span className="text-white/60 text-[10px] font-normal">/person</span></p>
+              </div>
+              {/* Includes list */}
+              <div className="px-4 py-3 flex-1 bg-[#fdf9f5]">
+                <p className="text-[9px] font-bold text-[#aaa] uppercase tracking-wider mb-2">Includes</p>
+                <ul className="space-y-1">
+                  {(p.includes ?? []).map((inc, i) => (
+                    <li key={i} className="flex items-start gap-1.5 text-[11px] text-[#444]">
+                      <span className="text-[#D4A853] flex-shrink-0 font-bold mt-0.5">✓</span>{inc}
+                    </li>
+                  ))}
+                </ul>
+                {(p.choiceGroups ?? []).length > 0 && (
+                  <div className="mt-2 pt-2 border-t border-[#eddcc8]">
+                    {(p.choiceGroups ?? []).map(g => (
+                      <p key={g.id} className="text-[10px] text-[#777] mb-0.5 leading-snug">
+                        <span className="font-semibold text-[#8B4513]">🎯 {g.label}:</span>{" "}
+                        {g.options.slice(0, 3).join(", ")}{g.options.length > 3 ? ` +${g.options.length - 3} more` : ""}
+                      </p>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           ))}
         </div>
-        <p className="text-xs text-[#888] mt-3">Price range: ₹{priceRange.min} – ₹{priceRange.max} per person</p>
+        <p className="text-xs text-[#aaa] px-6 py-3 border-t border-[#f0e6d3]">Price range: ₹{priceRange.min} – ₹{priceRange.max} per person · Click "Edit Packages" to modify</p>
       </div>
 
     </div>
@@ -421,29 +444,27 @@ function PackagesTab({ packages, onSave }: { packages: AdminPackage[]; onSave: (
             </div>
 
             {/* Includes list — always visible below header */}
-            {editId !== pkg.id && (
-              <div className="px-4 py-3 bg-[#fdf9f5] border-b border-[#f0e6d3]">
-                <p className="text-[10px] font-bold text-[#aaa] uppercase tracking-wider mb-2">What&apos;s Included</p>
-                <ul className="space-y-1">
-                  {pkg.includes.map((inc, i) => (
-                    <li key={i} className="flex items-start gap-2 text-xs text-[#444]">
-                      <span className="w-3.5 h-3.5 rounded-full bg-[#D4A853]/30 flex items-center justify-center text-[#8B4513] text-[8px] flex-shrink-0 mt-0.5 font-bold">✓</span>
-                      {inc}
-                    </li>
+            <div className="px-4 py-3 bg-[#fdf9f5] border-b border-[#f0e6d3]">
+              <p className="text-[10px] font-bold text-[#aaa] uppercase tracking-wider mb-2">What&apos;s Included</p>
+              <ul className="space-y-1">
+                {pkg.includes.map((inc, i) => (
+                  <li key={i} className="flex items-start gap-2 text-xs text-[#444]">
+                    <span className="w-3.5 h-3.5 rounded-full bg-[#D4A853]/30 flex items-center justify-center text-[#8B4513] text-[8px] flex-shrink-0 mt-0.5 font-bold">✓</span>
+                    {inc}
+                  </li>
+                ))}
+              </ul>
+              {(pkg.choiceGroups ?? []).length > 0 && (
+                <div className="mt-2 pt-2 border-t border-[#f0e6d3]">
+                  <p className="text-[10px] font-bold text-[#aaa] uppercase tracking-wider mb-1.5">Choice Options</p>
+                  {(pkg.choiceGroups ?? []).map(g => (
+                    <p key={g.id} className="text-[10px] text-[#666] mb-0.5">
+                      <span className="font-semibold text-[#8B4513]">🎯 {g.label}:</span> {g.options.slice(0, 4).join(", ")}{g.options.length > 4 ? ` +${g.options.length - 4} more` : ""}
+                    </p>
                   ))}
-                </ul>
-                {(pkg.choiceGroups ?? []).length > 0 && (
-                  <div className="mt-2 pt-2 border-t border-[#f0e6d3]">
-                    <p className="text-[10px] font-bold text-[#aaa] uppercase tracking-wider mb-1.5">Choice Options</p>
-                    {(pkg.choiceGroups ?? []).map(g => (
-                      <p key={g.id} className="text-[10px] text-[#666] mb-0.5">
-                        <span className="font-semibold text-[#8B4513]">🎯 {g.label}:</span> {g.options.slice(0, 4).join(", ")}{g.options.length > 4 ? ` +${g.options.length - 4} more` : ""}
-                      </p>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
+                </div>
+              )}
+            </div>
 
             {/* Action bar */}
             <div className="flex border-b border-[#f0e6d3]">
