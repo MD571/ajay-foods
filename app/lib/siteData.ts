@@ -387,3 +387,60 @@ export const totalMenuItems  = (sections: AdminMenuSection[])    => sections.red
 export const totalExtraItems = (cats: AdminExtraCategory[])      => cats.reduce((s, c) => s + c.items.length, 0)
 export const unavailableCount = (sections: AdminMenuSection[])   =>
   sections.reduce((s, sec) => s + sec.items.filter((i) => !i.available).length, 0)
+
+// ─── Booking Entries (customer orders from website) ───────────────────────────
+export interface BookingEntry {
+  id: string
+  name: string
+  phone: string
+  eventType: string
+  eventDate: string
+  guestCount: number
+  packageId: string
+  packageName: string
+  extras: { id: string; name: string; price: number; emoji: string }[]
+  preferences: Record<string, string[]>
+  notes: string
+  totalPerPerson: number
+  submittedAt: string
+  status: "pending" | "confirmed" | "completed" | "cancelled"
+}
+
+// ─── Charity Entries (daily charity/community feed configs) ───────────────────
+export interface CharityEntry {
+  id: string
+  date: string      // "YYYY-MM-DD"
+  members: number
+  items: string[]   // dish names
+  notes: string
+  createdAt: string
+}
+
+// ─── Stall Entries (retail / event stall configs) ─────────────────────────────
+export interface StallEntry {
+  id: string
+  name: string
+  date: string
+  shift: "morning" | "evening" | "all-day"
+  location: string
+  items: { name: string; qty: string; price: number }[]
+  notes: string
+  createdAt: string
+  status: "planned" | "active" | "completed"
+}
+
+const BOOKING_KEY = "ajayfoods_bookings_v1"
+const CHARITY_KEY = "ajayfoods_charity_v1"
+const STALL_KEY   = "ajayfoods_stalls_v1"
+
+export const getBookings            = (): BookingEntry[]  => safeRead(BOOKING_KEY, [])
+export const setBookings            = (v: BookingEntry[]) => safeWrite(BOOKING_KEY, v)
+export const addBooking             = (b: BookingEntry)   => setBookings([...getBookings(), b])
+export const updateBookingStatus    = (id: string, status: BookingEntry["status"]) =>
+  setBookings(getBookings().map((b) => b.id === id ? { ...b, status } : b))
+
+export const getCharityEntries  = (): CharityEntry[]  => safeRead(CHARITY_KEY, [])
+export const setCharityEntries  = (v: CharityEntry[]) => safeWrite(CHARITY_KEY, v)
+
+export const getStalls  = (): StallEntry[]  => safeRead(STALL_KEY, [])
+export const setStalls  = (v: StallEntry[]) => safeWrite(STALL_KEY, v)

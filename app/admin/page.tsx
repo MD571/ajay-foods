@@ -12,10 +12,14 @@ import {
   DEFAULT_PACKAGES, DEFAULT_MENU_SECTIONS, DEFAULT_EXTRA_CATEGORIES,
   type AdminPackage, type AdminMenuItem, type AdminMenuSection,
   type AdminExtraItem, type AdminExtraCategory, type ChoiceGroup,
+  getBookings, updateBookingStatus,
+  getCharityEntries, setCharityEntries,
+  getStalls, setStalls,
+  type BookingEntry, type CharityEntry, type StallEntry,
 } from "../lib/siteData"
 
 // ─── Types ────────────────────────────────────────────────────────────────────
-type Tab = "dashboard" | "packages" | "menu" | "extras" | "settings"
+type Tab = "dashboard" | "packages" | "menu" | "extras" | "bookings" | "charity" | "stalls" | "settings"
 
 // ─── Admin Page ───────────────────────────────────────────────────────────────
 export default function AdminPage() {
@@ -29,6 +33,9 @@ export default function AdminPage() {
   const [packages, setPackagesState] = useState<AdminPackage[]>(DEFAULT_PACKAGES)
   const [menuSections, setMenuSectionsState] = useState<AdminMenuSection[]>(DEFAULT_MENU_SECTIONS)
   const [extraCats, setExtraCatsState] = useState<AdminExtraCategory[]>(DEFAULT_EXTRA_CATEGORIES)
+  const [bookings, setBookingsState] = useState<BookingEntry[]>([])
+  const [charityEntries, setCharityState] = useState<CharityEntry[]>([])
+  const [stalls, setStallsState] = useState<StallEntry[]>([])
   const [savedFlash, setSavedFlash] = useState("")
 
   // Load from localStorage on login
@@ -36,6 +43,9 @@ export default function AdminPage() {
     setPackagesState(getPackages())
     setMenuSectionsState(getMenuSections())
     setExtraCatsState(getExtraCategories())
+    setBookingsState(getBookings())
+    setCharityState(getCharityEntries())
+    setStallsState(getStalls())
   }, [])
 
   function handleLogin() {
@@ -71,6 +81,24 @@ export default function AdminPage() {
     setExtraCategories(cats)
     setExtraCatsState(cats)
     flash("✅ Extras saved!")
+  }
+
+  function saveCharityEntries(entries: CharityEntry[]) {
+    setCharityEntries(entries)
+    setCharityState(entries)
+    flash("✅ Charity saved!")
+  }
+
+  function saveStalls(s: StallEntry[]) {
+    setStalls(s)
+    setStallsState(s)
+    flash("✅ Stall saved!")
+  }
+
+  function handleBookingStatus(id: string, status: BookingEntry["status"]) {
+    updateBookingStatus(id, status)
+    setBookingsState(getBookings())
+    flash("✅ Booking updated!")
   }
 
   // ── Login Screen ─────────────────────────────────────────────────────────
@@ -112,11 +140,14 @@ export default function AdminPage() {
     )
   }
 
-  const tabs: { id: Tab; label: string; emoji: string }[] = [
+  const tabs: { id: Tab; label: string; emoji: string; badge?: number }[] = [
     { id: "dashboard", label: "Dashboard",   emoji: "📊" },
     { id: "packages",  label: "Packages",    emoji: "📦" },
     { id: "menu",      label: "Menu Items",  emoji: "🍽️" },
     { id: "extras",    label: "Order Extras",emoji: "➕" },
+    { id: "bookings",  label: "Bookings",    emoji: "📋", badge: bookings.filter(b => b.status === "pending").length },
+    { id: "charity",   label: "Charity",     emoji: "🙏" },
+    { id: "stalls",    label: "Stalls",      emoji: "🏪" },
     { id: "settings",  label: "Settings",    emoji: "⚙️" },
   ]
 
@@ -158,6 +189,9 @@ export default function AdminPage() {
               }`}
             >
               <span>{t.emoji}</span> {t.label}
+              {t.badge != null && t.badge > 0 && (
+                <span className="bg-red-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">{t.badge}</span>
+              )}
             </button>
           ))}
         </div>
@@ -170,6 +204,8 @@ export default function AdminPage() {
         {activeTab === "dashboard" && (
           <DashboardTab
             packages={packages} menuSections={menuSections} extraCats={extraCats}
+            bookingCount={bookings.length}
+            pendingCount={bookings.filter(b => b.status === "pending").length}
             setActiveTab={setActiveTab}
           />
         )}
@@ -189,6 +225,21 @@ export default function AdminPage() {
           <ExtrasTab categories={extraCats} onSave={saveExtraCats} />
         )}
 
+        {/* ── BOOKINGS ──────────────────────────────────────────────────── */}
+        {activeTab === "bookings" && (
+          <BookingsTab bookings={bookings} onStatusChange={handleBookingStatus} />
+        )}
+
+        {/* ── CHARITY ───────────────────────────────────────────────────── */}
+        {activeTab === "charity" && (
+          <CharityTab entries={charityEntries} onSave={saveCharityEntries} />
+        )}
+
+        {/* ── STALLS ────────────────────────────────────────────────────── */}
+        {activeTab === "stalls" && (
+          <StallsTab stalls={stalls} onSave={saveStalls} />
+        )}
+
         {/* ── SETTINGS ──────────────────────────────────────────────────── */}
         {activeTab === "settings" && (
           <SettingsTab
@@ -206,16 +257,19 @@ export default function AdminPage() {
 }
 
 // ─── Dashboard Tab ────────────────────────────────────────────────────────────
-function DashboardTab({ packages, menuSections, extraCats, setActiveTab }: {
+function DashboardTab({ packages, menuSections, extraCats, bookingCount, pendingCount, setActiveTab }: {
   packages: AdminPackage[]; menuSections: AdminMenuSection[]; extraCats: AdminExtraCategory[]
+  bookingCount: number; pendingCount: number
   setActiveTab: (t: Tab) => void
 }) {
   const unavail = unavailableCount(menuSections)
   const stats = [
-    { label: "Packages",       value: packages.length,                  icon: "📦", tab: "packages" as Tab },
-    { label: "Menu Items",     value: totalMenuItems(menuSections),      icon: "🍽️", tab: "menu" as Tab },
-    { label: "Order Extras",   value: totalExtraItems(extraCats),        icon: "➕", tab: "extras" as Tab },
-    { label: "Unavailable",    value: unavail,                           icon: "⚠️", tab: "menu" as Tab, warn: unavail > 0 },
+    { label: "Packages",       value: packages.length,       icon: "📦", tab: "packages" as Tab },
+    { label: "Menu Items",     value: totalMenuItems(menuSections), icon: "🍽️", tab: "menu" as Tab },
+    { label: "Order Extras",   value: totalExtraItems(extraCats),  icon: "➕", tab: "extras" as Tab },
+    { label: "Unavailable",    value: unavail,               icon: "⚠️", tab: "menu" as Tab, warn: unavail > 0 },
+    { label: "Bookings",       value: bookingCount,          icon: "📋", tab: "bookings" as Tab },
+    { label: "Pending",        value: pendingCount,          icon: "🔔", tab: "bookings" as Tab, warn: pendingCount > 0 },
   ]
   const priceRange = { min: Math.min(...packages.map(p => p.price)), max: Math.max(...packages.map(p => p.price)) }
 
@@ -1164,6 +1218,411 @@ function SettingsTab({ onResetAll }: { onResetAll: () => void }) {
         <button onClick={onResetAll} className="bg-red-600 text-white px-6 py-2.5 rounded-xl font-semibold text-sm hover:bg-red-700 transition-colors">
           Reset Everything to Defaults
         </button>
+      </div>
+    </div>
+  )
+}
+
+// ─── Bookings Tab ─────────────────────────────────────────────────────────────
+const STATUS_STYLES: Record<BookingEntry["status"], string> = {
+  pending:   "bg-amber-100 text-amber-800",
+  confirmed: "bg-blue-100 text-blue-800",
+  completed: "bg-green-100 text-green-800",
+  cancelled: "bg-gray-100 text-gray-500",
+}
+const STATUS_NEXT: Record<BookingEntry["status"], { label: string; status: BookingEntry["status"] }[]> = {
+  pending:   [{ label: "Confirm", status: "confirmed" }, { label: "Cancel", status: "cancelled" }],
+  confirmed: [{ label: "Mark Done", status: "completed" }, { label: "Cancel", status: "cancelled" }],
+  completed: [],
+  cancelled: [{ label: "Restore", status: "pending" }],
+}
+
+function BookingsTab({ bookings, onStatusChange }: {
+  bookings: BookingEntry[]
+  onStatusChange: (id: string, s: BookingEntry["status"]) => void
+}) {
+  const [filter, setFilter] = useState<BookingEntry["status"] | "all">("all")
+  const [expanded, setExpanded] = useState<string | null>(null)
+
+  const filtered = filter === "all" ? bookings : bookings.filter(b => b.status === filter)
+  const sorted = [...filtered].sort((a, b) => b.submittedAt.localeCompare(a.submittedAt))
+
+  const counts = {
+    all: bookings.length,
+    pending: bookings.filter(b => b.status === "pending").length,
+    confirmed: bookings.filter(b => b.status === "confirmed").length,
+    completed: bookings.filter(b => b.status === "completed").length,
+    cancelled: bookings.filter(b => b.status === "cancelled").length,
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between flex-wrap gap-3">
+        <h2 className="font-playfair text-xl font-bold text-[#8B4513]">📋 Customer Bookings</h2>
+        <p className="text-xs text-[#888]">{bookings.length} total · {counts.pending} pending</p>
+      </div>
+
+      {/* Filter pills */}
+      <div className="flex gap-2 flex-wrap">
+        {(["all", "pending", "confirmed", "completed", "cancelled"] as const).map((s) => (
+          <button key={s} onClick={() => setFilter(s)}
+            className={`px-3 py-1.5 rounded-full text-xs font-semibold capitalize transition-colors ${
+              filter === s ? "bg-[#8B4513] text-white" : "bg-white border border-[#e0d0bc] text-[#555] hover:border-[#8B4513]"
+            }`}
+          >
+            {s === "all" ? "All" : s} {counts[s] > 0 && <span className="ml-1 opacity-70">({counts[s]})</span>}
+          </button>
+        ))}
+      </div>
+
+      {sorted.length === 0 ? (
+        <div className="bg-white rounded-2xl border border-[#f0e6d3] p-12 text-center">
+          <p className="text-4xl mb-3">📭</p>
+          <p className="text-[#888] font-medium">No bookings yet</p>
+          <p className="text-xs text-[#aaa] mt-1">Bookings submitted from the website will appear here</p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {sorted.map((b) => (
+            <div key={b.id} className="bg-white rounded-2xl border border-[#f0e6d3] shadow-sm overflow-hidden">
+              {/* Header row */}
+              <div className="flex items-center gap-3 px-5 py-4 cursor-pointer" onClick={() => setExpanded(expanded === b.id ? null : b.id)}>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="font-bold text-[#1a1a1a] text-sm">{b.name}</span>
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full capitalize ${STATUS_STYLES[b.status]}`}>{b.status}</span>
+                    <span className="text-[10px] text-[#aaa] font-mono">{b.id}</span>
+                  </div>
+                  <div className="flex items-center gap-3 mt-1 flex-wrap text-xs text-[#666]">
+                    <span>📅 {b.eventDate}</span>
+                    <span>👥 {b.guestCount} guests</span>
+                    <span>📦 {b.packageName}</span>
+                    <span>📞 {b.phone}</span>
+                  </div>
+                </div>
+                <div className="text-right flex-shrink-0">
+                  <p className="font-bold text-[#8B4513] text-sm">₹{b.totalPerPerson}<span className="text-[10px] text-[#aaa] font-normal">/pp</span></p>
+                  <p className="text-[10px] text-[#aaa]">₹{(b.totalPerPerson * b.guestCount).toLocaleString("en-IN")} est.</p>
+                </div>
+                <span className="text-[#aaa] text-sm flex-shrink-0">{expanded === b.id ? "▲" : "▼"}</span>
+              </div>
+
+              {/* Action buttons */}
+              <div className="flex gap-2 px-5 pb-3 flex-wrap">
+                {STATUS_NEXT[b.status].map((a) => (
+                  <button key={a.status} onClick={() => onStatusChange(b.id, a.status)}
+                    className={`text-xs font-semibold px-3 py-1.5 rounded-full transition-colors ${
+                      a.status === "cancelled" ? "bg-red-50 text-red-600 hover:bg-red-100 border border-red-200"
+                      : a.status === "completed" ? "bg-green-50 text-green-700 hover:bg-green-100 border border-green-200"
+                      : "bg-[#8B4513] text-white hover:bg-[#6d3410]"
+                    }`}
+                  >{a.label}</button>
+                ))}
+              </div>
+
+              {/* Expanded details */}
+              {expanded === b.id && (
+                <div className="border-t border-[#f5ece0] px-5 py-4 bg-[#fffbf5] space-y-3 text-sm">
+                  <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-xs">
+                    <div><span className="text-[#aaa]">Event Type</span><p className="font-medium text-[#333] mt-0.5">{b.eventType}</p></div>
+                    <div><span className="text-[#aaa]">Event Date</span><p className="font-medium text-[#333] mt-0.5">{b.eventDate}</p></div>
+                    <div><span className="text-[#aaa]">Guests</span><p className="font-medium text-[#333] mt-0.5">{b.guestCount}</p></div>
+                    <div><span className="text-[#aaa]">Submitted</span><p className="font-medium text-[#333] mt-0.5">{new Date(b.submittedAt).toLocaleString("en-IN")}</p></div>
+                  </div>
+                  {b.extras.length > 0 && (
+                    <div>
+                      <p className="text-[10px] font-bold text-[#aaa] uppercase tracking-wider mb-1.5">Extras</p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {b.extras.map(e => (
+                          <span key={e.id} className="bg-white border border-[#e0d0bc] text-[#555] text-xs px-2.5 py-1 rounded-full">{e.emoji} {e.name} +₹{e.price}</span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {Object.keys(b.preferences).filter(k => (b.preferences[k] ?? []).some(Boolean)).length > 0 && (
+                    <div>
+                      <p className="text-[10px] font-bold text-[#aaa] uppercase tracking-wider mb-1.5">Meal Choices</p>
+                      <div className="space-y-1">
+                        {Object.entries(b.preferences).filter(([, v]) => v.some(Boolean)).map(([k, v]) => (
+                          <p key={k} className="text-xs text-[#555]"><span className="font-medium capitalize">{k}:</span> {v.filter(Boolean).join(", ")}</p>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {b.notes && (
+                    <div>
+                      <p className="text-[10px] font-bold text-[#aaa] uppercase tracking-wider mb-1">Special Requests</p>
+                      <p className="text-xs text-[#555] bg-white border border-[#e0d0bc] rounded-xl px-3 py-2">{b.notes}</p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ─── Charity Tab ──────────────────────────────────────────────────────────────
+function CharityTab({ entries, onSave }: { entries: CharityEntry[]; onSave: (v: CharityEntry[]) => void }) {
+  const today = new Date().toISOString().split("T")[0]!
+  const [form, setForm] = useState({ date: today, members: "100", notes: "" })
+  const [items, setItems] = useState<string[]>([])
+  const [itemInput, setItemInput] = useState("")
+  const [editing, setEditing] = useState<string | null>(null)
+
+  function loadEntry(e: CharityEntry) {
+    setForm({ date: e.date, members: String(e.members), notes: e.notes })
+    setItems([...e.items])
+    setEditing(e.id)
+  }
+
+  function newEntry() {
+    setForm({ date: today, members: "100", notes: "" })
+    setItems([])
+    setItemInput("")
+    setEditing(null)
+  }
+
+  function addItem() {
+    const v = itemInput.trim()
+    if (v && !items.includes(v)) { setItems([...items, v]); setItemInput("") }
+  }
+
+  function save() {
+    if (!form.date || !items.length) return
+    const id = editing ?? `charity-${Date.now()}`
+    const entry: CharityEntry = { id, date: form.date, members: parseInt(form.members) || 100, items, notes: form.notes, createdAt: editing ? (entries.find(e => e.id === editing)?.createdAt ?? new Date().toISOString()) : new Date().toISOString() }
+    const updated = editing ? entries.map(e => e.id === editing ? entry : e) : [...entries, entry]
+    onSave(updated.sort((a, b) => b.date.localeCompare(a.date)))
+    newEntry()
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h2 className="font-playfair text-xl font-bold text-[#8B4513]">🙏 Charity / Community Feeds</h2>
+        <button onClick={newEntry} className="text-xs text-[#8B4513] border border-[#8B4513] px-3 py-1.5 rounded-full hover:bg-[#8B4513] hover:text-white transition-colors">+ New</button>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-6">
+        {/* Form */}
+        <div className="bg-white rounded-2xl border border-[#f0e6d3] shadow-sm p-5 space-y-4">
+          <h3 className="font-semibold text-[#333] text-sm">{editing ? "Edit Entry" : "Add New Entry"}</h3>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-semibold text-[#555] mb-1">Date</label>
+              <input type="date" value={form.date} onChange={e => setForm({...form, date: e.target.value})}
+                className="w-full border border-[#e0d0bc] rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#8B4513]" />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-[#555] mb-1">People to feed</label>
+              <input type="number" min={1} value={form.members} onChange={e => setForm({...form, members: e.target.value})}
+                className="w-full border border-[#e0d0bc] rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#8B4513]" />
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-[#555] mb-1.5">Dishes / Items</label>
+            <div className="flex gap-2">
+              <input value={itemInput} onChange={e => setItemInput(e.target.value)} onKeyDown={e => e.key === "Enter" && addItem()}
+                placeholder="e.g. Rice, Dal, Curry…" className="flex-1 border border-[#e0d0bc] rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#8B4513]" />
+              <button onClick={addItem} className="bg-[#8B4513] text-white px-3 py-2 rounded-xl text-sm font-semibold hover:bg-[#6d3410] transition-colors">Add</button>
+            </div>
+            {items.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 mt-2">
+                {items.map(it => (
+                  <span key={it} className="flex items-center gap-1 bg-[#fffbf2] border border-[#D4A853]/40 text-[#555] text-xs px-2.5 py-1 rounded-full">
+                    {it}
+                    <button onClick={() => setItems(items.filter(i => i !== it))} className="text-[#aaa] hover:text-red-500 ml-0.5 leading-none">×</button>
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-[#555] mb-1">Notes (optional)</label>
+            <textarea rows={2} value={form.notes} onChange={e => setForm({...form, notes: e.target.value})}
+              placeholder="Any special notes…" className="w-full border border-[#e0d0bc] rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#8B4513] resize-none" />
+          </div>
+          <button onClick={save} disabled={!form.date || items.length === 0}
+            className="w-full bg-[#8B4513] text-white py-2.5 rounded-xl font-bold text-sm hover:bg-[#6d3410] transition-colors disabled:opacity-50">
+            {editing ? "Update Entry" : "Save Entry"}
+          </button>
+        </div>
+
+        {/* History */}
+        <div className="space-y-3">
+          <h3 className="font-semibold text-[#555] text-sm">Past Entries ({entries.length})</h3>
+          {entries.length === 0 ? (
+            <p className="text-xs text-[#aaa] text-center py-8">No entries yet</p>
+          ) : (
+            entries.map(e => (
+              <div key={e.id} className="bg-white rounded-xl border border-[#f0e6d3] shadow-sm px-4 py-3">
+                <div className="flex items-start justify-between gap-2">
+                  <div>
+                    <p className="font-semibold text-sm text-[#333]">📅 {e.date} <span className="text-[#888] font-normal">· {e.members} people</span></p>
+                    <p className="text-xs text-[#666] mt-0.5">{e.items.join(", ")}</p>
+                    {e.notes && <p className="text-xs text-[#aaa] mt-0.5 italic">{e.notes}</p>}
+                  </div>
+                  <div className="flex gap-1 flex-shrink-0">
+                    <button onClick={() => loadEntry(e)} className="text-xs text-[#8B4513] border border-[#8B4513] px-2 py-1 rounded-lg hover:bg-[#8B4513] hover:text-white transition-colors">Edit</button>
+                    <button onClick={() => onSave(entries.filter(x => x.id !== e.id))} className="text-xs text-red-500 border border-red-200 px-2 py-1 rounded-lg hover:bg-red-50 transition-colors">Del</button>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ─── Stalls Tab ───────────────────────────────────────────────────────────────
+function StallsTab({ stalls, onSave }: { stalls: StallEntry[]; onSave: (v: StallEntry[]) => void }) {
+  const today = new Date().toISOString().split("T")[0]!
+  const blank: Omit<StallEntry, "id" | "createdAt"> = { name: "", date: today, shift: "morning", location: "", items: [], notes: "", status: "planned" }
+  const [form, setForm] = useState(blank)
+  const [editing, setEditing] = useState<string | null>(null)
+  const [itemRow, setItemRow] = useState({ name: "", qty: "", price: "" })
+
+  function loadStall(s: StallEntry) {
+    setForm({ name: s.name, date: s.date, shift: s.shift, location: s.location, items: [...s.items], notes: s.notes, status: s.status })
+    setEditing(s.id)
+  }
+
+  function newStall() { setForm(blank); setEditing(null); setItemRow({ name: "", qty: "", price: "" }) }
+
+  function addItem() {
+    const n = itemRow.name.trim(); const p = parseFloat(itemRow.price)
+    if (!n) return
+    setForm(f => ({ ...f, items: [...f.items, { name: n, qty: itemRow.qty.trim(), price: isNaN(p) ? 0 : p }] }))
+    setItemRow({ name: "", qty: "", price: "" })
+  }
+
+  function save() {
+    if (!form.name.trim() || !form.date) return
+    const id = editing ?? `stall-${Date.now()}`
+    const entry: StallEntry = { id, ...form, createdAt: editing ? (stalls.find(s => s.id === editing)?.createdAt ?? new Date().toISOString()) : new Date().toISOString() }
+    const updated = editing ? stalls.map(s => s.id === editing ? entry : s) : [...stalls, entry]
+    onSave(updated.sort((a, b) => b.date.localeCompare(a.date)))
+    newStall()
+  }
+
+  const STATUS_STYLE: Record<StallEntry["status"], string> = {
+    planned: "bg-amber-100 text-amber-800",
+    active: "bg-green-100 text-green-800",
+    completed: "bg-gray-100 text-gray-500",
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <h2 className="font-playfair text-xl font-bold text-[#8B4513]">🏪 Stall & Event Management</h2>
+        <button onClick={newStall} className="text-xs text-[#8B4513] border border-[#8B4513] px-3 py-1.5 rounded-full hover:bg-[#8B4513] hover:text-white transition-colors">+ New Stall</button>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-6">
+        {/* Form */}
+        <div className="bg-white rounded-2xl border border-[#f0e6d3] shadow-sm p-5 space-y-4">
+          <h3 className="font-semibold text-[#333] text-sm">{editing ? "Edit Stall" : "Add New Stall"}</h3>
+          <div>
+            <label className="block text-xs font-semibold text-[#555] mb-1">Stall Name</label>
+            <input value={form.name} onChange={e => setForm({...form, name: e.target.value})} placeholder="e.g. Temple Main Gate Stall"
+              className="w-full border border-[#e0d0bc] rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#8B4513]" />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-semibold text-[#555] mb-1">Date</label>
+              <input type="date" value={form.date} onChange={e => setForm({...form, date: e.target.value})}
+                className="w-full border border-[#e0d0bc] rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#8B4513]" />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-[#555] mb-1">Shift</label>
+              <select value={form.shift} onChange={e => setForm({...form, shift: e.target.value as StallEntry["shift"]})}
+                className="w-full border border-[#e0d0bc] rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#8B4513] bg-white">
+                <option value="morning">Morning</option>
+                <option value="evening">Evening</option>
+                <option value="all-day">All Day</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-[#555] mb-1">Location</label>
+            <input value={form.location} onChange={e => setForm({...form, location: e.target.value})} placeholder="e.g. Durga Temple, Vijayawada"
+              className="w-full border border-[#e0d0bc] rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#8B4513]" />
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-[#555] mb-1">Status</label>
+            <div className="flex gap-2">
+              {(["planned", "active", "completed"] as const).map(s => (
+                <button key={s} onClick={() => setForm({...form, status: s})}
+                  className={`flex-1 py-1.5 rounded-lg text-xs font-semibold capitalize transition-colors ${form.status === s ? STATUS_STYLE[s] + " ring-2 ring-current/30" : "bg-[#f5f0ea] text-[#777] hover:bg-[#e8ddd0]"}`}
+                >{s}</button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-[#555] mb-1.5">Items</label>
+            <div className="flex gap-1.5 mb-2">
+              <input value={itemRow.name} onChange={e => setItemRow({...itemRow, name: e.target.value})} placeholder="Dish name" className="flex-1 border border-[#e0d0bc] rounded-lg px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#8B4513]" />
+              <input value={itemRow.qty} onChange={e => setItemRow({...itemRow, qty: e.target.value})} placeholder="Qty" className="w-16 border border-[#e0d0bc] rounded-lg px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#8B4513]" />
+              <input value={itemRow.price} onChange={e => setItemRow({...itemRow, price: e.target.value})} placeholder="₹" className="w-16 border border-[#e0d0bc] rounded-lg px-2.5 py-1.5 text-xs focus:outline-none focus:border-[#8B4513]" />
+              <button onClick={addItem} className="bg-[#8B4513] text-white px-2.5 py-1.5 rounded-lg text-xs font-bold hover:bg-[#6d3410] transition-colors">+</button>
+            </div>
+            {form.items.length > 0 && (
+              <div className="space-y-1">
+                {form.items.map((it, idx) => (
+                  <div key={idx} className="flex items-center gap-2 text-xs bg-[#fffbf2] border border-[#f0e6d3] rounded-lg px-3 py-1.5">
+                    <span className="flex-1 font-medium text-[#333]">{it.name}</span>
+                    {it.qty && <span className="text-[#666]">{it.qty}</span>}
+                    {it.price > 0 && <span className="text-[#8B4513] font-semibold">₹{it.price}</span>}
+                    <button onClick={() => setForm(f => ({...f, items: f.items.filter((_, i) => i !== idx)}))} className="text-[#ccc] hover:text-red-500 text-sm leading-none ml-1">×</button>
+                  </div>
+                ))}
+                <p className="text-[10px] text-[#aaa] text-right">Total: ₹{form.items.reduce((s, i) => s + i.price, 0).toLocaleString("en-IN")}</p>
+              </div>
+            )}
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-[#555] mb-1">Notes (optional)</label>
+            <textarea rows={2} value={form.notes} onChange={e => setForm({...form, notes: e.target.value})}
+              placeholder="Any notes…" className="w-full border border-[#e0d0bc] rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#8B4513] resize-none" />
+          </div>
+          <button onClick={save} disabled={!form.name.trim() || !form.date}
+            className="w-full bg-[#8B4513] text-white py-2.5 rounded-xl font-bold text-sm hover:bg-[#6d3410] transition-colors disabled:opacity-50">
+            {editing ? "Update Stall" : "Save Stall"}
+          </button>
+        </div>
+
+        {/* List */}
+        <div className="space-y-3">
+          <h3 className="font-semibold text-[#555] text-sm">Stalls ({stalls.length})</h3>
+          {stalls.length === 0 ? (
+            <p className="text-xs text-[#aaa] text-center py-8">No stalls configured yet</p>
+          ) : (
+            stalls.map(s => (
+              <div key={s.id} className="bg-white rounded-xl border border-[#f0e6d3] shadow-sm px-4 py-3">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-semibold text-sm text-[#333]">{s.name}</span>
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full capitalize ${STATUS_STYLE[s.status]}`}>{s.status}</span>
+                    </div>
+                    <p className="text-xs text-[#666] mt-0.5">📅 {s.date} · {s.shift} {s.location && `· 📍 ${s.location}`}</p>
+                    <p className="text-xs text-[#aaa] mt-0.5">{s.items.length} items · ₹{s.items.reduce((x, i) => x + i.price, 0).toLocaleString("en-IN")} total</p>
+                  </div>
+                  <div className="flex gap-1 flex-shrink-0">
+                    <button onClick={() => loadStall(s)} className="text-xs text-[#8B4513] border border-[#8B4513] px-2 py-1 rounded-lg hover:bg-[#8B4513] hover:text-white transition-colors">Edit</button>
+                    <button onClick={() => onSave(stalls.filter(x => x.id !== s.id))} className="text-xs text-red-500 border border-red-200 px-2 py-1 rounded-lg hover:bg-red-50 transition-colors">Del</button>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
       </div>
     </div>
   )

@@ -119,6 +119,7 @@ export default function MenuPage() {
   const [activeFilter, setActiveFilter] = useState("all")
   const [dietFilter, setDietFilter] = useState<"all" | "veg" | "non-veg">("all")
   const [search, setSearch] = useState("")
+  const [navOpen, setNavOpen] = useState(false)
 
   // Load admin-edited menu from localStorage
   const [menuSections, setMenuSectionState] = useState(MENU_SECTIONS)
@@ -157,17 +158,55 @@ export default function MenuPage() {
               <p className="text-xs text-[#D4A853] font-medium tracking-wide">Full Menu</p>
             </div>
           </button>
-          <div className="flex items-center gap-3">
-            <button onClick={() => router.push("/")} className="text-sm text-[#888] hover:text-[#8B4513] transition-colors flex items-center gap-1">
-              ← Home
-            </button>
+
+          {/* Desktop nav */}
+          <nav className="hidden md:flex items-center gap-1 text-sm">
+            {[
+              { label: "Home", path: "/" },
+              { label: "Menu", path: "/menu", active: true },
+              { label: "Packages", path: "/packages" },
+            ].map((l) => (
+              <button key={l.path} onClick={() => router.push(l.path)}
+                className={`px-3 py-1.5 rounded-full font-medium transition-colors ${
+                  l.active ? "bg-[#8B4513] text-white" : "text-[#555] hover:text-[#8B4513] hover:bg-[#f5ece0]"
+                }`}
+              >{l.label}</button>
+            ))}
             <button onClick={() => router.push("/packages")}
-              className="bg-[#8B4513] text-white px-4 py-2 rounded-full text-sm font-semibold hover:bg-[#6d3410] transition-colors"
-            >
-              Book Now →
-            </button>
-          </div>
+              className="ml-2 bg-[#D4A853] text-[#3d1a07] px-4 py-1.5 rounded-full font-bold text-xs hover:opacity-90 transition-opacity"
+            >Book Now →</button>
+          </nav>
+
+          {/* Hamburger (mobile) */}
+          <button onClick={() => setNavOpen(!navOpen)}
+            className="md:hidden flex flex-col gap-[5px] p-2 flex-shrink-0"
+            aria-label="Toggle menu"
+          >
+            <span className={`block w-5 h-0.5 bg-[#8B4513] transition-all ${navOpen ? "rotate-45 translate-y-[7px]" : ""}`} />
+            <span className={`block w-5 h-0.5 bg-[#8B4513] transition-all ${navOpen ? "opacity-0" : ""}`} />
+            <span className={`block w-5 h-0.5 bg-[#8B4513] transition-all ${navOpen ? "-rotate-45 -translate-y-[7px]" : ""}`} />
+          </button>
         </div>
+
+        {/* Mobile nav dropdown */}
+        {navOpen && (
+          <div className="md:hidden bg-white border-t border-[#f0e6d3] shadow-lg">
+            <div className="max-w-6xl mx-auto px-4 py-3 flex flex-col gap-1">
+              {[
+                { label: "🏠 Home", path: "/" },
+                { label: "🍽️ Menu", path: "/menu" },
+                { label: "📦 Packages", path: "/packages" },
+              ].map((l) => (
+                <button key={l.path} onClick={() => { router.push(l.path); setNavOpen(false) }}
+                  className="text-left px-3 py-2.5 rounded-xl text-sm font-medium text-[#333] hover:bg-[#f5ece0] hover:text-[#8B4513] transition-colors"
+                >{l.label}</button>
+              ))}
+              <button onClick={() => { router.push("/packages"); setNavOpen(false) }}
+                className="mt-1 w-full bg-[#8B4513] text-white py-2.5 rounded-xl text-sm font-bold hover:bg-[#6d3410] transition-colors"
+              >Book Now →</button>
+            </div>
+          </div>
+        )}
       </header>
 
       {/* Hero */}

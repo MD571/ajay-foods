@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useRef, useEffect, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { getPackages, getExtraCategories } from "../lib/siteData"
+import { getPackages, getExtraCategories, addBooking } from "../lib/siteData"
 
 // ─── Package Definitions ──────────────────────────────────────────────────────
 type PkgEntry = {
@@ -229,6 +229,22 @@ function OrderInner() {
     setFormLoading(true)
     await new Promise((r) => setTimeout(r, 1400))
     const confNo = "AJF" + Math.floor(100000 + Math.random() * 900000)
+    addBooking({
+      id: confNo,
+      name: form.name.trim(),
+      phone: form.phone.replace(/\D/g, ""),
+      eventType: form.eventType,
+      eventDate: form.eventDate,
+      guestCount: parseInt(form.guestCount),
+      packageId: pkg?.id ?? "",
+      packageName: pkg?.name ?? "",
+      extras: selectedExtras.map((e) => ({ id: e.id, name: e.name, price: e.price, emoji: e.emoji })),
+      preferences,
+      notes: form.notes.trim(),
+      totalPerPerson,
+      submittedAt: new Date().toISOString(),
+      status: "pending",
+    })
     setConfirmationNo(confNo)
     setFormLoading(false)
     setStep("done")

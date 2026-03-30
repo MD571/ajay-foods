@@ -126,6 +126,7 @@ function PackagesInner() {
   const [guestCount, setGuestCount] = useState(100)
   const [guestInput, setGuestInput] = useState("100")
   const [showComparison, setShowComparison] = useState(false)
+  const [navOpen, setNavOpen] = useState(false)
   const cardRefs = useRef<Record<string, HTMLDivElement | null>>({})
 
   // Load admin-edited packages from localStorage
@@ -167,29 +168,54 @@ function PackagesInner() {
             </div>
           </button>
 
-          {/* Progress steps */}
-          <div className="hidden sm:flex items-center gap-1.5 text-xs">
-            <span className="flex items-center gap-1.5 bg-[#8B4513] text-white px-3 py-1.5 rounded-full font-semibold">
-              <span className="w-4 h-4 rounded-full bg-white text-[#8B4513] flex items-center justify-center font-bold text-[10px]">1</span>
-              Choose Package
-            </span>
-            <span className="text-[#ccc]">›</span>
-            <span className="flex items-center gap-1.5 text-[#aaa] px-2 py-1.5 font-medium">
-              <span className="w-4 h-4 rounded-full border border-[#ccc] flex items-center justify-center text-[10px]">2</span>
-              Add Extras
-            </span>
-            <span className="text-[#ccc]">›</span>
-            <span className="flex items-center gap-1.5 text-[#aaa] px-2 py-1.5 font-medium">
-              <span className="w-4 h-4 rounded-full border border-[#ccc] flex items-center justify-center text-[10px]">3</span>
-              Confirm
-            </span>
-          </div>
+          {/* Desktop nav */}
+          <nav className="hidden md:flex items-center gap-1 text-sm">
+            {[
+              { label: "Home", path: "/" },
+              { label: "Menu", path: "/menu" },
+              { label: "Packages", path: "/packages", active: true },
+            ].map((l) => (
+              <button key={l.path} onClick={() => router.push(l.path)}
+                className={`px-3 py-1.5 rounded-full font-medium transition-colors ${
+                  l.active ? "bg-[#8B4513] text-white" : "text-[#555] hover:text-[#8B4513] hover:bg-[#f5ece0]"
+                }`}
+              >{l.label}</button>
+            ))}
+            <button onClick={() => router.push("/packages")}
+              className="ml-2 bg-[#D4A853] text-[#3d1a07] px-4 py-1.5 rounded-full font-bold text-xs hover:opacity-90 transition-opacity"
+            >Book Now →</button>
+          </nav>
 
-          {/* Home link */}
-          <button onClick={() => router.push("/")} className="text-sm text-[#888] hover:text-[#8B4513] transition-colors flex-shrink-0 flex items-center gap-1">
-            ← Home
+          {/* Hamburger (mobile) */}
+          <button onClick={() => setNavOpen(!navOpen)}
+            className="md:hidden flex flex-col gap-[5px] p-2 flex-shrink-0"
+            aria-label="Toggle menu"
+          >
+            <span className={`block w-5 h-0.5 bg-[#8B4513] transition-all ${navOpen ? "rotate-45 translate-y-[7px]" : ""}`} />
+            <span className={`block w-5 h-0.5 bg-[#8B4513] transition-all ${navOpen ? "opacity-0" : ""}`} />
+            <span className={`block w-5 h-0.5 bg-[#8B4513] transition-all ${navOpen ? "-rotate-45 -translate-y-[7px]" : ""}`} />
           </button>
         </div>
+
+        {/* Mobile nav dropdown */}
+        {navOpen && (
+          <div className="md:hidden bg-white border-t border-[#f0e6d3] shadow-lg">
+            <div className="max-w-6xl mx-auto px-4 py-3 flex flex-col gap-1">
+              {[
+                { label: "🏠 Home", path: "/" },
+                { label: "🍽️ Menu", path: "/menu" },
+                { label: "📦 Packages", path: "/packages" },
+              ].map((l) => (
+                <button key={l.path} onClick={() => { router.push(l.path); setNavOpen(false) }}
+                  className="text-left px-3 py-2.5 rounded-xl text-sm font-medium text-[#333] hover:bg-[#f5ece0] hover:text-[#8B4513] transition-colors"
+                >{l.label}</button>
+              ))}
+              <button onClick={() => { router.push("/packages"); setNavOpen(false) }}
+                className="mt-1 w-full bg-[#8B4513] text-white py-2.5 rounded-xl text-sm font-bold hover:bg-[#6d3410] transition-colors"
+              >Book Now →</button>
+            </div>
+          </div>
+        )}
       </header>
 
       {/* Hero */}
