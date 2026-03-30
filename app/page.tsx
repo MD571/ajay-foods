@@ -631,7 +631,7 @@ export default function AjayFoodsWebsite() {
           <div className="grid md:grid-cols-3 gap-8">
             {[
               { icon: "🎊", title: "Event Catering", desc: "Weddings, birthdays, corporate events, and family functions — we handle every detail with care.", features: ["Custom menus", "On-site cooking", "Professional staff", "Full setup & cleanup"], color: "from-[#8B4513] to-[#b5601e]" },
-              { icon: "🙏", title: "Charity & Community", desc: "Dedicated morning feeds — nutritious, lovingly prepared meals served before 9 AM daily.", features: ["Fresh morning prep", "Large-scale cooking", "Flexible quantities", "Donation-based pricing"], color: "from-[#D4A853] to-[#c49840]" },
+              // { icon: "🙏", title: "Charity & Community", desc: "Dedicated morning feeds — nutritious, lovingly prepared meals served before 9 AM daily.", features: ["Fresh morning prep", "Large-scale cooking", "Flexible quantities", "Donation-based pricing"], color: "from-[#D4A853] to-[#c49840]" },
               { icon: "🏪", title: "Daily Stalls", desc: "Morning and evening food stalls with fixed-price offerings — consistent quality, every day.", features: ["Twice daily service", "Fixed pricing", "Quick service", "Morning & evening"], color: "from-[#6d3410] to-[#8B4513]" },
             ].map((s) => (
               <div key={s.title} className="group rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all hover:-translate-y-2 border border-[#f0e6d3] flex flex-col">
@@ -942,16 +942,15 @@ export default function AjayFoodsWebsite() {
           </div>
 
           <div className="grid md:grid-cols-2 gap-12">
-            {/* Left: Contact info */}
+            {/* Contact info */}
             <div className="space-y-6">
               <div>
                 <h3 className="font-playfair text-2xl font-bold text-[#8B4513] mb-5">Contact Details</h3>
                 <div className="space-y-4">
                   {[
-                    { icon: "📞", label: "Phone",        value: "+91 98765 43210",       sub: "Available 8 AM – 9 PM",          href: "tel:+919876543210" },
-                    { icon: "📧", label: "Email",        value: "orders@ajayfoods.in",   sub: "We reply within 24 hours",       href: "mailto:orders@ajayfoods.in" },
-                    { icon: "📍", label: "Location",     value: "Hyderabad, Telangana",  sub: "Serving all surrounding areas",  href: null },
-                    { icon: "⏰", label: "Service Hours",value: "Morning ☀️ by 12:00 PM",sub: "Evening 🌙 by 6:00 PM",          href: null },
+                    { icon: "📧", label: "Email",        value: "ajayfoods.co.in@gmail.com", sub: "We reply within 24 hours",  href: "mailto:ajayfoods.co.in@gmail.com" },
+                    { icon: "📍", label: "Location",     value: "Hyderabad, Telangana",      sub: "Serving all surrounding areas", href: null },
+                    { icon: "⏰", label: "Service Hours",value: "Morning ☀️ by 12:00 PM",    sub: "Evening 🌙 by 6:00 PM",     href: null },
                   ].map((c) => (
                     <div key={c.label} className="flex gap-4">
                       <div className="w-12 h-12 rounded-xl bg-white border border-[#f0e6d3] flex items-center justify-center text-xl shadow-sm flex-shrink-0">{c.icon}</div>
@@ -969,8 +968,8 @@ export default function AjayFoodsWebsite() {
                 </div>
               </div>
 
-              {/* WhatsApp CTA */}
-              <a href="https://wa.me/919876543210?text=Hi! I'd like to book catering for my event."
+              {/* WhatsApp / Social */}
+              <a href="https://wa.me/?text=Hi! I'd like to book catering for my event."
                 target="_blank" rel="noopener noreferrer"
                 className="flex items-center gap-3 bg-[#25D366] text-white px-5 py-4 rounded-2xl font-semibold hover:bg-[#1da851] transition-colors shadow-md"
               >
@@ -993,7 +992,7 @@ export default function AjayFoodsWebsite() {
               </div>
             </div>
 
-            {/* Right: Quick Booking Form */}
+            {/* Quick Booking Form */}
             <div className="bg-white rounded-2xl shadow-md border border-[#f0e6d3] p-8">
               <h3 className="font-playfair text-2xl font-bold text-[#8B4513] mb-1">Quick Booking</h3>
               <p className="text-xs text-[#888] mb-5">Fill in your details and we&apos;ll call you within 24 hours.</p>
@@ -1120,11 +1119,13 @@ export default function AjayFoodsWebsite() {
               <p className="text-white/60 text-sm leading-relaxed max-w-xs">
                 Bringing the authentic taste of Telugu cuisine to your table — with love, tradition, and the freshest ingredients since over 15 years.
               </p>
-              <div className="flex gap-3 mt-5">
-                <a href="tel:+919876543210" aria-label="Call us" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-sm hover:bg-[#8B4513] cursor-pointer transition-colors">📱</a>
-                <a href="https://facebook.com/ajayfoods" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-sm hover:bg-[#1877F2] cursor-pointer transition-colors">📘</a>
-                <a href="https://instagram.com/ajayfoods" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-sm hover:bg-[#E1306C] cursor-pointer transition-colors">📸</a>
-                <a href="https://youtube.com/@ajayfoods" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-sm hover:bg-[#FF0000] cursor-pointer transition-colors">▶️</a>
+              <div className="flex flex-wrap gap-2 mt-5">
+                <a href="https://www.facebook.com/AjayFoods/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-sm hover:bg-[#1877F2] cursor-pointer transition-colors">📘</a>
+                <a href="https://www.instagram.com/ajayfoods.offical/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-sm hover:bg-[#E1306C] cursor-pointer transition-colors">📸</a>
+                <a href="https://www.youtube.com/@ajayfoods.offical" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-sm hover:bg-[#FF0000] cursor-pointer transition-colors">▶️</a>
+                <a href="https://x.com/AjayFoods" target="_blank" rel="noopener noreferrer" aria-label="X / Twitter" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-sm hover:bg-white/30 cursor-pointer transition-colors font-bold text-xs">𝕏</a>
+                <a href="https://www.threads.com/@ajayfoods.offical" target="_blank" rel="noopener noreferrer" aria-label="Threads" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-sm hover:bg-white/30 cursor-pointer transition-colors font-bold text-xs">@</a>
+                <a href="mailto:ajayfoods.co.in@gmail.com" aria-label="Email" className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-sm hover:bg-[#EA4335] cursor-pointer transition-colors">✉️</a>
               </div>
             </div>
             <div>
