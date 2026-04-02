@@ -140,8 +140,14 @@ export default function MenuPage() {
     return matchSection && matchDiet && matchSearch
   })
 
-  const vegCount = allItems.filter((i) => i.diet === "veg").length
-  const nonVegCount = allItems.filter((i) => i.diet === "non-veg").length
+  const { vegCount, nonVegCount } = allItems.reduce(
+    (acc, i) => {
+      if (i.diet === "veg") acc.vegCount++
+      else if (i.diet === "non-veg") acc.nonVegCount++
+      return acc
+    },
+    { vegCount: 0, nonVegCount: 0 }
+  )
 
   return (
     <div className="min-h-screen bg-[#FDF6EC]">
@@ -235,37 +241,36 @@ export default function MenuPage() {
 
       {/* Filters */}
       <div className="bg-white border-b border-[#f0e6d3] shadow-sm sticky top-[57px] z-30">
-        <div className="max-w-6xl mx-auto px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center gap-3">
-          {/* Search */}
-          <div className="relative flex-1 min-w-0 w-full sm:max-w-xs">
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#888] text-sm">🔍</span>
-            <input
-              type="text"
-              placeholder="Search dishes…"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full border border-[#e0d0bc] rounded-full pl-9 pr-4 py-2 text-sm focus:outline-none focus:border-[#8B4513] bg-[#FDF6EC] placeholder:text-[#b0a090]"
-            />
-            {search && (
-              <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#aaa] hover:text-[#555] text-base leading-none">×</button>
-            )}
+        <div className="max-w-6xl mx-auto px-4 py-3 space-y-2.5">
+          {/* Row 1: Search + Diet filter */}
+          <div className="flex gap-3 items-center">
+            <div className="relative flex-1 min-w-0">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#888] text-sm">🔍</span>
+              <input
+                type="text"
+                placeholder="Search dishes…"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full border border-[#e0d0bc] rounded-full pl-9 pr-4 py-2 text-sm focus:outline-none focus:border-[#8B4513] bg-[#FDF6EC] placeholder:text-[#b0a090]"
+              />
+              {search.length > 0 ? (
+                <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#aaa] hover:text-[#555] text-base leading-none">×</button>
+              ) : null}
+            </div>
+            <div className="inline-flex bg-[#FDF6EC] border border-[#e0d0bc] rounded-full p-1 gap-0.5 flex-shrink-0">
+              {(["all", "veg", "non-veg"] as const).map((d) => (
+                <button key={d} onClick={() => setDietFilter(d)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all capitalize ${
+                    dietFilter === d ? "bg-[#8B4513] text-white shadow-sm" : "text-[#666] hover:text-[#555]"
+                  }`}
+                >
+                  {d === "all" ? "All" : d === "veg" ? "🌿 Veg" : "🍗 Non-Veg"}
+                </button>
+              ))}
+            </div>
           </div>
-
-          {/* Diet toggle */}
-          <div className="inline-flex bg-[#FDF6EC] border border-[#e0d0bc] rounded-full p-1 gap-0.5 flex-shrink-0">
-            {(["all", "veg", "non-veg"] as const).map((d) => (
-              <button key={d} onClick={() => setDietFilter(d)}
-                className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all capitalize ${
-                  dietFilter === d ? "bg-[#8B4513] text-white shadow-sm" : "text-[#666] hover:text-[#555]"
-                }`}
-              >
-                {d === "all" ? "All" : d === "veg" ? "🌿 Veg" : "🍗 Non-Veg"}
-              </button>
-            ))}
-          </div>
-
-          {/* Category chips */}
-          <div className="flex gap-1.5 overflow-x-auto scrollbar-none flex-1 pb-0.5">
+          {/* Row 2: Category tabs */}
+          <div className="flex gap-1.5 overflow-x-auto scrollbar-none pb-0.5">
             {ALL_FILTERS.map((f) => (
               <button key={f.id} onClick={() => setActiveFilter(f.id)}
                 className={`flex-shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold transition-all whitespace-nowrap ${

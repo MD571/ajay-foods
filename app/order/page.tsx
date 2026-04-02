@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useMemo, useRef, useEffect, Suspense } from "react"
+import { useState, useMemo, useEffect, useCallback, memo, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { getPackages, getExtraCategories, addBooking } from "../lib/siteData"
+import { getPackages, getExtraCategories, getMenuSections, addBooking, type AdminMenuSection } from "../lib/siteData"
 
 // ─── Package Definitions ──────────────────────────────────────────────────────
 type PkgEntry = {
@@ -122,6 +122,235 @@ const EXTRA_CATEGORIES = [
 
 const EVENT_TYPES = ["Wedding", "Birthday", "Engagement", "Corporate Lunch", "Religious Function", "Anniversary", "Baby Shower", "Other"]
 
+// ─── Order Item Picker ────────────────────────────────────────────────────────
+const OrderItemPicker = memo(function OrderItemPicker({
+  sections,
+  selected,
+  onToggle,
+}: {
+  sections: AdminMenuSection[]
+  selected: string[]
+  onToggle: (name: string) => void
+}) {
+  const [search, setSearch] = useState("")
+  const [typeFilter, setTypeFilter] = useState<"all" | "veg" | "non-veg">("all")
+  const [activeSection, setActiveSection] = useState(sections[0]?.id ?? "")
+  useEffect(() => {
+    if (!activeSection && sections.length > 0) setActiveSection(sections[0].id)
+  }, [sections, activeSection])
+
+  const q = search.trim().toLowerCase()
+  const currentFilter: "all" | "veg" | "non-veg" = typeFilter
+  const isFiltering = !!q || currentFilter !== "all"
+  function isDietActive(t: "all" | "veg" | "non-veg") { return typeFilter === t }
+
+  const filteredSections = sections.map(sec => ({
+    ...sec,
+    items: sec.items.filter(i =>
+      (i as { available?: boolean }).available !== false &&
+      (currentFilter === "all" || i.diet === currentFilter) &&
+      (!q || i.name.toLowerCase().includes(q))
+    ),
+  }))
+
+  const activeItems = isFiltering
+    ? filteredSections.flatMap(sec => sec.items.map(i => ({ ...i, sectionLabel: sec.label })))
+    : (filteredSections.find(s => s.id === activeSection)?.items ?? [])
+
+  return (
+    <div className="space-y-3">
+      {/* Search bar — full width */}
+      <div className="relative">
+        <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#aaa] text-sm pointer-events-none">🔍</span>
+        <input
+          type="text"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          placeholder="Search dishes…"
+          className="w-full border border-[#e0d0bc] rounded-xl pl-10 pr-9 py-2.5 text-sm bg-[#FDF6EC] focus:outline-none focus:border-[#8B4513] placeholder:text-[#b0a090]"
+        />
+        {search.length > 0 ? (
+          <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#aaa] hover:text-[#555] text-lg leading-none">×</button>
+        ) : null}
+      </div>
+
+      {/* Diet filter + section tabs — single scrollable row */}
+      {!isFiltering && (
+        <div className="flex gap-2 overflow-x-auto pb-0.5 hide-scroll" style={{scrollbarWidth:"none", msOverflowStyle:"none"}}>
+          <style>{`.hide-scroll::-webkit-scrollbar{display:none}`}</style>
+          {/* Diet pills */}
+          {(["all", "veg", "non-veg"] as const).map(t => (
+            <button key={t} onClick={() => setTypeFilter(t)}
+              className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
+                isDietActive(t)
+                  ? t === "veg" ? "bg-green-600 text-white border-green-600"
+                    : t === "non-veg" ? "bg-red-600 text-white border-red-600"
+                    : "bg-[#8B4513] text-white border-[#8B4513]"
+                  : t === "veg" ? "bg-white text-[#666] border-[#ddd] hover:border-green-500"
+                    : t === "non-veg" ? "bg-white text-[#666] border-[#ddd] hover:border-red-500"
+                    : "bg-white text-[#666] border-[#ddd] hover:border-[#8B4513]"
+              }`}>
+              {t === "all" ? "All" : t === "veg" ? "🌿 Veg" : "🍗 Non-Veg"}
+            </button>
+          ))}
+
+          {/* Divider */}
+          <div className="w-px bg-[#e0d0bc] flex-shrink-0 my-1" />
+
+          {/* Section tabs */}
+          {sections.map(sec => {
+            const selCount = sec.items.filter(i => selected.includes(i.name)).length
+            return (
+              <button key={sec.id} onClick={() => setActiveSection(sec.id)}
+                className={`flex-shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold border transition-all whitespace-nowrap ${
+                  activeSection === sec.id
+                    ? "bg-[#8B4513] text-white border-[#8B4513] shadow-sm"
+                    : "bg-white text-[#555] border-[#ddd] hover:border-[#8B4513] hover:text-[#8B4513]"
+                }`}>
+                {sec.emoji} {sec.label}
+                {selCount > 0 && (
+                  <span className={`w-4 h-4 rounded-full text-[9px] font-bold flex items-center justify-center ${activeSection === sec.id ? "bg-white/25 text-white" : "bg-[#8B4513] text-white"}`}>
+                    {selCount}
+                  </span>
+                )}
+              </button>
+            )
+          })}
+        </div>
+      )}
+
+      {/* When filtering — show diet pills only */}
+      {isFiltering && (
+        <div className="flex gap-2">
+          {(["all", "veg", "non-veg"] as const).map(t => (
+            <button key={t} onClick={() => setTypeFilter(t)}
+              className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold border transition-all ${
+                typeFilter === t
+                  ? t === "veg" ? "bg-green-600 text-white border-green-600"
+                    : t === "non-veg" ? "bg-red-600 text-white border-red-600"
+                    : "bg-[#8B4513] text-white border-[#8B4513]"
+                  : "bg-white text-[#666] border-[#ddd] hover:border-[#8B4513]"
+              }`}>
+              {t === "all" ? "All" : t === "veg" ? "🌿 Veg" : "🍗 Non-Veg"}
+            </button>
+          ))}
+          <span className="text-xs text-[#888] self-center ml-1">{activeItems.length} results</span>
+        </div>
+      )}
+
+      {/* Items — compact horizontal list */}
+      {sections.length === 0 ? (
+        <p className="text-sm text-[#aaa] text-center py-8">Loading menu…</p>
+      ) : activeItems.length === 0 ? (
+        <p className="text-sm text-[#aaa] text-center py-8">No dishes found</p>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          {activeItems.map(item => {
+            const isAdded = selected.includes(item.name)
+            const price = item.price
+            return (
+              <button
+                key={item.name}
+                onClick={() => onToggle(item.name)}
+                className={`relative flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-all duration-150 ${
+                  isAdded
+                    ? "bg-[#FBF4EE] border-2 border-[#8B4513] shadow-sm"
+                    : "bg-white border border-[#ece5db] hover:border-[#c9a97a] hover:shadow-sm"
+                }`}
+              >
+                {/* Diet dot */}
+                <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${item.diet === "veg" ? "bg-green-500" : "bg-red-500"}`} />
+
+                {/* Name + section label */}
+                <div className="flex-1 min-w-0">
+                  <p className={`text-sm font-semibold leading-tight truncate ${isAdded ? "text-[#5c2a0e]" : "text-[#1a1a1a]"}`}>{item.name}</p>
+                  {"sectionLabel" in item && isFiltering && (
+                    <p className="text-[10px] text-[#aaa] mt-0.5">{(item as { sectionLabel?: string }).sectionLabel}</p>
+                  )}
+                </div>
+
+                {/* Price */}
+                <span className={`text-sm font-bold flex-shrink-0 ${isAdded ? "text-[#8B4513]" : "text-[#888]"}`}>
+                  {price === 0 ? "Free" : `₹${price}`}
+                </span>
+
+                {/* Add / check */}
+                <span className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 transition-all text-xs font-bold ${
+                  isAdded ? "bg-[#8B4513] text-white" : "bg-[#f0e6d3] text-[#8B4513] hover:bg-[#8B4513] hover:text-white"
+                }`}>
+                  {isAdded ? "✓" : "+"}
+                </span>
+              </button>
+            )
+          })}
+        </div>
+      )}
+    </div>
+  )
+})
+
+// ─── Header Component ────────────────────────────────────────────────────────
+type HeaderProps = {
+  step: "extras" | "details" | "done"
+  onSetStep: (s: "extras" | "details" | "done") => void
+  onGoBack: () => void
+}
+
+function OrderHeader({ step, onSetStep, onGoBack }: HeaderProps) {
+  const router = useRouter()
+  return (
+    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur shadow-sm border-b border-[#f0e6d3]">
+      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
+        <button onClick={() => router.push("/")} className="flex items-center gap-2 flex-shrink-0">
+          <div className="w-9 h-9 rounded-full bg-[#8B4513] flex items-center justify-center text-base flex-shrink-0">🍛</div>
+          <div className="hidden sm:block">
+              <h1 className="text-base sm:text-lg font-bold text-[#8B4513] font-playfair leading-tight">
+                Ajay Foods &amp; Beverages
+              </h1>
+              <p className="text-xs text-[#D4A853] font-medium tracking-wide">Quality Assured Foods</p>
+            </div>
+        </button>
+
+        <div className="flex items-center gap-1.5 text-xs">
+          <button onClick={() => router.push("/packages")} className="flex items-center gap-1.5 text-[#aaa] hover:text-[#8B4513] px-2 py-1.5 transition-colors">
+            <span className="w-4 h-4 rounded-full bg-[#D4A853] text-white flex items-center justify-center font-bold text-[10px]">✓</span>
+            <span className="hidden sm:inline">Package</span>
+          </button>
+          <span className="text-[#ccc]">›</span>
+          {step === "details" ? (
+            <button onClick={() => onSetStep("extras")} className="flex items-center gap-1.5 px-2 py-1.5 text-[#888] hover:text-[#8B4513] transition-colors">
+              <span className="w-4 h-4 rounded-full bg-[#D4A853] text-white flex items-center justify-center font-bold text-[10px]">✓</span>
+              <span className="hidden sm:inline">Add Extras</span>
+            </button>
+          ) : (
+            <span className={`flex items-center gap-1.5 px-2 py-1.5 rounded-full font-semibold ${step === "extras" ? "bg-[#8B4513] text-white" : "text-[#aaa]"}`}>
+              <span className="w-4 h-4 rounded-full bg-white text-[#8B4513] flex items-center justify-center font-bold text-[10px]">2</span>
+              <span className="hidden sm:inline">Add Extras</span>
+            </span>
+          )}
+          <span className="text-[#ccc]">›</span>
+          <span className={`flex items-center gap-1.5 px-2 py-1.5 rounded-full font-semibold ${step === "details" ? "bg-[#8B4513] text-white" : "text-[#aaa]"}`}>
+            {step === "details" ? <span className="w-4 h-4 rounded-full bg-white text-[#8B4513] flex items-center justify-center font-bold text-[10px]">3</span> : <span className="w-4 h-4 rounded-full border border-[#ccc] flex items-center justify-center text-[10px]">3</span>}
+            <span className="hidden sm:inline">Confirm</span>
+          </span>
+        </div>
+
+        <div className="flex items-center gap-3 flex-shrink-0">
+          <button onClick={() => router.push("/")}
+            className="text-sm text-[#888] hover:text-[#8B4513] transition-colors flex items-center gap-1">
+            🏠 <span className="hidden sm:inline">Home</span>
+          </button>
+          <span className="text-[#e0d0bc]">|</span>
+          <button onClick={onGoBack}
+            className="text-sm text-[#888] hover:text-[#8B4513] transition-colors flex items-center gap-1">
+            ← {step === "details" ? "Back to Extras" : "Packages"}
+          </button>
+        </div>
+      </div>
+    </header>
+  )
+}
+
 // ─── Inner Component ──────────────────────────────────────────────────────────
 function OrderInner() {
   const router = useRouter()
@@ -129,8 +358,9 @@ function OrderInner() {
   const pkgId = params.get("pkg") ?? "non-veg-basic"
 
   // Load admin-edited packages & extras from localStorage
-  const [pkgsMap, setPkgsMap] = useState(PACKAGES)
-  const [extraCats, setExtraCats] = useState(EXTRA_CATEGORIES)
+  const [pkgsMap, setPkgsMap] = useState(() => PACKAGES)
+  const [extraCats, setExtraCats] = useState(() => EXTRA_CATEGORIES)
+  const [menuSections, setMenuSections] = useState<AdminMenuSection[]>([])
   useEffect(() => {
     const adminPkgs = getPackages()
     const map: typeof PACKAGES = {}
@@ -154,16 +384,19 @@ function OrderInner() {
       items: cat.items.filter((item) => item.available !== false),
     })).filter((cat) => cat.items.length > 0)
     setExtraCats(filteredCats as typeof EXTRA_CATEGORIES)
+    const adminMenu = getMenuSections()
+    setMenuSections(adminMenu.filter(s => s.items.some(i => (i as { available?: boolean }).available !== false)))
   }, [])
 
   const pkg = pkgsMap[pkgId] ?? pkgsMap["non-veg-basic"] ?? Object.values(pkgsMap)[0]
 
   // 3-step flow: "extras" → "details" → "done"
   const [step, setStep] = useState<"extras" | "details" | "done">("extras")
-  const [activeCategory, setActiveCategory] = useState("starters")
   const [extras, setExtras] = useState<Record<string, boolean>>({})
   const [showSummaryDrawer, setShowSummaryDrawer] = useState(false)
-  const tabsScrollRef = useRef<HTMLDivElement>(null)
+  const [summaryEditMode, setSummaryEditMode] = useState(false)
+  const [removedIncludes, setRemovedIncludes] = useState<number[]>([])
+  const [essentialItems, setEssentialItems] = useState(["Plate", "Glass", "Water"])
   const [formLoading, setFormLoading] = useState(false)
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [confirmationNo, setConfirmationNo] = useState("")
@@ -187,14 +420,24 @@ function OrderInner() {
     [selectedExtras]
   )
 
-  const totalPerPerson = (pkg?.price ?? 0) + extraCostPerPerson
-  const grandTotal = totalPerPerson * guests
+  const [menuExtras, setMenuExtras] = useState<string[]>([])
 
-  const currentCat = extraCats.find((c) => c.id === activeCategory) ?? extraCats[0]!
+  const menuExtraCostPerPerson = useMemo(() => {
+    return menuSections.flatMap(s => s.items)
+      .filter(i => menuExtras.includes(i.name))
+      .reduce((s, i) => s + i.price, 0)
+  }, [menuExtras, menuSections])
+
+  const totalPerPerson = (pkg?.price ?? 0) + extraCostPerPerson + menuExtraCostPerPerson
+  const grandTotal = totalPerPerson * guests
 
   function toggle(id: string) {
     setExtras((prev) => ({ ...prev, [id]: !prev[id] }))
   }
+
+  const toggleMenuExtra = useCallback((name: string) => {
+    setMenuExtras(prev => prev.includes(name) ? prev.filter(n => n !== name) : [...prev, name])
+  }, [])
 
   // Tomorrow min date
   const tomorrow = new Date()
@@ -229,6 +472,7 @@ function OrderInner() {
     setFormLoading(true)
     await new Promise((r) => setTimeout(r, 1400))
     const confNo = "AJF" + Math.floor(100000 + Math.random() * 900000)
+    const menuExtraItems = menuSections.flatMap(s => s.items).filter(i => menuExtras.includes(i.name))
     addBooking({
       id: confNo,
       name: form.name.trim(),
@@ -240,7 +484,7 @@ function OrderInner() {
       packageName: pkg?.name ?? "",
       extras: selectedExtras.map((e) => ({ id: e.id, name: e.name, price: e.price, emoji: e.emoji })),
       preferences,
-      notes: form.notes.trim(),
+      notes: [form.notes.trim(), menuExtraItems.length > 0 ? `Menu extras: ${menuExtraItems.map(i => `${i.name} (+₹${i.price}/pp)`).join(", ")}` : ""].filter(Boolean).join("\n"),
       totalPerPerson,
       submittedAt: new Date().toISOString(),
       status: "pending",
@@ -250,57 +494,10 @@ function OrderInner() {
     setStep("done")
   }
 
-  // ── Shared header component ────────────────────────────────────────────────
-  const stepLabels = [
-    { n: 1, label: "Package", done: true, path: "/packages" },
-    { n: 2, label: "Add Extras", done: false, active: step === "extras" },
-    { n: 3, label: "Confirm", done: false, active: step === "details" },
-  ]
-
-  const Header = () => (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur shadow-sm border-b border-[#f0e6d3]">
-      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
-        <button onClick={() => router.push("/")} className="flex items-center gap-2 flex-shrink-0">
-          <div className="w-9 h-9 rounded-full bg-[#8B4513] flex items-center justify-center text-base flex-shrink-0">🍛</div>
-          <div className="hidden sm:block">
-              <h1 className="text-base sm:text-lg font-bold text-[#8B4513] font-playfair leading-tight">
-                Ajay Foods &amp; Beverages
-              </h1>
-              <p className="text-xs text-[#D4A853] font-medium tracking-wide">Quality Assured Foods</p>
-            </div>
-        </button>
-
-        <div className="flex items-center gap-1.5 text-xs">
-          <button onClick={() => router.push("/packages")} className="flex items-center gap-1.5 text-[#aaa] hover:text-[#8B4513] px-2 py-1.5 transition-colors">
-            <span className="w-4 h-4 rounded-full bg-[#D4A853] text-white flex items-center justify-center font-bold text-[10px]">✓</span>
-            <span className="hidden sm:inline">Package</span>
-          </button>
-          <span className="text-[#ccc]">›</span>
-          <span className={`flex items-center gap-1.5 px-2 py-1.5 rounded-full font-semibold ${step === "extras" ? "bg-[#8B4513] text-white" : "text-[#aaa]"}`}>
-            {step !== "extras" ? <span className="w-4 h-4 rounded-full bg-[#D4A853] text-white flex items-center justify-center font-bold text-[10px]">✓</span> : <span className="w-4 h-4 rounded-full bg-white text-[#8B4513] flex items-center justify-center font-bold text-[10px]">2</span>}
-            <span className="hidden sm:inline">Add Extras</span>
-          </span>
-          <span className="text-[#ccc]">›</span>
-          <span className={`flex items-center gap-1.5 px-2 py-1.5 rounded-full font-semibold ${step === "details" ? "bg-[#8B4513] text-white" : "text-[#aaa]"}`}>
-            {step === "details" ? <span className="w-4 h-4 rounded-full bg-white text-[#8B4513] flex items-center justify-center font-bold text-[10px]">3</span> : <span className="w-4 h-4 rounded-full border border-[#ccc] flex items-center justify-center text-[10px]">3</span>}
-            <span className="hidden sm:inline">Confirm</span>
-          </span>
-        </div>
-
-        <div className="flex items-center gap-3 flex-shrink-0">
-          <button onClick={() => router.push("/")}
-            className="text-sm text-[#888] hover:text-[#8B4513] transition-colors flex items-center gap-1">
-            🏠 <span className="hidden sm:inline">Home</span>
-          </button>
-          <span className="text-[#e0d0bc]">|</span>
-          <button onClick={() => step === "details" ? setStep("extras") : router.push("/packages")}
-            className="text-sm text-[#888] hover:text-[#8B4513] transition-colors flex items-center gap-1">
-            ← {step === "details" ? "Back" : "Packages"}
-          </button>
-        </div>
-      </div>
-    </header>
-  )
+  const handleGoBack = useCallback(() => {
+    if (step === "details") setStep("extras")
+    else router.push("/packages")
+  }, [step, router])
 
   // ── DONE SCREEN ────────────────────────────────────────────────────────────
   if (step === "done") {
@@ -362,15 +559,20 @@ function OrderInner() {
             )}
 
             {/* Extras */}
-            {selectedExtras.length > 0 && (
+            {(selectedExtras.length > 0 || menuExtras.length > 0) && (
               <div className="py-2 border-b border-[#f0e6d3]">
-                <span className="text-[#888] block mb-1.5">Extra Dishes ({selectedExtras.length})</span>
+                <span className="text-[#888] block mb-1.5">Extra Dishes ({selectedExtras.length + menuExtras.length})</span>
                 <div className="flex flex-wrap gap-1">
                   {selectedExtras.map(item => (
                     <span key={item.id} className="flex items-center gap-1 text-xs bg-[#FDF6EC] border border-[#e0d0bc] px-2 py-0.5 rounded-full text-[#555]">
                       {item.emoji} {item.name} <span className="text-[#8B4513] font-semibold">+₹{item.price}</span>
                     </span>
                   ))}
+                  {menuSections.flatMap(s => s.items.filter(i => menuExtras.includes(i.name)).map(item => (
+                    <span key={item.name} className="flex items-center gap-1 text-xs bg-[#FDF6EC] border border-[#e0d0bc] px-2 py-0.5 rounded-full text-[#555]">
+                      {item.name} <span className="text-[#8B4513] font-semibold">+₹{item.price}</span>
+                    </span>
+                  )))}
                 </div>
               </div>
             )}
@@ -400,7 +602,7 @@ function OrderInner() {
   if (step === "details") {
     return (
       <div className="min-h-screen bg-[#FDF6EC] pb-32 md:pb-10">
-        <Header />
+        <OrderHeader step={step} onSetStep={setStep} onGoBack={handleGoBack} />
 
         <div className="max-w-7xl mx-auto px-4 py-6">
           <div className="mb-6">
@@ -463,7 +665,7 @@ function OrderInner() {
                     Edit Extras
                   </button>
                 </div>
-                {selectedExtras.length === 0 ? (
+                {selectedExtras.length === 0 && menuExtras.length === 0 ? (
                   <div className="text-center py-6">
                     <p className="text-[#aaa] text-sm">No extras added</p>
                     <button onClick={() => setStep("extras")} className="text-[#8B4513] text-sm font-semibold mt-1 underline">Add some extras →</button>
@@ -479,6 +681,15 @@ function OrderInner() {
                         </div>
                       </div>
                     ))}
+                    {menuSections.flatMap(s => s.items.filter(i => menuExtras.includes(i.name)).map(item => (
+                      <div key={item.name} className="flex items-center gap-2 bg-[#FDF6EC] rounded-xl px-3 py-2">
+                        <span className="text-lg">{item.diet === "veg" ? "🌿" : "🍗"}</span>
+                        <div className="min-w-0">
+                          <p className="text-xs font-semibold truncate">{item.name}</p>
+                          <p className="text-[10px] text-[#8B4513] font-bold">+₹{item.price}/pp</p>
+                        </div>
+                      </div>
+                    )))}
                   </div>
                 )}
               </div>
@@ -497,6 +708,12 @@ function OrderInner() {
                       <span className="font-medium">₹{(item.price * guests).toLocaleString("en-IN")}</span>
                     </div>
                   ))}
+                  {menuSections.flatMap(s => s.items.filter(i => menuExtras.includes(i.name)).map(item => (
+                    <div key={item.name} className="flex justify-between text-[#555]">
+                      <span>{item.name} (₹{item.price} × {guests})</span>
+                      <span className="font-medium">₹{(item.price * guests).toLocaleString("en-IN")}</span>
+                    </div>
+                  )))}
                   <div className="flex justify-between font-bold text-[#8B4513] text-base pt-3 border-t-2 border-[#D4A853]/40 mt-2">
                     <span>Estimated Total</span>
                     <span>₹{grandTotal.toLocaleString("en-IN")}</span>
@@ -514,7 +731,7 @@ function OrderInner() {
                   <div className={errors.name ? "error-field" : ""}>
                     <label className="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wider">Your Name *</label>
                     <input type="text" placeholder="Ramesh Kumar" value={form.name}
-                      onChange={(e) => { setForm({ ...form, name: e.target.value }); if (errors.name) setErrors({ ...errors, name: "" }) }}
+                      onChange={(e) => { setForm(prev => ({ ...prev, name: e.target.value })); if (errors.name) setErrors({ ...errors, name: "" }) }}
                       className={`w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#8B4513] focus:ring-2 focus:ring-[#8B4513]/10 bg-[#FDF6EC] ${errors.name ? "border-red-400" : "border-[#e0d0bc]"}`}
                     />
                     {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
@@ -526,7 +743,7 @@ function OrderInner() {
                       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-[#888] font-medium">+91</span>
                       <input type="tel" placeholder="98765 43210" maxLength={10}
                         value={form.phone}
-                        onChange={(e) => { const d = e.target.value.replace(/\D/g,"").slice(0,10); setForm({...form,phone:d}); if(errors.phone) setErrors({...errors,phone:""}) }}
+                        onChange={(e) => { const d = e.target.value.replace(/\D/g,"").slice(0,10); setForm(prev => ({...prev,phone:d})); if(errors.phone) setErrors({...errors,phone:""}) }}
                         className={`w-full border rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:border-[#8B4513] focus:ring-2 focus:ring-[#8B4513]/10 bg-[#FDF6EC] ${errors.phone ? "border-red-400" : "border-[#e0d0bc]"}`}
                       />
                     </div>
@@ -536,7 +753,7 @@ function OrderInner() {
                   <div className={errors.eventType ? "error-field" : ""}>
                     <label className="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wider">Event Type *</label>
                     <select value={form.eventType}
-                      onChange={(e) => { setForm({...form,eventType:e.target.value}); if(errors.eventType) setErrors({...errors,eventType:""}) }}
+                      onChange={(e) => { setForm(prev => ({...prev,eventType:e.target.value})); if(errors.eventType) setErrors({...errors,eventType:""}) }}
                       className={`w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#8B4513] focus:ring-2 focus:ring-[#8B4513]/10 bg-[#FDF6EC] ${errors.eventType ? "border-red-400" : "border-[#e0d0bc]"}`}
                     >
                       <option value="">Select type…</option>
@@ -550,13 +767,13 @@ function OrderInner() {
                       Guest Count * <span className="text-[#888] normal-case font-normal">(min 30)</span>
                     </label>
                     <input type="number" placeholder="100" min={30} max={5000} value={form.guestCount}
-                      onChange={(e) => { setForm({...form,guestCount:e.target.value}); if(errors.guestCount) setErrors({...errors,guestCount:""}) }}
+                      onChange={(e) => { setForm(prev => ({...prev,guestCount:e.target.value})); if(errors.guestCount) setErrors({...errors,guestCount:""}) }}
                       className={`w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#8B4513] focus:ring-2 focus:ring-[#8B4513]/10 bg-[#FDF6EC] ${errors.guestCount ? "border-red-400" : "border-[#e0d0bc]"}`}
                     />
                     <div className="flex gap-1 mt-1.5 flex-wrap">
                       {[50, 100, 200, 500].map((n) => (
-                        <button key={n} type="button" onClick={() => setForm({ ...form, guestCount: String(n) })}
-                          className="text-[10px] px-2 py-0.5 rounded-full bg-[#FDF6EC] border border-[#e0d0bc] text-[#666] hover:border-[#8B4513] hover:text-[#8B4513] transition-colors"
+                        <button key={n} type="button" onClick={() => setForm(prev => ({ ...prev, guestCount: String(n) }))}
+                          className={`text-[10px] px-2 py-0.5 rounded-full border transition-colors ${form.guestCount === String(n) ? "bg-[#8B4513] border-[#8B4513] text-white" : "bg-[#FDF6EC] border-[#e0d0bc] text-[#666] hover:border-[#8B4513] hover:text-[#8B4513]"}`}
                         >{n}</button>
                       ))}
                     </div>
@@ -566,7 +783,7 @@ function OrderInner() {
                   <div className={errors.eventDate ? "error-field" : ""}>
                     <label className="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wider">Event Date *</label>
                     <input type="date" min={tomorrowStr} max={oneYearStr} value={form.eventDate}
-                      onChange={(e) => { setForm({...form,eventDate:e.target.value}); if(errors.eventDate) setErrors({...errors,eventDate:""}) }}
+                      onChange={(e) => { setForm(prev => ({...prev,eventDate:e.target.value})); if(errors.eventDate) setErrors({...errors,eventDate:""}) }}
                       className={`w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#8B4513] focus:ring-2 focus:ring-[#8B4513]/10 bg-[#FDF6EC] ${errors.eventDate ? "border-red-400" : "border-[#e0d0bc]"}`}
                     />
                     {errors.eventDate && <p className="text-red-500 text-xs mt-1">{errors.eventDate}</p>}
@@ -575,16 +792,27 @@ function OrderInner() {
                   <div>
                     <label className="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wider">Special Requests</label>
                     <textarea rows={3} placeholder="Any other dietary requirements or special notes…" value={form.notes}
-                      onChange={(e) => setForm({...form,notes:e.target.value})}
+                      onChange={(e) => setForm(prev => ({...prev,notes:e.target.value}))}
                       className="w-full border border-[#e0d0bc] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#8B4513] focus:ring-2 focus:ring-[#8B4513]/10 bg-[#FDF6EC] resize-none"
                     />
                   </div>
 
-                  {/* Total preview */}
-                  <div className="bg-[#FDF6EC] border border-[#e0d0bc] rounded-xl px-4 py-3 text-sm">
-                    <div className="flex justify-between items-center">
-                      <span className="text-[#555]">Estimated total ({guests} guests)</span>
-                      <span className="font-bold text-[#8B4513] text-base">₹{grandTotal.toLocaleString("en-IN")}</span>
+                  {/* Cost breakdown */}
+                  <div className="bg-[#FDF6EC] border border-[#e0d0bc] rounded-xl px-4 py-3 text-xs space-y-1.5">
+                    <p className="font-semibold text-[#555] text-[11px] uppercase tracking-wider mb-2">Cost Breakdown</p>
+                    <div className="flex justify-between text-[#666]">
+                      <span>{pkg.name} (base)</span>
+                      <span>₹{pkg.price}/pp</span>
+                    </div>
+                    {selectedExtras.map((item) => (
+                      <div key={item.id} className="flex justify-between text-[#666]">
+                        <span>{item.emoji} {item.name}</span>
+                        <span>+₹{item.price}/pp</span>
+                      </div>
+                    ))}
+                    <div className="flex justify-between font-bold text-[#8B4513] text-sm pt-1.5 border-t border-[#e0d0bc] mt-1">
+                      <span>Total ({guests} guests)</span>
+                      <span>₹{grandTotal.toLocaleString("en-IN")}</span>
                     </div>
                   </div>
 
@@ -614,290 +842,364 @@ function OrderInner() {
     )
   }
 
+  // ── Summary helpers ───────────────────────────────────────────────────────
+  const _hasChoices = (pkg.choiceGroups ?? []).length > 0
+  const _allIncludes = pkg.includes.filter(inc => !(_hasChoices && /^\d+\s/.test(inc.trim())))
+  const _visibleIncludes = _allIncludes.filter((_, idx) => !removedIncludes.includes(idx))
+  function _groupShortName(label: string) {
+    return label.replace(/\s*\(pick\s*\d+\)/gi, "").replace(/\s*of\s+your\s+choice/gi, "").replace(/\s*\(.*?\)/g, "").trim()
+  }
+  const _summaryTotal = _visibleIncludes.length + (pkg.choiceGroups?.reduce((s, g) => s + g.pick, 0) ?? 0) + menuExtras.length + essentialItems.length
+
   // ── EXTRAS SCREEN (Step 2: Add Extras) ────────────────────────────────────
   return (
-    <div className="min-h-screen bg-[#FDF6EC] pb-32 md:pb-0">
-      <Header />
+    <div className="min-h-screen bg-[#FDF6EC] pb-36 md:pb-0">
+      <OrderHeader step={step} onSetStep={setStep} onGoBack={handleGoBack} />
 
-      <div className="max-w-7xl mx-auto px-4 py-6 flex gap-6 items-start">
+      <div className="max-w-6xl mx-auto px-4 py-5 flex gap-5 items-start">
         {/* ── LEFT ─────────────────────────────────────────────────────── */}
         <div className="flex-1 min-w-0 space-y-6">
 
-          {/* Selected Package Banner */}
-          <div className={`bg-gradient-to-r ${pkg.color} rounded-2xl p-5 text-white flex items-center justify-between`}>
-            <div>
-              <div className="flex items-center gap-2 mb-1">
-                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${pkg.badgeColor}`}>{pkg.tag}</span>
-                <span className="text-white/70 text-xs">Selected Package</span>
+          {/* Selected Package Banner — compact */}
+          <div className={`bg-gradient-to-r ${pkg.color} rounded-2xl px-5 py-3.5 text-white flex items-center justify-between`}>
+            <div className="flex items-center gap-3">
+              <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase flex-shrink-0 ${pkg.badgeColor}`}>{pkg.tag}</span>
+              <div>
+                <p className="font-bold text-base leading-tight">{pkg.name}</p>
+                <p className="text-white/70 text-xs mt-0.5 hidden sm:block">{pkg.includes.slice(0, 3).join(" · ")}</p>
               </div>
-              <h2 className="font-playfair text-xl font-bold">{pkg.name}</h2>
-              <p className="text-white/80 text-sm mt-0.5">{pkg.includes.slice(0, 3).join(" · ")}</p>
             </div>
-            <div className="text-right">
-              <p className="text-3xl font-bold">₹{pkg.price}</p>
-              <p className="text-white/70 text-xs">per person</p>
+            <div className="text-right flex-shrink-0">
+              <p className="text-2xl font-bold">₹{pkg.price}</p>
+              <p className="text-white/60 text-[10px]">per person</p>
             </div>
           </div>
 
           {/* Extra Dishes */}
           <div className="bg-white rounded-2xl border border-[#f0e6d3] shadow-sm overflow-hidden">
-            <div className="px-6 pt-6 pb-0">
-              <div className="flex items-start justify-between mb-1">
+            <div className="px-5 pt-5 pb-5">
+              <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h2 className="font-playfair text-xl font-bold text-[#8B4513]">
-                    Want to add extra dishes? ✨
-                  </h2>
-                  <p className="text-[#888] text-sm mt-0.5">Completely optional — add items to make it special</p>
+                  <h2 className="font-playfair text-lg font-bold text-[#8B4513]">Add Extra Dishes <span className="text-base">✨</span></h2>
+                  <p className="text-[#aaa] text-xs mt-0.5">Optional — add any dishes from our menu</p>
                 </div>
-                {selectedExtras.length > 0 && (
-                  <span className="bg-[#8B4513] text-white text-xs font-bold px-3 py-1.5 rounded-full flex-shrink-0 ml-4">
-                    +{selectedExtras.length} added
-                  </span>
+                {menuExtras.length > 0 && (
+                  <span className="bg-[#8B4513] text-white text-xs font-bold px-3 py-1.5 rounded-full flex-shrink-0 ml-3">+{menuExtras.length}</span>
                 )}
               </div>
-
-              {/* Category Tabs with scroll arrows */}
-              <div className="relative mt-4 pb-4">
-                {/* Left arrow */}
-                <button
-                  type="button"
-                  onClick={() => tabsScrollRef.current?.scrollBy({ left: -160, behavior: "smooth" })}
-                  className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-7 h-7 rounded-full bg-white border border-[#e0d0bc] shadow-md flex items-center justify-center text-[#8B4513] hover:bg-[#8B4513] hover:text-white transition-colors text-xs font-bold"
-                  aria-label="Scroll tabs left"
-                >
-                  ‹
-                </button>
-                <div ref={tabsScrollRef} className="flex gap-2 overflow-x-auto scrollbar-none px-9">
-                  {extraCats.map((cat) => {
-                    const count = cat.items.filter((i) => extras[i.id]).length
-                    return (
-                      <button key={cat.id} onClick={() => setActiveCategory(cat.id)}
-                        className={`flex-shrink-0 flex items-center gap-1.5 px-4 py-2.5 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
-                          activeCategory === cat.id
-                            ? "bg-[#8B4513] text-white shadow-md"
-                            : "bg-[#FDF6EC] text-[#555] border border-[#e0d0bc] hover:border-[#8B4513] hover:text-[#8B4513]"
-                        }`}
-                      >
-                        <span>{cat.emoji}</span>
-                        <span>{cat.label}</span>
-                        {count > 0 && (
-                          <span className={`text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center ${
-                            activeCategory === cat.id ? "bg-white/20 text-white" : "bg-[#8B4513] text-white"
-                          }`}>{count}</span>
-                        )}
-                      </button>
-                    )
-                  })}
-                </div>
-                {/* Right arrow */}
-                <button
-                  type="button"
-                  onClick={() => tabsScrollRef.current?.scrollBy({ left: 160, behavior: "smooth" })}
-                  className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-7 h-7 rounded-full bg-white border border-[#e0d0bc] shadow-md flex items-center justify-center text-[#8B4513] hover:bg-[#8B4513] hover:text-white transition-colors text-xs font-bold"
-                  aria-label="Scroll tabs right"
-                >
-                  ›
-                </button>
-              </div>
-            </div>
-
-            <div className="px-6 pb-6">
-              <p className="text-xs text-[#aaa] mb-4 font-medium">{currentCat.desc}</p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3">
-                {currentCat.items.map((item) => {
-                  const isAdded = !!extras[item.id]
-                  return (
-                    <button key={item.id} onClick={() => toggle(item.id)}
-                      className={`relative rounded-2xl overflow-hidden text-left transition-all duration-200 ${
-                        isAdded ? "ring-2 ring-[#8B4513] shadow-md scale-[1.02]" : "hover:shadow-md hover:scale-[1.01] border border-[#f0e6d3]"
-                      }`}
-                    >
-                      <div className={`h-24 flex items-center justify-center text-5xl ${
-                        item.diet === "veg"
-                          ? isAdded ? "bg-green-50" : "bg-[#f5faf5]"
-                          : isAdded ? "bg-red-50" : "bg-[#fdf5f0]"
-                      }`}>
-                        {item.emoji}
-                        {item.popular && !isAdded && (
-                          <span className="absolute top-2 right-2 bg-[#D4A853] text-[#3d1a07] text-[8px] font-bold px-1.5 py-0.5 rounded-full">HOT</span>
-                        )}
-                        {isAdded && (
-                          <span className="absolute top-2 right-2 w-6 h-6 bg-[#8B4513] rounded-full flex items-center justify-center text-white text-xs font-bold">✓</span>
-                        )}
-                      </div>
-                      <div className="bg-white px-3 py-2.5">
-                        <div className="flex items-center gap-1 mb-0.5">
-                          <span className={`w-1.5 h-1.5 rounded-full ${item.diet === "veg" ? "bg-green-500" : "bg-red-500"}`} />
-                          <p className="font-semibold text-[#1a1a1a] text-xs leading-snug truncate">{item.name}</p>
-                        </div>
-                        <p className="text-[#8B4513] font-bold text-sm">₹{item.price}<span className="text-[#aaa] font-normal text-[10px]">/person</span></p>
-                      </div>
-                    </button>
-                  )
-                })}
-              </div>
+              <OrderItemPicker
+                sections={menuSections}
+                selected={menuExtras}
+                onToggle={toggleMenuExtra}
+              />
             </div>
           </div>
         </div>
 
-        {/* ── RIGHT: STICKY SIDEBAR ─────────────────────────────────────── */}
-        <div className="hidden md:block w-80 flex-shrink-0">
-          <div className="sticky top-20 bg-white rounded-2xl border border-[#f0e6d3] shadow-md overflow-hidden">
-            <div className={`bg-gradient-to-br ${pkg.color} px-5 py-4`}>
-              <p className="text-white/70 text-xs font-medium uppercase tracking-wider mb-0.5">Your Selection</p>
-              <h3 className="font-playfair text-lg font-bold text-white">{pkg.name}</h3>
+        {/* ── RIGHT: ORDER SUMMARY SIDEBAR ────────────────────────────── */}
+        <div className="hidden md:block w-[340px] flex-shrink-0">
+          <div className="sticky top-20 bg-white rounded-2xl shadow-lg overflow-hidden border border-[#e8d8c4]">
+            {/* Header */}
+            <div className="bg-[#5c2a0e] px-5 py-4 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <span className="text-xl">🛒</span>
+                <h3 className="font-bold text-white text-base">Order Summary</h3>
+              </div>
+              <div className="flex items-center gap-2.5">
+                <span className="bg-white/20 text-white text-xs font-semibold px-3 py-1 rounded-full">{_summaryTotal} items</span>
+                <button onClick={() => setSummaryEditMode(v => !v)} title={summaryEditMode ? "Done" : "Edit order"}
+                  className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${summaryEditMode ? "bg-white text-[#5c2a0e]" : "bg-white/15 text-white hover:bg-white/25"}`}>
+                  {summaryEditMode
+                    ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><path d="M20 6L9 17l-5-5"/></svg>
+                    : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                  }
+                </button>
+              </div>
             </div>
 
-            <div className="p-5 space-y-3 max-h-[40vh] overflow-y-auto">
-              <div className="flex justify-between text-sm">
-                <span className="text-[#555]">{pkg.name} (base)</span>
-                <span className="font-medium text-[#1a1a1a]">₹{pkg.price}/pp</span>
+            <div className="overflow-y-auto max-h-[60vh]">
+              {/* Package section */}
+              <div className="px-5 pt-5 pb-4">
+                <div className="flex items-center gap-3 mb-4">
+                  <span className={`flex-1 text-sm font-extrabold uppercase tracking-wider ${pkg.tag === "VEG" ? "text-green-700" : "text-red-700"}`}>{pkg.name}</span>
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <span className="text-sm text-gray-400">👥</span>
+                    <input type="number" min={30} value={form.guestCount}
+                      onChange={e => setForm(prev => ({...prev, guestCount: e.target.value}))}
+                      className="w-24 border border-[#e0d0bc] rounded-lg px-3 py-1.5 text-sm text-center font-semibold text-gray-700 focus:outline-none focus:border-[#8B4513] bg-[#FDF6EC]"
+                      placeholder="guests" />
+                  </div>
+                </div>
+                <div className={`border-l-2 pl-4 space-y-2.5 ${pkg.tag === "VEG" ? "border-green-300" : "border-red-300"}`}>
+                  {_visibleIncludes.map((inc, i) => (
+                    <div key={i} className="flex items-center gap-3">
+                      <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${pkg.tag === "VEG" ? "bg-green-400" : "bg-red-400"}`} />
+                      <span className="flex-1 text-sm text-gray-700 leading-snug">{inc}</span>
+                      {summaryEditMode && (
+                        <button onClick={() => setRemovedIncludes(prev => [...prev, _allIncludes.indexOf(inc)])}
+                          className="w-6 h-6 rounded-full bg-red-50 flex items-center justify-center text-red-400 hover:bg-red-100 hover:text-red-600 flex-shrink-0 transition-colors text-base leading-none">–</button>
+                      )}
+                    </div>
+                  ))}
+                  {(pkg.choiceGroups ?? []).map((group) => {
+                    const sel = preferences[group.id] ?? []
+                    const shortName = _groupShortName(group.label)
+                    return Array.from({ length: group.pick }, (_, i) => (
+                      <div key={`${group.id}-${i}`} className="flex items-center gap-3">
+                        <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${pkg.tag === "VEG" ? "bg-green-400" : "bg-red-400"}`} />
+                        <select value={sel[i] ?? ""}
+                          onChange={(e) => { setPreferences(prev => { const cur = [...(prev[group.id] ?? [])]; cur[i] = e.target.value; return { ...prev, [group.id]: cur } }) }}
+                          className={`flex-1 border rounded-lg px-3 py-1.5 text-sm font-medium focus:outline-none appearance-none cursor-pointer transition-colors ${sel[i] ? "border-green-200 bg-green-50 text-green-900" : "border-[#e0d0bc] bg-[#FDF6EC] text-gray-400"}`}
+                          style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`, backgroundRepeat: "no-repeat", backgroundPosition: "right 10px center", paddingRight: "28px" }}>
+                          <option value="">{group.pick > 1 ? `${shortName} ${i + 1}` : shortName}</option>
+                          {group.options.filter(opt => opt === sel[i] || !sel.includes(opt)).map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                        </select>
+                        {summaryEditMode && (
+                          <button
+                            onClick={() => setPreferences(prev => {
+                              const cur = [...(prev[group.id] ?? [])]
+                              cur[i] = ""
+                              return { ...prev, [group.id]: cur }
+                            })}
+                            className="w-6 h-6 rounded-full bg-red-50 flex items-center justify-center text-red-400 hover:bg-red-100 hover:text-red-600 flex-shrink-0 transition-colors text-base leading-none"
+                          >–</button>
+                        )}
+                      </div>
+                    ))
+                  })}
+                </div>
               </div>
-              {selectedExtras.length > 0 && (
-                <>
-                  <div className="border-t border-[#f5ece0] pt-3">
-                    <p className="text-[10px] font-bold text-[#aaa] uppercase tracking-wider mb-2">Extras (+₹{extraCostPerPerson}/pp)</p>
-                    {selectedExtras.map((item) => (
-                      <div key={item.id} className="flex items-center justify-between text-sm py-1">
-                        <div className="flex items-center gap-1.5 flex-1 min-w-0">
-                          <span className="text-base">{item.emoji}</span>
-                          <span className="text-[#444] truncate text-xs">{item.name}</span>
+
+              {/* Extra dishes */}
+              {menuExtras.length > 0 && (
+                <div className="px-5 py-4 border-t border-[#f0e6d3]">
+                  <p className="text-xs font-bold uppercase tracking-wider text-amber-600 mb-3">Extra Dishes</p>
+                  <div className="border-l-2 border-amber-300 pl-4 space-y-2.5">
+                    {menuSections.flatMap(s => s.items.filter(i => menuExtras.includes(i.name)).map(item => (
+                      <div key={item.name} className="flex items-center gap-3">
+                        <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${item.diet === "veg" ? "bg-green-400" : "bg-red-400"}`} />
+                        <span className="flex-1 text-sm text-gray-700">{item.name}</span>
+                        <div className="flex items-center gap-2 flex-shrink-0">
+                          {item.price > 0 && <span className="text-xs text-amber-600 font-semibold">+₹{item.price}</span>}
+                          {summaryEditMode && (
+                            <button onClick={() => setMenuExtras(prev => prev.filter(n => n !== item.name))}
+                              className="w-6 h-6 rounded-full bg-red-50 flex items-center justify-center text-red-400 hover:bg-red-100 hover:text-red-600 flex-shrink-0 transition-colors text-base leading-none">–</button>
+                          )}
                         </div>
-                        <div className="flex items-center gap-1 flex-shrink-0">
-                          <span className="text-[#8B4513] font-semibold text-xs">+₹{item.price}</span>
-                          <button onClick={() => toggle(item.id)} className="text-[#ccc] hover:text-red-400 transition-colors text-lg leading-none ml-1">×</button>
-                        </div>
+                      </div>
+                    )))}
+                  </div>
+                </div>
+              )}
+
+              {/* Essentials — no heading, no Free tag */}
+              {essentialItems.length > 0 && (
+                <div className="px-5 py-4 border-t border-[#f0e6d3]">
+                  <div className="border-l-2 border-gray-200 pl-4 space-y-2.5">
+                    {essentialItems.map(name => (
+                      <div key={name} className="flex items-center gap-3">
+                        <span className="w-2.5 h-2.5 rounded-full flex-shrink-0 bg-gray-300" />
+                        <span className="flex-1 text-sm text-gray-500">{name}</span>
+                        {summaryEditMode && (
+                          <button onClick={() => setEssentialItems(prev => prev.filter(n => n !== name))}
+                            className="w-6 h-6 rounded-full bg-red-50 flex items-center justify-center text-red-400 hover:bg-red-100 hover:text-red-600 flex-shrink-0 transition-colors text-base leading-none">–</button>
+                        )}
                       </div>
                     ))}
                   </div>
-                </>
-              )}
-              {selectedExtras.length === 0 && (
-                <p className="text-xs text-[#aaa] text-center py-2">No extras selected yet — tap items on the left!</p>
+                </div>
               )}
             </div>
 
-            {/* Meal Preference Dropdowns — shown in sidebar on step 2 */}
-            {(pkg.choiceGroups ?? []).length > 0 && (
-              <div className="border-t border-[#f0e6d3] px-5 py-4 space-y-3">
-                <p className="text-[10px] font-bold text-[#aaa] uppercase tracking-wider">🎯 Your Meal Choices</p>
-                {(pkg.choiceGroups ?? []).map((group) => {
-                  const selected = preferences[group.id] ?? []
-                  const selects = Array.from({ length: group.pick }, (_, i) => i)
-                  return (
-                    <div key={group.id}>
-                      <label className="block text-[10px] font-semibold text-[#555] mb-1">
-                        {group.label}
-                        {selected.filter(Boolean).length === group.pick
-                          ? <span className="ml-1.5 text-green-600 font-normal">✓</span>
-                          : <span className="ml-1.5 text-amber-500 font-normal">(pick {group.pick})</span>
-                        }
-                      </label>
-                      <div className={`grid gap-1.5 ${group.pick > 1 ? "grid-cols-2" : "grid-cols-1"}`}>
-                        {selects.map((i) => (
-                          <select key={i} value={selected[i] ?? ""}
-                            onChange={(e) => {
-                              setPreferences(prev => {
-                                const cur = [...(prev[group.id] ?? [])]
-                                cur[i] = e.target.value
-                                return { ...prev, [group.id]: cur }
-                              })
-                            }}
-                            className="w-full border border-[#e0d0bc] rounded-lg px-2 py-1.5 text-xs bg-white focus:outline-none focus:border-[#8B4513] focus:ring-1 focus:ring-[#8B4513]/20 text-[#333]"
-                          >
-                            <option value="">— {group.pick > 1 ? `Choice ${i + 1}` : "Select"} —</option>
-                            {group.options
-                              .filter(opt => opt === selected[i] || !selected.includes(opt))
-                              .map((opt) => (
-                                <option key={opt} value={opt}>{opt}</option>
-                              ))
-                            }
-                          </select>
-                        ))}
-                      </div>
-                    </div>
-                  )
-                })}
+            {/* Footer */}
+            <div className="border-t border-[#f0e6d3] px-5 py-4 bg-[#FDF6EC]">
+              <div className="flex items-end justify-between mb-4">
+                <div>
+                  <p className="text-xs text-gray-400 mb-0.5">₹{totalPerPerson}/person × {guests} guests</p>
+                  <p className="text-xl font-bold text-[#8B4513]">₹{grandTotal.toLocaleString("en-IN")}</p>
+                </div>
+                {menuExtraCostPerPerson > 0 && (
+                  <div className="text-right">
+                    <p className="text-[10px] text-gray-400">Extras added</p>
+                    <p className="text-sm font-semibold text-amber-700">+₹{menuExtraCostPerPerson}/pp</p>
+                  </div>
+                )}
               </div>
-            )}
-
-            <div className="border-t border-[#f0e6d3] bg-[#FDF6EC] px-5 py-3 text-xs text-[#888]">
-              <p>Base: ₹{pkg.price}/person {extraCostPerPerson > 0 && `+ extras: ₹${extraCostPerPerson}/person`}</p>
-              <p className="text-[#555] font-semibold mt-0.5">Total rate: ₹{totalPerPerson}/person</p>
-            </div>
-
-            <div className="px-5 pb-5 pt-3 space-y-2">
               <button onClick={() => setStep("details")}
-                className="w-full bg-[#8B4513] text-white py-4 rounded-xl font-bold text-sm hover:bg-[#6d3410] transition-colors shadow-md flex items-center justify-center gap-2"
-              >
+                className="w-full bg-[#8B4513] text-white py-3.5 rounded-xl font-bold text-sm hover:bg-[#6d3410] transition-colors shadow-md">
                 Continue to Details →
               </button>
-              <p className="text-center text-xs text-[#aaa]">Extras are optional · Skip if not needed</p>
+              <p className="text-center text-xs text-[#aaa] mt-2">Extras are optional · Skip anytime</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* ── MOBILE BOTTOM BAR ────────────────────────────────────────────── */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-[#f0e6d3] shadow-xl px-4 py-3 z-40">
-        <div className="flex items-center justify-between gap-3">
-          <div>
-            <p className="text-xs text-[#888]">
-              {selectedExtras.length > 0 ? `${selectedExtras.length} extras selected` : "No extras yet"}
-            </p>
-            <p className="font-bold text-[#8B4513] text-base">₹{totalPerPerson}/person</p>
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-[#f0e6d3] shadow-xl z-40">
+        {/* Row 1 — summary tap */}
+        <button
+          onClick={() => setShowSummaryDrawer(true)}
+          className="w-full flex items-center justify-between px-4 pt-3 pb-2"
+        >
+          <div className="flex items-center gap-2">
+            <span className="text-sm">🛒</span>
+            <span className="text-xs font-semibold text-[#8B4513]">{_summaryTotal} items</span>
+            <span className="text-xs text-[#aaa]">· tap to review order</span>
           </div>
-          <div className="flex gap-2">
-            {selectedExtras.length > 0 && (
-              <button onClick={() => setShowSummaryDrawer(true)}
-                className="border border-[#8B4513] text-[#8B4513] px-4 py-2.5 rounded-xl text-sm font-semibold"
-              >
-                Summary
-              </button>
-            )}
-            <button onClick={() => setStep("details")}
-              className="bg-[#8B4513] text-white px-5 py-2.5 rounded-xl text-sm font-bold"
-            >
-              Continue →
-            </button>
+          <div className="flex items-center gap-1.5">
+            <span className="font-bold text-[#8B4513] text-sm">₹{grandTotal.toLocaleString("en-IN")}</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8B4513" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
           </div>
+        </button>
+        {/* Row 2 — Continue */}
+        <div className="px-4 pb-4">
+          <button
+            onClick={() => setStep("details")}
+            className="w-full bg-[#8B4513] text-white py-3.5 rounded-2xl font-bold text-base shadow-md active:scale-[0.98] transition-transform flex items-center justify-center gap-2"
+          >
+            Continue to Details
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
         </div>
       </div>
 
-      {/* ── MOBILE SUMMARY DRAWER ─────────────────────────────────────── */}
+      {/* ── MOBILE SUMMARY DRAWER — same full summary ─────────────────── */}
       {showSummaryDrawer && (
         <div className="fixed inset-0 z-50 flex flex-col justify-end md:hidden">
-          <div className="absolute inset-0 bg-black/40" onClick={() => setShowSummaryDrawer(false)} />
-          <div className="relative bg-white rounded-t-3xl shadow-2xl max-h-[80vh] flex flex-col">
-            <div className="flex items-center justify-between px-5 py-4 border-b border-[#f0e6d3]">
-              <h3 className="font-playfair text-lg font-bold text-[#8B4513]">Your Extras</h3>
-              <button onClick={() => setShowSummaryDrawer(false)} className="text-[#888] text-2xl leading-none w-8 h-8 flex items-center justify-center">×</button>
-            </div>
-            <div className="flex-1 overflow-y-auto px-5 py-4 space-y-3 text-sm">
-              <div className="flex justify-between py-1">
-                <span className="text-[#555]">{pkg.name} (base ₹{pkg.price}/pp)</span>
-                <span className="font-medium">included</span>
+          <div className="absolute inset-0 bg-black/50" onClick={() => setShowSummaryDrawer(false)} />
+          <div className="relative bg-white rounded-t-3xl shadow-2xl max-h-[90vh] overflow-hidden flex flex-col">
+
+            {/* Header */}
+            <div className="bg-[#5c2a0e] px-5 py-4 flex items-center justify-between flex-shrink-0">
+              <div className="flex items-center gap-2.5">
+                <span className="text-xl">🛒</span>
+                <h3 className="font-bold text-white text-base">Order Summary</h3>
               </div>
-              {selectedExtras.map((item) => (
-                <div key={item.id} className="flex items-center justify-between py-1">
+              <div className="flex items-center gap-2">
+                <span className="bg-white/20 text-white text-xs font-semibold px-3 py-1 rounded-full">{_summaryTotal} items</span>
+                <button onClick={() => setSummaryEditMode(v => !v)}
+                  className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${summaryEditMode ? "bg-white text-[#5c2a0e]" : "bg-white/15 text-white hover:bg-white/25"}`}>
+                  {summaryEditMode
+                    ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><path d="M20 6L9 17l-5-5"/></svg>
+                    : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                  }
+                </button>
+                <button onClick={() => setShowSummaryDrawer(false)} className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white text-lg leading-none hover:bg-white/20">×</button>
+              </div>
+            </div>
+
+            {/* Scrollable content — same layout as desktop */}
+            <div className="flex-1 overflow-y-auto">
+              {/* Package */}
+              <div className="px-5 pt-5 pb-4">
+                <div className="flex items-center gap-3 mb-4">
+                  <span className={`flex-1 text-sm font-extrabold uppercase tracking-wider ${pkg.tag === "VEG" ? "text-green-700" : "text-red-700"}`}>{pkg.name}</span>
                   <div className="flex items-center gap-2">
-                    <span>{item.emoji}</span>
-                    <span className="text-[#444]">{item.name}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[#8B4513] font-semibold">+₹{item.price}/pp</span>
-                    <button onClick={() => toggle(item.id)} className="text-[#ccc] hover:text-red-400 text-lg">×</button>
+                    <span className="text-sm text-gray-400">👥</span>
+                    <input type="number" min={30} value={form.guestCount}
+                      onChange={e => setForm(prev => ({...prev, guestCount: e.target.value}))}
+                      className="w-24 border border-[#e0d0bc] rounded-lg px-3 py-1.5 text-sm text-center font-semibold text-gray-700 focus:outline-none focus:border-[#8B4513] bg-[#FDF6EC]"
+                      placeholder="guests" />
                   </div>
                 </div>
-              ))}
+                <div className={`border-l-2 pl-4 space-y-3 ${pkg.tag === "VEG" ? "border-green-300" : "border-red-300"}`}>
+                  {_visibleIncludes.map((inc, i) => (
+                    <div key={i} className="flex items-center gap-3">
+                      <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${pkg.tag === "VEG" ? "bg-green-400" : "bg-red-400"}`} />
+                      <span className="flex-1 text-sm text-gray-700">{inc}</span>
+                      {summaryEditMode && (
+                        <button onClick={() => setRemovedIncludes(prev => [...prev, _allIncludes.indexOf(inc)])}
+                          className="w-6 h-6 rounded-full bg-red-50 flex items-center justify-center text-red-400 hover:bg-red-100 hover:text-red-600 flex-shrink-0 transition-colors text-base leading-none">–</button>
+                      )}
+                    </div>
+                  ))}
+                  {(pkg.choiceGroups ?? []).map((group) => {
+                    const sel = preferences[group.id] ?? []
+                    const shortName = _groupShortName(group.label)
+                    return Array.from({ length: group.pick }, (_, i) => (
+                      <div key={`${group.id}-${i}`} className="flex items-center gap-3">
+                        <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${pkg.tag === "VEG" ? "bg-green-400" : "bg-red-400"}`} />
+                        <select value={sel[i] ?? ""}
+                          onChange={(e) => { setPreferences(prev => { const cur = [...(prev[group.id] ?? [])]; cur[i] = e.target.value; return { ...prev, [group.id]: cur } }) }}
+                          className={`flex-1 border rounded-lg px-3 py-2 text-sm font-medium focus:outline-none appearance-none cursor-pointer ${sel[i] ? "border-green-200 bg-green-50 text-green-900" : "border-[#e0d0bc] bg-[#FDF6EC] text-gray-400"}`}
+                          style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`, backgroundRepeat: "no-repeat", backgroundPosition: "right 10px center", paddingRight: "28px" }}>
+                          <option value="">{group.pick > 1 ? `${shortName} ${i + 1}` : shortName}</option>
+                          {group.options.filter(opt => opt === sel[i] || !sel.includes(opt)).map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                        </select>
+                        {summaryEditMode && (
+                          <button
+                            onClick={() => setPreferences(prev => {
+                              const cur = [...(prev[group.id] ?? [])]
+                              cur[i] = ""
+                              return { ...prev, [group.id]: cur }
+                            })}
+                            className="w-6 h-6 rounded-full bg-red-50 flex items-center justify-center text-red-400 hover:bg-red-100 hover:text-red-600 flex-shrink-0 transition-colors text-base leading-none"
+                          >–</button>
+                        )}
+                      </div>
+                    ))
+                  })}
+                </div>
+              </div>
+
+              {/* Extra dishes */}
+              {menuExtras.length > 0 && (
+                <div className="px-5 py-4 border-t border-[#f0e6d3]">
+                  <p className="text-xs font-bold uppercase tracking-wider text-amber-600 mb-3">Extra Dishes</p>
+                  <div className="border-l-2 border-amber-300 pl-4 space-y-3">
+                    {menuSections.flatMap(s => s.items.filter(i => menuExtras.includes(i.name)).map(item => (
+                      <div key={item.name} className="flex items-center gap-3">
+                        <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${item.diet === "veg" ? "bg-green-400" : "bg-red-400"}`} />
+                        <span className="flex-1 text-sm text-gray-700">{item.name}</span>
+                        <div className="flex items-center gap-2 flex-shrink-0">
+                          {item.price > 0 && <span className="text-xs text-amber-600 font-semibold">+₹{item.price}</span>}
+                          {summaryEditMode && (
+                            <button onClick={() => setMenuExtras(prev => prev.filter(n => n !== item.name))}
+                              className="w-6 h-6 rounded-full bg-red-50 flex items-center justify-center text-red-400 hover:bg-red-100 hover:text-red-600 flex-shrink-0 transition-colors text-base leading-none">–</button>
+                          )}
+                        </div>
+                      </div>
+                    )))}
+                  </div>
+                </div>
+              )}
+
+              {/* Essentials */}
+              {essentialItems.length > 0 && (
+                <div className="px-5 py-4 border-t border-[#f0e6d3]">
+                  <div className="border-l-2 border-gray-200 pl-4 space-y-3">
+                    {essentialItems.map(name => (
+                      <div key={name} className="flex items-center gap-3">
+                        <span className="w-2.5 h-2.5 rounded-full flex-shrink-0 bg-gray-300" />
+                        <span className="flex-1 text-sm text-gray-500">{name}</span>
+                        {summaryEditMode && (
+                          <button onClick={() => setEssentialItems(prev => prev.filter(n => n !== name))}
+                            className="w-6 h-6 rounded-full bg-red-50 flex items-center justify-center text-red-400 hover:bg-red-100 hover:text-red-600 flex-shrink-0 transition-colors text-base leading-none">–</button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
-            <div className="border-t border-[#f0e6d3] px-5 py-4">
-              <div className="flex justify-between font-bold text-[#8B4513] mb-3">
-                <span>Total rate</span><span>₹{totalPerPerson}/person</span>
+
+            {/* Footer */}
+            <div className="border-t border-[#f0e6d3] px-5 py-4 bg-[#FDF6EC] flex-shrink-0">
+              <div className="flex items-end justify-between mb-4">
+                <div>
+                  <p className="text-xs text-gray-400 mb-0.5">₹{totalPerPerson}/person × {guests} guests</p>
+                  <p className="text-xl font-bold text-[#8B4513]">₹{grandTotal.toLocaleString("en-IN")}</p>
+                </div>
+                {menuExtraCostPerPerson > 0 && (
+                  <div className="text-right">
+                    <p className="text-[10px] text-gray-400">Extras</p>
+                    <p className="text-sm font-semibold text-amber-700">+₹{menuExtraCostPerPerson}/pp</p>
+                  </div>
+                )}
               </div>
               <button onClick={() => { setShowSummaryDrawer(false); setStep("details") }}
-                className="w-full bg-[#8B4513] text-white py-3 rounded-xl font-bold text-sm"
-              >
+                className="w-full bg-[#8B4513] text-white py-3.5 rounded-xl font-bold text-sm hover:bg-[#6d3410] transition-colors shadow-md">
                 Continue to Details →
               </button>
             </div>
