@@ -61,7 +61,7 @@ const PACKAGES = [
     name: "Non-Veg Basic",
     tagline: "Classic Biryani Feast",
     price: 150,
-    color: "from-[#8B4513] to-[#b5601e]",
+    color: "from-[#D4380D] to-[#E5622B]",
     lightColor: "bg-[#fce8d8]",
     textColor: "text-[#4a1a05]",
     badgeColor: "bg-red-100 text-red-800",
@@ -84,7 +84,7 @@ const PACKAGES = [
     name: "Non-Veg Premium",
     tagline: "Grand Celebration Feast",
     price: 180,
-    color: "from-[#3d1a07] to-[#6b2d0f]",
+    color: "from-[#5C1209] to-[#9E2D1A]",
     lightColor: "bg-[#f5ddd0]",
     textColor: "text-[#2a0f03]",
     badgeColor: "bg-red-100 text-red-800",
@@ -150,10 +150,10 @@ function PackagesInner() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FDF6EC]">
+    <div className="min-h-screen bg-[#FFF8F5]">
 
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur shadow-sm border-b border-[#f0e6d3]">
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur shadow-sm border-b border-[#FFE0D4]">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
           {/* Logo */}
           <button onClick={() => router.push("/")} className="flex items-center gap-3 flex-shrink-0">
@@ -161,7 +161,7 @@ function PackagesInner() {
               <Image src="/logo.png" alt="Ajay Foods logo" fill className="object-contain p-0.5" priority />
             </div>
             <div className="hidden sm:block">
-              <h1 className="text-base sm:text-lg font-bold text-[#8B4513] font-playfair leading-tight">
+              <h1 className="text-base sm:text-lg font-bold text-[#D4380D] font-playfair leading-tight">
                 Ajay Foods &amp; Beverages
               </h1>
               <p className="text-xs text-[#D4A853] font-medium tracking-wide">Quality Assured Foods</p>
@@ -177,12 +177,12 @@ function PackagesInner() {
             ].map((l) => (
               <button key={l.path} onClick={() => router.push(l.path)}
                 className={`px-3 py-1.5 rounded-full font-medium transition-colors ${
-                  l.active ? "bg-[#8B4513] text-white" : "text-[#555] hover:text-[#8B4513] hover:bg-[#f5ece0]"
+                  l.active ? "bg-[#D4380D] text-white" : "text-[#555] hover:text-[#D4380D] hover:bg-[#f5ece0]"
                 }`}
               >{l.label}</button>
             ))}
             <button onClick={() => router.push("/packages")}
-              className="ml-2 bg-[#D4A853] text-[#3d1a07] px-4 py-1.5 rounded-full font-bold text-xs hover:opacity-90 transition-opacity"
+              className="ml-2 bg-[#D4A853] text-[#5C1209] px-4 py-1.5 rounded-full font-bold text-xs hover:opacity-90 transition-opacity"
             >Book Now →</button>
           </nav>
 
@@ -191,15 +191,15 @@ function PackagesInner() {
             className="md:hidden flex flex-col gap-[5px] p-2 flex-shrink-0"
             aria-label="Toggle menu"
           >
-            <span className={`block w-5 h-0.5 bg-[#8B4513] transition-all ${navOpen ? "rotate-45 translate-y-[7px]" : ""}`} />
-            <span className={`block w-5 h-0.5 bg-[#8B4513] transition-all ${navOpen ? "opacity-0" : ""}`} />
-            <span className={`block w-5 h-0.5 bg-[#8B4513] transition-all ${navOpen ? "-rotate-45 -translate-y-[7px]" : ""}`} />
+            <span className={`block w-5 h-0.5 bg-[#D4380D] transition-all ${navOpen ? "rotate-45 translate-y-[7px]" : ""}`} />
+            <span className={`block w-5 h-0.5 bg-[#D4380D] transition-all ${navOpen ? "opacity-0" : ""}`} />
+            <span className={`block w-5 h-0.5 bg-[#D4380D] transition-all ${navOpen ? "-rotate-45 -translate-y-[7px]" : ""}`} />
           </button>
         </div>
 
         {/* Mobile nav dropdown */}
         {navOpen && (
-          <div className="md:hidden bg-white border-t border-[#f0e6d3] shadow-lg">
+          <div className="md:hidden bg-white border-t border-[#FFE0D4] shadow-lg">
             <div className="max-w-6xl mx-auto px-4 py-3 flex flex-col gap-1">
               {[
                 { label: "🏠 Home", path: "/" },
@@ -207,11 +207,11 @@ function PackagesInner() {
                 { label: "📦 Packages", path: "/packages" },
               ].map((l) => (
                 <button key={l.path} onClick={() => { router.push(l.path); setNavOpen(false) }}
-                  className="text-left px-3 py-2.5 rounded-xl text-sm font-medium text-[#333] hover:bg-[#f5ece0] hover:text-[#8B4513] transition-colors"
+                  className="text-left px-3 py-2.5 rounded-xl text-sm font-medium text-[#333] hover:bg-[#f5ece0] hover:text-[#D4380D] transition-colors"
                 >{l.label}</button>
               ))}
               <button onClick={() => { router.push("/packages"); setNavOpen(false) }}
-                className="mt-1 w-full bg-[#8B4513] text-white py-2.5 rounded-xl text-sm font-bold hover:bg-[#6d3410] transition-colors"
+                className="mt-1 w-full bg-[#D4380D] text-white py-2.5 rounded-xl text-sm font-bold hover:bg-[#6d3410] transition-colors"
               >Book Now →</button>
             </div>
           </div>
@@ -219,7 +219,7 @@ function PackagesInner() {
       </header>
 
       {/* Hero */}
-      <div className="bg-gradient-to-br from-[#3d1a07] to-[#8B4513] py-12 px-4 text-center text-white">
+      <div className="bg-gradient-to-br from-[#5C1209] to-[#D4380D] py-12 px-4 text-center text-white">
         <p className="text-[#D4A853] text-sm font-semibold tracking-widest uppercase mb-2">Step 1 of 3</p>
         <h1 className="font-playfair text-3xl md:text-5xl font-bold mb-3">Choose Your Package</h1>
         <p className="text-white/70 text-base max-w-xl mx-auto">
@@ -228,7 +228,7 @@ function PackagesInner() {
       </div>
 
       {/* Controls bar */}
-      <div className="bg-white border-b border-[#f0e6d3] shadow-sm">
+      <div className="bg-white border-b border-[#FFE0D4] shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           {/* Guest count */}
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 flex-1">
@@ -237,13 +237,13 @@ function PackagesInner() {
               <input
                 type="range" min={30} max={1000} step={10} value={Math.min(guestCount, 1000)}
                 onChange={(e) => { const n = Number(e.target.value); setGuestCount(n); setGuestInput(String(n)) }}
-                className="w-32 sm:w-40 accent-[#8B4513]"
+                className="w-32 sm:w-40 accent-[#D4380D]"
               />
               <input
                 type="number" min={30} max={5000} value={guestInput}
                 onChange={(e) => handleGuestInput(e.target.value)}
                 onBlur={() => { if (!guestInput || parseInt(guestInput) < 30) { setGuestInput("30"); setGuestCount(30) } }}
-                className="w-20 border border-[#e0d0bc] rounded-lg px-2 py-1 text-sm text-center focus:outline-none focus:border-[#8B4513] bg-[#FDF6EC] font-semibold"
+                className="w-20 border border-[#FFD0C0] rounded-lg px-2 py-1 text-sm text-center focus:outline-none focus:border-[#D4380D] bg-[#FFF8F5] font-semibold"
               />
               <span className="text-xs text-[#888]">guests</span>
             </div>
@@ -251,7 +251,7 @@ function PackagesInner() {
             <div className="flex gap-1.5 flex-wrap">
               {[50, 100, 200, 500].map((n) => (
                 <button key={n} onClick={() => { setGuestCount(n); setGuestInput(String(n)) }}
-                  className={`text-xs px-2.5 py-1 rounded-full border font-medium transition-all ${guestCount === n ? "bg-[#8B4513] text-white border-[#8B4513]" : "border-[#e0d0bc] text-[#666] hover:border-[#8B4513] hover:text-[#8B4513] bg-[#FDF6EC]"}`}
+                  className={`text-xs px-2.5 py-1 rounded-full border font-medium transition-all ${guestCount === n ? "bg-[#D4380D] text-white border-[#D4380D]" : "border-[#FFD0C0] text-[#666] hover:border-[#D4380D] hover:text-[#D4380D] bg-[#FFF8F5]"}`}
                 >{n}</button>
               ))}
             </div>
@@ -259,7 +259,7 @@ function PackagesInner() {
           {/* Compare toggle */}
           <button
             onClick={() => setShowComparison((v) => !v)}
-            className={`flex-shrink-0 flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-full border transition-all ${showComparison ? "bg-[#8B4513] text-white border-[#8B4513]" : "border-[#8B4513] text-[#8B4513] hover:bg-[#8B4513] hover:text-white"}`}
+            className={`flex-shrink-0 flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-full border transition-all ${showComparison ? "bg-[#D4380D] text-white border-[#D4380D]" : "border-[#D4380D] text-[#D4380D] hover:bg-[#D4380D] hover:text-white"}`}
           >
             {showComparison ? "✕ Hide Comparison" : "⇄ Compare Packages"}
           </button>
@@ -269,46 +269,46 @@ function PackagesInner() {
       {/* Comparison Table */}
       {showComparison && (
         <div className="max-w-7xl mx-auto px-4 py-6 overflow-x-auto">
-          <div className="bg-white rounded-2xl border border-[#f0e6d3] shadow-md overflow-hidden">
-            <div className="bg-gradient-to-r from-[#3d1a07] to-[#8B4513] px-6 py-4">
+          <div className="bg-white rounded-2xl border border-[#FFE0D4] shadow-md overflow-hidden">
+            <div className="bg-gradient-to-r from-[#5C1209] to-[#D4380D] px-6 py-4">
               <h2 className="font-playfair text-xl font-bold text-white">Package Comparison</h2>
               <p className="text-white/70 text-xs mt-0.5">All prices are per person · Minimum 30 guests</p>
             </div>
             <table className="w-full text-sm min-w-[560px]">
               <thead>
-                <tr className="border-b border-[#f0e6d3]">
+                <tr className="border-b border-[#FFE0D4]">
                   <th className="text-left px-5 py-3 text-[#888] font-semibold text-xs uppercase tracking-wider w-40">Feature</th>
                   {pkgList.map((p) => (
-                    <th key={p.id} className={`px-4 py-3 text-center font-bold text-sm ${p.popular ? "text-[#8B4513]" : "text-[#333]"}`}>
+                    <th key={p.id} className={`px-4 py-3 text-center font-bold text-sm ${p.popular ? "text-[#D4380D]" : "text-[#333]"}`}>
                       {p.name}
-                      {p.popular && <span className="ml-1 text-[9px] bg-[#D4A853] text-[#3d1a07] px-1.5 py-0.5 rounded-full">Popular</span>}
+                      {p.popular && <span className="ml-1 text-[9px] bg-[#D4A853] text-[#5C1209] px-1.5 py-0.5 rounded-full">Popular</span>}
                     </th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {COMPARE_ROWS.map((row, idx) => (
-                  <tr key={row.label} className={idx % 2 === 0 ? "bg-[#FDF6EC]" : "bg-white"}>
+                  <tr key={row.label} className={idx % 2 === 0 ? "bg-[#FFF8F5]" : "bg-white"}>
                     <td className="px-5 py-2.5 text-[#555] font-medium text-xs">{row.label}</td>
                     {row.values.map((v, i) => (
                       <td key={i} className={`px-4 py-2.5 text-center text-sm font-semibold ${
-                        v === "✓" ? "text-green-600" : v === "—" ? "text-[#ccc]" : "text-[#8B4513]"
+                        v === "✓" ? "text-green-600" : v === "—" ? "text-[#ccc]" : "text-[#D4380D]"
                       }`}>{v}</td>
                     ))}
                   </tr>
                 ))}
                 {/* Price row */}
-                <tr className="bg-gradient-to-r from-[#FDF6EC] to-white border-t-2 border-[#D4A853]/30">
+                <tr className="bg-gradient-to-r from-[#FFF8F5] to-white border-t-2 border-[#D4A853]/30">
                   <td className="px-5 py-3 font-bold text-[#555] text-xs uppercase tracking-wider">Total for {guestCount} guests</td>
                   {pkgList.map((p) => (
-                    <td key={p.id} className="px-4 py-3 text-center font-bold text-[#8B4513]">
+                    <td key={p.id} className="px-4 py-3 text-center font-bold text-[#D4380D]">
                       ₹{(p.price * guestCount).toLocaleString("en-IN")}
                     </td>
                   ))}
                 </tr>
               </tbody>
             </table>
-            <div className="px-6 py-4 bg-[#FDF6EC] flex flex-wrap gap-2 justify-center">
+            <div className="px-6 py-4 bg-[#FFF8F5] flex flex-wrap gap-2 justify-center">
               {pkgList.map((p) => (
                 <button key={p.id} onClick={() => router.push(`/order?pkg=${p.id}`)}
                   className={`bg-gradient-to-r ${p.color} text-white px-5 py-2 rounded-full text-sm font-bold hover:opacity-90 transition-all shadow-sm`}
@@ -333,12 +333,12 @@ function PackagesInner() {
                 className={`bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col ${
                   isPrefill
                     ? "ring-2 ring-[#D4A853] shadow-xl border-2 border-[#D4A853]"
-                    : "border border-[#f0e6d3]"
+                    : "border border-[#FFE0D4]"
                 }`}
               >
                 {/* Pre-selected banner */}
                 {isPrefill && (
-                  <div className="bg-[#D4A853] text-[#3d1a07] text-center text-[10px] font-bold py-1 tracking-wider uppercase">
+                  <div className="bg-[#D4A853] text-[#5C1209] text-center text-[10px] font-bold py-1 tracking-wider uppercase">
                     ⭐ Pre-selected for you
                   </div>
                 )}
@@ -356,7 +356,7 @@ function PackagesInner() {
                         {pkg.tag}
                       </span>
                       {pkg.popular && (
-                        <span className="bg-[#D4A853] text-[#3d1a07] text-[9px] font-bold px-2 py-0.5 rounded-full">
+                        <span className="bg-[#D4A853] text-[#5C1209] text-[9px] font-bold px-2 py-0.5 rounded-full">
                           ★ Popular
                         </span>
                       )}
@@ -389,7 +389,7 @@ function PackagesInner() {
                   <ul className="space-y-1.5 flex-1">
                     {pkg.includes.map((item) => (
                       <li key={item} className="flex items-start gap-2 text-xs text-[#444]">
-                        <span className="w-4 h-4 rounded-full bg-[#D4A853]/20 flex items-center justify-center text-[#8B4513] text-[10px] flex-shrink-0 mt-0.5 font-bold">✓</span>
+                        <span className="w-4 h-4 rounded-full bg-[#D4A853]/20 flex items-center justify-center text-[#D4380D] text-[10px] flex-shrink-0 mt-0.5 font-bold">✓</span>
                         {item}
                       </li>
                     ))}
@@ -410,7 +410,7 @@ function PackagesInner() {
 
         {/* Footer note */}
         <div className="mt-10 text-center">
-          <div className="inline-flex flex-wrap items-center gap-6 sm:gap-8 bg-white border border-[#f0e6d3] rounded-2xl px-6 sm:px-8 py-5 shadow-sm justify-center">
+          <div className="inline-flex flex-wrap items-center gap-6 sm:gap-8 bg-white border border-[#FFE0D4] rounded-2xl px-6 sm:px-8 py-5 shadow-sm justify-center">
             {[
               { icon: "👥", label: "Min 30 guests" },
               { icon: "🔧", label: "Fully customizable" },
@@ -432,10 +432,10 @@ function PackagesInner() {
 export default function PackagesPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-[#FDF6EC] flex items-center justify-center">
+      <div className="min-h-screen bg-[#FFF8F5] flex items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-[#8B4513] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-[#8B4513] font-semibold">Loading packages…</p>
+          <div className="w-12 h-12 border-4 border-[#D4380D] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+          <p className="text-[#D4380D] font-semibold">Loading packages…</p>
         </div>
       </div>
     }>

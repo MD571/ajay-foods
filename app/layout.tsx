@@ -25,7 +25,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${playfair.variable} ${dmSans.variable}`}>
-      <body className="font-sans bg-[#FDF6EC] min-h-screen antialiased">
+      <body className="font-sans bg-[#FFF8F5] min-h-screen antialiased">
         {children}
       </body>
     </html>
