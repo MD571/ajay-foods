@@ -125,14 +125,14 @@ const PACKAGES = [
   {
     id: "non-veg-basic", title: "Non-Veg Basic", price: 150, unit: "/person",
     tag: "NON-VEG", tagColor: "bg-red-100 text-red-800",
-    color: "from-[#8B4513] to-[#6d3410]", popular: false,
+    color: "from-[#D4380D] to-[#6d3410]", popular: false,
     ideal: "Ideal for 30–150 guests",
     includes: ["Biryani (7 variants)", "Sambar", "Gongura Pachadi", "Perugu Chutney", "Curd Rice", "Plates & Service"],
   },
   {
     id: "non-veg-premium", title: "Non-Veg Premium", price: 180, unit: "/person",
     tag: "NON-VEG", tagColor: "bg-red-100 text-red-800",
-    color: "from-[#3d1a07] to-[#6b2d0f]", popular: false,
+    color: "from-[#5C1209] to-[#9E2D1A]", popular: false,
     ideal: "Ideal for grand celebrations",
     includes: ["Biryani (7 variants)", "Choice of Curry", "Sambar + Gongura", "Perugu Chutney", "Curd Rice", "Plates & Service"],
   },
@@ -142,7 +142,7 @@ const PACKAGES = [
 const TESTIMONIALS = [
   {
     name: "Ramesh Reddy", event: "Wedding Reception", rating: 5,
-    avatar: "RR", color: "bg-[#8B4513]",
+    avatar: "RR", color: "bg-[#D4380D]",
     text: "The biryani was absolutely phenomenal! Every guest kept asking for the recipe. Ajay Foods made our wedding day truly unforgettable. The team arrived on time, set up everything perfectly, and the food stayed fresh throughout the evening. Highly recommended!",
   },
   {
@@ -157,7 +157,7 @@ const TESTIMONIALS = [
   },
   {
     name: "Priya Nair", event: "Engagement Ceremony", rating: 5,
-    avatar: "PN", color: "bg-[#6b2d0f]",
+    avatar: "PN", color: "bg-[#9E2D1A]",
     text: "Ordered the veg premium package for our engagement. The bobbatlu and semya payasam were outstanding — just like my grandmother used to make. Guests from across Telangana complimented the authentic taste!",
   },
 ]
@@ -225,16 +225,16 @@ function StatsSection() {
   }
 
   return (
-    <section ref={ref} className="py-12 bg-[#FDF6EC]">
+    <section ref={ref} className="py-12 bg-[#FFF8F5]">
       <div className="max-w-5xl mx-auto px-4">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {STATS.map((s, i) => (
             <div key={s.label}
-              className={`bg-white rounded-2xl p-6 text-center shadow-sm border border-[#f0e6d3] hover:shadow-md hover:-translate-y-0.5 transition-all duration-500 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
+              className={`bg-white rounded-2xl p-6 text-center shadow-sm border border-[#FFE0D4] hover:shadow-md hover:-translate-y-0.5 transition-all duration-500 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
               style={{ transitionDelay: `${i * 100}ms` }}
             >
               <div className="text-3xl mb-2">{s.icon}</div>
-              <div className="font-playfair font-bold text-3xl text-[#8B4513]">
+              <div className="font-playfair font-bold text-3xl text-[#D4380D]">
                 {visible ? fmt(i) + s.suffix : "0" + s.suffix}
               </div>
               <div className="text-xs text-[#666] mt-1 font-medium">{s.label}</div>
@@ -391,7 +391,7 @@ export default function AjayFoodsWebsite() {
   const oneYearStr = new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split("T")[0]
 
   return (
-    <div className="min-h-screen bg-[#FDF6EC] text-[#1a1a1a] font-sans overflow-x-hidden">
+    <div className="min-h-screen bg-[#FFF8F5] text-[#1a1a1a] font-sans overflow-x-hidden">
 
       {/* ══ FULL MENU MODAL ══════════════════════════════════════════════════ */}
       {menuModalOpen && (
@@ -399,7 +399,7 @@ export default function AjayFoodsWebsite() {
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setMenuModalOpen(false)} />
           <div className="relative bg-white w-full sm:max-w-4xl max-h-[92vh] sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden">
             {/* Header */}
-            <div className="bg-gradient-to-r from-[#3d1a07] to-[#8B4513] px-6 py-5 flex items-center justify-between flex-shrink-0">
+            <div className="bg-gradient-to-r from-[#5C1209] to-[#D4380D] px-6 py-5 flex items-center justify-between flex-shrink-0">
               <div>
                 <h2 className="font-playfair text-2xl font-bold text-white">Full Menu</h2>
                 <p className="text-white/70 text-sm">All items — prices per person</p>
@@ -407,11 +407,11 @@ export default function AjayFoodsWebsite() {
               <button onClick={() => setMenuModalOpen(false)} className="w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white text-xl transition-colors">×</button>
             </div>
             {/* Category tabs */}
-            <div className="flex gap-2 overflow-x-auto px-4 py-3 border-b border-[#f0e6d3] flex-shrink-0 scrollbar-none">
+            <div className="flex gap-2 overflow-x-auto px-4 py-3 border-b border-[#FFE0D4] flex-shrink-0 scrollbar-none">
               {[{ id: "all", label: "All Items", emoji: "🍽️" }, ...FULL_MENU_SECTIONS].map((cat) => (
                 <button key={cat.id} onClick={() => setMenuModalCat(cat.id)}
                   className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold transition-all whitespace-nowrap ${
-                    menuModalCat === cat.id ? "bg-[#8B4513] text-white" : "bg-[#FDF6EC] text-[#555] border border-[#e0d0bc] hover:border-[#8B4513]"
+                    menuModalCat === cat.id ? "bg-[#D4380D] text-white" : "bg-[#FFF8F5] text-[#555] border border-[#FFD0C0] hover:border-[#D4380D]"
                   }`}
                 >
                   <span>{"emoji" in cat ? cat.emoji : ""}</span> {cat.label}
@@ -422,7 +422,7 @@ export default function AjayFoodsWebsite() {
             <div className="flex-1 overflow-y-auto p-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                 {modalItems.map((item, idx) => (
-                  <div key={idx} className="flex items-center justify-between gap-3 bg-[#FDF6EC] border border-[#f0e6d3] rounded-xl px-4 py-3 hover:border-[#D4A853] transition-colors">
+                  <div key={idx} className="flex items-center justify-between gap-3 bg-[#FFF8F5] border border-[#FFE0D4] rounded-xl px-4 py-3 hover:border-[#D4A853] transition-colors">
                     <div className="flex items-center gap-2.5 min-w-0">
                       <span className={`w-2 h-2 rounded-full flex-shrink-0 ${item.diet === "veg" ? "bg-green-500" : "bg-red-500"}`} />
                       <div className="min-w-0">
@@ -431,9 +431,9 @@ export default function AjayFoodsWebsite() {
                           <p className="text-[10px] text-[#aaa]">{(item as { sectionLabel: string }).sectionLabel}</p>
                         )}
                       </div>
-                      {item.popular && <span className="text-[9px] bg-[#D4A853]/20 text-[#8B4513] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0">HOT</span>}
+                      {item.popular && <span className="text-[9px] bg-[#D4A853]/20 text-[#D4380D] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0">HOT</span>}
                     </div>
-                    <span className={`text-sm font-bold flex-shrink-0 ${item.price === 0 ? "text-green-600" : "text-[#8B4513]"}`}>
+                    <span className={`text-sm font-bold flex-shrink-0 ${item.price === 0 ? "text-green-600" : "text-[#D4380D]"}`}>
                       {item.price === 0 ? "Free" : `₹${item.price}`}
                     </span>
                   </div>
@@ -441,10 +441,10 @@ export default function AjayFoodsWebsite() {
               </div>
             </div>
             {/* Footer CTA */}
-            <div className="border-t border-[#f0e6d3] px-6 py-4 bg-[#FDF6EC] flex-shrink-0 flex items-center justify-between gap-4">
+            <div className="border-t border-[#FFE0D4] px-6 py-4 bg-[#FFF8F5] flex-shrink-0 flex items-center justify-between gap-4">
               <p className="text-xs text-[#888]">All prices are per person · Minimum 30 guests · Customisable</p>
               <button onClick={() => { setMenuModalOpen(false); router.push("/packages") }}
-                className="bg-[#8B4513] text-white px-6 py-3 rounded-xl font-semibold text-sm hover:bg-[#6d3410] transition-colors whitespace-nowrap flex-shrink-0"
+                className="bg-[#D4380D] text-white px-6 py-3 rounded-xl font-semibold text-sm hover:bg-[#6d3410] transition-colors whitespace-nowrap flex-shrink-0"
               >
                 Book Now →
               </button>
@@ -459,17 +459,17 @@ export default function AjayFoodsWebsite() {
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setBookingSuccess(false)} />
           <div className="relative bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 text-center">
             <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center text-4xl mx-auto mb-4">✅</div>
-            <h2 className="font-playfair text-2xl font-bold text-[#8B4513] mb-2">Booking Request Sent!</h2>
+            <h2 className="font-playfair text-2xl font-bold text-[#D4380D] mb-2">Booking Request Sent!</h2>
             <p className="text-[#555] text-sm mb-4">
               Thank you! We'll call you back <strong>within 24 hours</strong> to confirm your booking.
             </p>
-            <div className="bg-[#FDF6EC] rounded-2xl px-5 py-3 mb-6 inline-block">
+            <div className="bg-[#FFF8F5] rounded-2xl px-5 py-3 mb-6 inline-block">
               <p className="text-xs text-[#888] mb-0.5">Confirmation Number</p>
-              <p className="font-playfair text-2xl font-bold text-[#8B4513]">{confirmationNo}</p>
+              <p className="font-playfair text-2xl font-bold text-[#D4380D]">{confirmationNo}</p>
             </div>
             <p className="text-xs text-[#aaa] mb-6">Please save this number for reference.</p>
             <button onClick={() => setBookingSuccess(false)}
-              className="bg-[#8B4513] text-white px-8 py-3 rounded-xl font-semibold hover:bg-[#6d3410] transition-colors"
+              className="bg-[#D4380D] text-white px-8 py-3 rounded-xl font-semibold hover:bg-[#6d3410] transition-colors"
             >
               Done
             </button>
@@ -490,7 +490,7 @@ export default function AjayFoodsWebsite() {
             </div>
             <div className="hidden sm:block">
               <div className="hidden sm:block">
-              <h1 className="text-base sm:text-lg font-bold text-[#8B4513] font-playfair leading-tight">
+              <h1 className="text-base sm:text-lg font-bold text-[#D4380D] font-playfair leading-tight">
                 Ajay Foods &amp; Beverages
               </h1>
               <p className="text-xs text-[#D4A853] font-medium tracking-wide">Quality Assured Foods</p>
@@ -505,7 +505,7 @@ export default function AjayFoodsWebsite() {
                 className={`text-sm font-medium transition-all relative group ${
                   activeSection === l.id
                     ? "text-[#D4A853]"
-                    : scrolled ? "text-[#1a1a1a] hover:text-[#8B4513]" : "text-white/90 hover:text-[#D4A853]"
+                    : scrolled ? "text-[#1a1a1a] hover:text-[#D4380D]" : "text-white/90 hover:text-[#D4A853]"
                 }`}
               >
                 {l.label}
@@ -518,13 +518,13 @@ export default function AjayFoodsWebsite() {
           <div className="hidden md:flex items-center gap-3">
             <a href="tel:+919876543210"
               className={`hidden xl:flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full border transition-colors ${
-                scrolled ? "border-[#8B4513]/30 text-[#8B4513] hover:bg-[#8B4513]/5" : "border-white/20 text-white/80 hover:text-white"
+                scrolled ? "border-[#D4380D]/30 text-[#D4380D] hover:bg-[#D4380D]/5" : "border-white/20 text-white/80 hover:text-white"
               }`}
             >
               📞 +91 98765 43210
             </a>
             <button onClick={() => router.push("/packages")}
-              className="bg-[#D4A853] text-[#3d1a07] px-5 py-2 rounded-full text-sm font-bold hover:bg-[#e8bc6a] transition-colors shadow-md"
+              className="bg-[#D4A853] text-[#5C1209] px-5 py-2 rounded-full text-sm font-bold hover:bg-[#e8bc6a] transition-colors shadow-md"
             >
               Book Now
             </button>
@@ -532,31 +532,31 @@ export default function AjayFoodsWebsite() {
 
           {/* Hamburger */}
           <button onClick={() => setMenuOpen(!menuOpen)} className="lg:hidden flex flex-col gap-[5px] p-2 flex-shrink-0" aria-label="Open menu">
-            <span className={`block w-6 h-0.5 transition-all ${scrolled ? "bg-[#8B4513]" : "bg-white"} ${menuOpen ? "rotate-45 translate-y-[7px]" : ""}`} />
-            <span className={`block w-6 h-0.5 transition-all ${scrolled ? "bg-[#8B4513]" : "bg-white"} ${menuOpen ? "opacity-0" : ""}`} />
-            <span className={`block w-6 h-0.5 transition-all ${scrolled ? "bg-[#8B4513]" : "bg-white"} ${menuOpen ? "-rotate-45 -translate-y-[7px]" : ""}`} />
+            <span className={`block w-6 h-0.5 transition-all ${scrolled ? "bg-[#D4380D]" : "bg-white"} ${menuOpen ? "rotate-45 translate-y-[7px]" : ""}`} />
+            <span className={`block w-6 h-0.5 transition-all ${scrolled ? "bg-[#D4380D]" : "bg-white"} ${menuOpen ? "opacity-0" : ""}`} />
+            <span className={`block w-6 h-0.5 transition-all ${scrolled ? "bg-[#D4380D]" : "bg-white"} ${menuOpen ? "-rotate-45 -translate-y-[7px]" : ""}`} />
           </button>
         </div>
 
         {/* Mobile menu */}
         {menuOpen && (
-          <div className="lg:hidden bg-white border-t border-[#f0e6d3] shadow-xl">
+          <div className="lg:hidden bg-white border-t border-[#FFE0D4] shadow-xl">
             <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col gap-1">
               {navLinks.map((l) => (
                 <button key={l.id} onClick={() => scrollTo(l.id)}
                   className={`text-left text-base font-medium py-3 px-3 rounded-xl transition-colors ${
-                    activeSection === l.id ? "bg-[#8B4513]/10 text-[#8B4513] font-semibold" : "text-[#1a1a1a] hover:bg-[#FDF6EC]"
+                    activeSection === l.id ? "bg-[#D4380D]/10 text-[#D4380D] font-semibold" : "text-[#1a1a1a] hover:bg-[#FFF8F5]"
                   }`}
                 >
                   {l.label}
                 </button>
               ))}
-              <div className="mt-2 pt-3 border-t border-[#f0e6d3] flex flex-col gap-2">
-                <a href="tel:+919876543210" className="flex items-center gap-2 text-sm text-[#8B4513] font-semibold px-3 py-2">
+              <div className="mt-2 pt-3 border-t border-[#FFE0D4] flex flex-col gap-2">
+                <a href="tel:+919876543210" className="flex items-center gap-2 text-sm text-[#D4380D] font-semibold px-3 py-2">
                   📞 +91 98765 43210
                 </a>
                 <button onClick={() => { setMenuOpen(false); router.push("/packages") }}
-                  className="bg-[#D4A853] text-[#3d1a07] px-5 py-3 rounded-xl text-sm font-bold w-full"
+                  className="bg-[#D4A853] text-[#5C1209] px-5 py-3 rounded-xl text-sm font-bold w-full"
                 >
                   Book Now →
                 </button>
@@ -568,7 +568,7 @@ export default function AjayFoodsWebsite() {
 
       {/* ══ HERO ═════════════════════════════════════════════════════════════ */}
       <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #3d1a07 0%, #6b2d0f 35%, #8B4513 65%, #b5601e 100%)" }}
+        style={{ background: "linear-gradient(135deg, #5C1209 0%, #9E2D1A 35%, #D4380D 65%, #E5622B 100%)" }}
       >
         <div className="absolute top-20 right-10 w-64 h-64 rounded-full bg-[#D4A853]/10 blur-3xl" />
         <div className="absolute bottom-20 left-10 w-80 h-80 rounded-full bg-[#D4A853]/10 blur-3xl" />
@@ -595,7 +595,7 @@ export default function AjayFoodsWebsite() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button onClick={() => router.push("/packages")}
-              className="bg-[#D4A853] text-[#3d1a07] px-8 py-4 rounded-full font-bold text-base hover:bg-[#e8bc6a] transition-all shadow-xl hover:shadow-2xl hover:-translate-y-0.5 w-full sm:w-auto"
+              className="bg-[#D4A853] text-[#5C1209] px-8 py-4 rounded-full font-bold text-base hover:bg-[#e8bc6a] transition-all shadow-xl hover:shadow-2xl hover:-translate-y-0.5 w-full sm:w-auto"
             >
               Book Your Event 🎉
             </button>
@@ -612,7 +612,7 @@ export default function AjayFoodsWebsite() {
           <span className="text-xl animate-bounce">↓</span>
         </div>
         <div className="absolute bottom-0 left-0 right-0">
-          <svg viewBox="0 0 1440 80" fill="none"><path d="M0 80L60 70C120 60 240 40 360 35C480 30 600 40 720 45C840 50 960 50 1080 45C1200 40 1320 30 1380 25L1440 20V80H0Z" fill="#FDF6EC" /></svg>
+          <svg viewBox="0 0 1440 80" fill="none"><path d="M0 80L60 70C120 60 240 40 360 35C480 30 600 40 720 45C840 50 960 50 1080 45C1200 40 1320 30 1380 25L1440 20V80H0Z" fill="#FFF8F5" /></svg>
         </div>
       </section>
 
@@ -624,16 +624,16 @@ export default function AjayFoodsWebsite() {
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-14">
             <span className="text-[#D4A853] text-sm font-semibold tracking-widest uppercase">What We Offer</span>
-            <h2 className="font-playfair text-4xl md:text-5xl font-bold text-[#8B4513] mt-2 mb-4">Our Services</h2>
+            <h2 className="font-playfair text-4xl md:text-5xl font-bold text-[#D4380D] mt-2 mb-4">Our Services</h2>
             <p className="text-[#555] max-w-xl mx-auto">We specialize in exceptional culinary experiences for every occasion, big or small.</p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              { icon: "🎊", title: "Event Catering", desc: "Weddings, birthdays, corporate events, and family functions — we handle every detail with care.", features: ["Custom menus", "On-site cooking", "Professional staff", "Full setup & cleanup"], color: "from-[#8B4513] to-[#b5601e]", link: "/packages" },
+              { icon: "🎊", title: "Event Catering", desc: "Weddings, birthdays, corporate events, and family functions — we handle every detail with care.", features: ["Custom menus", "On-site cooking", "Professional staff", "Full setup & cleanup"], color: "from-[#D4380D] to-[#E5622B]", link: "/packages" },
               // { icon: "🙏", title: "Charity & Community", desc: "Dedicated morning feeds — nutritious, lovingly prepared meals served before 9 AM daily.", features: ["Fresh morning prep", "Large-scale cooking", "Flexible quantities", "Donation-based pricing"], color: "from-[#D4A853] to-[#c49840]", link: "#about" },
-              { icon: "🏪", title: "Daily Stalls", desc: "Morning and evening food stalls with fixed-price offerings — consistent quality, every day.", features: ["Twice daily service", "Fixed pricing", "Quick service", "Morning & evening"], color: "from-[#6d3410] to-[#8B4513]", link: "/menu" },
+              { icon: "🏪", title: "Daily Stalls", desc: "Morning and evening food stalls with fixed-price offerings — consistent quality, every day.", features: ["Twice daily service", "Fixed pricing", "Quick service", "Morning & evening"], color: "from-[#6d3410] to-[#D4380D]", link: "/menu" },
             ].map((s) => (
-              <div key={s.title} className="group rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all hover:-translate-y-2 border border-[#f0e6d3] flex flex-col">
+              <div key={s.title} className="group rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all hover:-translate-y-2 border border-[#FFE0D4] flex flex-col">
                 <div className={`bg-gradient-to-br ${s.color} p-8 text-white`}>
                   <div className="text-5xl mb-4">{s.icon}</div>
                   <h3 className="font-playfair text-2xl font-bold mb-2">{s.title}</h3>
@@ -643,12 +643,12 @@ export default function AjayFoodsWebsite() {
                   <ul className="space-y-2 flex-1">
                     {s.features.map((f) => (
                       <li key={f} className="flex items-center gap-2 text-sm text-[#444]">
-                        <span className="w-4 h-4 rounded-full bg-[#D4A853]/20 flex items-center justify-center text-[#8B4513] text-xs flex-shrink-0">✓</span>
+                        <span className="w-4 h-4 rounded-full bg-[#D4A853]/20 flex items-center justify-center text-[#D4380D] text-xs flex-shrink-0">✓</span>
                         {f}
                       </li>
                     ))}
                   </ul>
-                  <button onClick={() => router.push(s.link)} className="mt-5 flex items-center gap-1.5 text-[#8B4513] text-sm font-semibold hover:gap-3 transition-all group/btn">
+                  <button onClick={() => router.push(s.link)} className="mt-5 flex items-center gap-1.5 text-[#D4380D] text-sm font-semibold hover:gap-3 transition-all group/btn">
                     Learn more <span className="group-hover/btn:translate-x-1 transition-transform inline-block">→</span>
                   </button>
                 </div>
@@ -659,11 +659,11 @@ export default function AjayFoodsWebsite() {
       </section>
 
       {/* ══ MENU HIGHLIGHTS ══════════════════════════════════════════════════ */}
-      <section id="menu" className="py-20 bg-[#FDF6EC]">
+      <section id="menu" className="py-20 bg-[#FFF8F5]">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-10">
             <span className="text-[#D4A853] text-sm font-semibold tracking-widest uppercase">Taste the Tradition</span>
-            <h2 className="font-playfair text-4xl md:text-5xl font-bold text-[#8B4513] mt-2 mb-4">Our Signature Menu</h2>
+            <h2 className="font-playfair text-4xl md:text-5xl font-bold text-[#D4380D] mt-2 mb-4">Our Signature Menu</h2>
             <p className="text-[#555] max-w-xl mx-auto">Every dish crafted with authentic spices, fresh ingredients, and generations of culinary wisdom.</p>
           </div>
 
@@ -672,7 +672,7 @@ export default function AjayFoodsWebsite() {
             {menuFilterOptions.map((opt) => (
               <button key={opt.id} onClick={() => setMenuFilter(opt.id)}
                 className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
-                  menuFilter === opt.id ? "bg-[#8B4513] text-white shadow-md" : "bg-white border border-[#e0d0bc] text-[#555] hover:border-[#8B4513] hover:text-[#8B4513]"
+                  menuFilter === opt.id ? "bg-[#D4380D] text-white shadow-md" : "bg-white border border-[#FFD0C0] text-[#555] hover:border-[#D4380D] hover:text-[#D4380D]"
                 }`}
               >
                 {opt.label}
@@ -682,30 +682,30 @@ export default function AjayFoodsWebsite() {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {filteredHomeMenu.map((item) => (
-              <div key={item.name} className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all hover:-translate-y-1 border border-[#f0e6d3] group">
+              <div key={item.name} className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all hover:-translate-y-1 border border-[#FFE0D4] group">
                 <div className="bg-gradient-to-br from-[#fdf0e0] to-[#f5e6cc] h-36 flex items-center justify-center relative">
                   <span className="text-6xl group-hover:scale-110 transition-transform">{item.emoji}</span>
                   {item.popular && (
-                    <span className="absolute top-3 right-3 bg-[#D4A853] text-[#3d1a07] text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Popular</span>
+                    <span className="absolute top-3 right-3 bg-[#D4A853] text-[#5C1209] text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Popular</span>
                   )}
                 </div>
                 <div className="p-4">
                   <span className="text-[10px] text-[#D4A853] font-bold uppercase tracking-widest">{item.section.replace("-", " ")}</span>
-                  <h4 className="font-playfair font-bold text-[#8B4513] text-base mt-0.5">{item.name}</h4>
+                  <h4 className="font-playfair font-bold text-[#D4380D] text-base mt-0.5">{item.name}</h4>
                   <p className="text-xs text-[#666] mt-1 leading-relaxed">{item.desc}</p>
-                  <p className="text-xs font-semibold text-[#8B4513] mt-2">{item.price}</p>
+                  <p className="text-xs font-semibold text-[#D4380D] mt-2">{item.price}</p>
                 </div>
               </div>
             ))}
           </div>
 
           {filteredHomeMenu.length === 0 && (
-            <p className="text-center text-[#888] py-12">No items in this category. <button onClick={() => setMenuFilter("all")} className="text-[#8B4513] font-semibold underline">Show all</button></p>
+            <p className="text-center text-[#888] py-12">No items in this category. <button onClick={() => setMenuFilter("all")} className="text-[#D4380D] font-semibold underline">Show all</button></p>
           )}
 
           <div className="text-center mt-10">
             <button onClick={() => setMenuModalOpen(true)}
-              className="bg-[#8B4513] text-white px-8 py-3.5 rounded-full font-semibold hover:bg-[#6d3410] transition-colors shadow-md inline-flex items-center gap-2"
+              className="bg-[#D4380D] text-white px-8 py-3.5 rounded-full font-semibold hover:bg-[#6d3410] transition-colors shadow-md inline-flex items-center gap-2"
             >
               View Full Menu 📋
             </button>
@@ -718,16 +718,16 @@ export default function AjayFoodsWebsite() {
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-10">
             <span className="text-[#D4A853] text-sm font-semibold tracking-widest uppercase">Simple & Transparent</span>
-            <h2 className="font-playfair text-4xl md:text-5xl font-bold text-[#8B4513] mt-2 mb-4">Menu Packages</h2>
+            <h2 className="font-playfair text-4xl md:text-5xl font-bold text-[#D4380D] mt-2 mb-4">Menu Packages</h2>
             <p className="text-[#555] max-w-xl mx-auto">Choose a package and customise with extras. No hidden charges.</p>
-            <div className="inline-flex items-center mt-5 bg-[#FDF6EC] border border-[#e0d0bc] rounded-full p-1 gap-1">
+            <div className="inline-flex items-center mt-5 bg-[#FFF8F5] border border-[#FFD0C0] rounded-full p-1 gap-1">
               <button onClick={() => setPricePer100(false)}
-                className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${!pricePer100 ? "bg-[#8B4513] text-white shadow-sm" : "text-[#888] hover:text-[#555]"}`}
+                className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${!pricePer100 ? "bg-[#D4380D] text-white shadow-sm" : "text-[#888] hover:text-[#555]"}`}
               >
                 Per Person
               </button>
               <button onClick={() => setPricePer100(true)}
-                className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${pricePer100 ? "bg-[#8B4513] text-white shadow-sm" : "text-[#888] hover:text-[#555]"}`}
+                className={`px-4 py-1.5 rounded-full text-sm font-semibold transition-all ${pricePer100 ? "bg-[#D4380D] text-white shadow-sm" : "text-[#888] hover:text-[#555]"}`}
               >
                 Per 100 Guests
               </button>
@@ -736,10 +736,10 @@ export default function AjayFoodsWebsite() {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {PACKAGES.map((pkg) => (
-              <div key={pkg.id} className={`rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all hover:-translate-y-1 border-2 ${pkg.popular ? "border-[#D4A853]" : "border-[#f0e6d3]"} relative`}>
+              <div key={pkg.id} className={`rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all hover:-translate-y-1 border-2 ${pkg.popular ? "border-[#D4A853]" : "border-[#FFE0D4]"} relative`}>
                 {pkg.popular && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
-                    <span className="bg-[#D4A853] text-[#3d1a07] text-[10px] font-bold px-3 py-1 rounded-full whitespace-nowrap shadow-md">⭐ Most Popular</span>
+                    <span className="bg-[#D4A853] text-[#5C1209] text-[10px] font-bold px-3 py-1 rounded-full whitespace-nowrap shadow-md">⭐ Most Popular</span>
                   </div>
                 )}
                 <div className={`bg-gradient-to-br ${pkg.color} p-6 text-white`}>
@@ -760,13 +760,13 @@ export default function AjayFoodsWebsite() {
                   <ul className="space-y-2 mb-4">
                     {pkg.includes.map((item) => (
                       <li key={item} className="flex items-start gap-2 text-sm text-[#444]">
-                        <span className="w-4 h-4 rounded-full bg-[#D4A853]/20 flex items-center justify-center text-[#8B4513] text-xs flex-shrink-0 mt-0.5">✓</span>
+                        <span className="w-4 h-4 rounded-full bg-[#D4A853]/20 flex items-center justify-center text-[#D4380D] text-xs flex-shrink-0 mt-0.5">✓</span>
                         {item}
                       </li>
                     ))}
                   </ul>
                   <button onClick={() => router.push(`/packages?prefill=${pkg.id}`)}
-                    className="w-full bg-[#8B4513] text-white py-2.5 rounded-xl text-sm font-semibold hover:bg-[#6d3410] transition-colors"
+                    className="w-full bg-[#D4380D] text-white py-2.5 rounded-xl text-sm font-semibold hover:bg-[#6d3410] transition-colors"
                   >
                     Book This Package →
                   </button>
@@ -779,12 +779,12 @@ export default function AjayFoodsWebsite() {
       </section> */}
 
       {/* ══ WHY CHOOSE US ════════════════════════════════════════════════════ */}
-      <section className="py-20 bg-[#FDF6EC]">
+      <section className="py-20 bg-[#FFF8F5]">
         <div className="max-w-6xl mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-16 items-center">
             <div>
               <span className="text-[#D4A853] text-sm font-semibold tracking-widest uppercase">Why Ajay Foods</span>
-              <h2 className="font-playfair text-4xl md:text-5xl font-bold text-[#8B4513] mt-2 mb-6">
+              <h2 className="font-playfair text-4xl md:text-5xl font-bold text-[#D4380D] mt-2 mb-6">
                 The Difference is in<br />Every Bite
               </h2>
               <p className="text-[#555] leading-relaxed mb-8">
@@ -798,7 +798,7 @@ export default function AjayFoodsWebsite() {
                   { icon: "🎯", title: "Customisable Menus",      desc: "Mix and match items to craft the perfect meal for your guests." },
                 ].map((w) => (
                   <div key={w.title} className="flex gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center text-2xl flex-shrink-0 shadow-sm border border-[#f0e6d3]">{w.icon}</div>
+                    <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center text-2xl flex-shrink-0 shadow-sm border border-[#FFE0D4]">{w.icon}</div>
                     <div>
                       <h4 className="font-semibold text-[#1a1a1a] text-sm">{w.title}</h4>
                       <p className="text-[#666] text-xs mt-0.5 leading-relaxed">{w.desc}</p>
@@ -808,19 +808,19 @@ export default function AjayFoodsWebsite() {
               </div>
             </div>
             <div className="relative h-[420px]">
-              <div className="absolute top-0 right-0 w-72 h-48 rounded-2xl bg-gradient-to-br from-[#8B4513] to-[#6d3410] shadow-xl p-6 text-white">
+              <div className="absolute top-0 right-0 w-72 h-48 rounded-2xl bg-gradient-to-br from-[#D4380D] to-[#6d3410] shadow-xl p-6 text-white">
                 <div className="text-4xl mb-3">🍛</div>
                 <p className="font-playfair text-xl font-bold">Biryani Special</p>
                 <p className="text-white/70 text-sm mt-1">Aromatic, rich, unforgettable</p>
               </div>
               <div className="absolute top-28 left-0 w-72 h-48 rounded-2xl bg-gradient-to-br from-[#D4A853] to-[#c49840] shadow-xl p-6">
                 <div className="text-4xl mb-3">🎊</div>
-                <p className="font-playfair text-xl font-bold text-[#3d1a07]">Grand Events</p>
-                <p className="text-[#3d1a07]/70 text-sm mt-1">Serving 50 to 5000 guests</p>
+                <p className="font-playfair text-xl font-bold text-[#5C1209]">Grand Events</p>
+                <p className="text-[#5C1209]/70 text-sm mt-1">Serving 50 to 5000 guests</p>
               </div>
-              <div className="absolute bottom-0 right-8 w-72 h-48 rounded-2xl bg-white border border-[#f0e6d3] shadow-xl p-6">
+              <div className="absolute bottom-0 right-8 w-72 h-48 rounded-2xl bg-white border border-[#FFE0D4] shadow-xl p-6">
                 <div className="text-4xl mb-3">🙏</div>
-                <p className="font-playfair text-xl font-bold text-[#8B4513]">Community First</p>
+                <p className="font-playfair text-xl font-bold text-[#D4380D]">Community First</p>
                 <p className="text-[#666] text-sm mt-1">Daily charity feeds before 9 AM</p>
               </div>
             </div>
@@ -833,7 +833,7 @@ export default function AjayFoodsWebsite() {
         <div className="max-w-5xl mx-auto px-4">
           <div className="text-center mb-14">
             <span className="text-[#D4A853] text-sm font-semibold tracking-widest uppercase">Simple Process</span>
-            <h2 className="font-playfair text-4xl md:text-5xl font-bold text-[#8B4513] mt-2 mb-4">How It Works</h2>
+            <h2 className="font-playfair text-4xl md:text-5xl font-bold text-[#D4380D] mt-2 mb-4">How It Works</h2>
           </div>
           <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-8 relative">
             <div className="hidden md:block absolute top-10 left-[15%] right-[15%] h-0.5 bg-gradient-to-r from-[#D4A853]/30 via-[#D4A853] to-[#D4A853]/30" />
@@ -844,9 +844,9 @@ export default function AjayFoodsWebsite() {
               { step: "04", icon: "🎉", title: "You Celebrate",   desc: "Enjoy your event while we handle the food, end to end." },
             ].map((s) => (
               <div key={s.step} className="text-center relative z-10">
-                <div className="w-20 h-20 rounded-full bg-[#FDF6EC] border-2 border-[#D4A853] shadow-md flex items-center justify-center text-3xl mx-auto mb-4">{s.icon}</div>
+                <div className="w-20 h-20 rounded-full bg-[#FFF8F5] border-2 border-[#D4A853] shadow-md flex items-center justify-center text-3xl mx-auto mb-4">{s.icon}</div>
                 <div className="text-[#D4A853] text-xs font-bold mb-1">STEP {s.step}</div>
-                <h4 className="font-playfair font-bold text-[#8B4513] text-lg mb-2">{s.title}</h4>
+                <h4 className="font-playfair font-bold text-[#D4380D] text-lg mb-2">{s.title}</h4>
                 <p className="text-[#666] text-sm leading-relaxed">{s.desc}</p>
               </div>
             ))}
@@ -855,11 +855,11 @@ export default function AjayFoodsWebsite() {
       </section> */}
 
       {/* ══ TESTIMONIALS (CAROUSEL) ══════════════════════════════════════════ */}
-      <section className="py-20 bg-[#FDF6EC]">
+      <section className="py-20 bg-[#FFF8F5]">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-12">
             <span className="text-[#D4A853] text-sm font-semibold tracking-widest uppercase">What People Say</span>
-            <h2 className="font-playfair text-4xl md:text-5xl font-bold text-[#8B4513] mt-2 mb-4">Loved by Thousands</h2>
+            <h2 className="font-playfair text-4xl md:text-5xl font-bold text-[#D4380D] mt-2 mb-4">Loved by Thousands</h2>
           </div>
 
           {/* Unified carousel — all screen sizes */}
@@ -871,7 +871,7 @@ export default function AjayFoodsWebsite() {
                 const t = TESTIMONIALS[idx]
                 return (
                   <div key={`${testimonialIdx}-${offset}`}
-                    className={`bg-white rounded-2xl p-6 border border-[#f0e6d3] shadow-sm transition-all duration-300 ${offset === 1 ? "hidden md:block" : ""}`}
+                    className={`bg-white rounded-2xl p-6 border border-[#FFE0D4] shadow-sm transition-all duration-300 ${offset === 1 ? "hidden md:block" : ""}`}
                   >
                     <div className="flex gap-0.5 mb-3">{Array.from({ length: t.rating }).map((_, i) => <span key={i} className="text-[#D4A853]">★</span>)}</div>
                     <p className="text-[#444] text-sm leading-relaxed mb-5 italic min-h-[72px]">&quot;{t.text}&quot;</p>
@@ -890,17 +890,17 @@ export default function AjayFoodsWebsite() {
             {/* Controls */}
             <div className="flex items-center justify-center gap-4 mt-6">
               <button onClick={() => { setTestimonialIdx((i) => (i - 1 + TESTIMONIALS.length) % TESTIMONIALS.length); resetTestimonialTimer() }}
-                className="w-10 h-10 rounded-full bg-white border border-[#e0d0bc] flex items-center justify-center text-[#8B4513] hover:bg-[#8B4513] hover:text-white transition-colors shadow-sm font-bold"
+                className="w-10 h-10 rounded-full bg-white border border-[#FFD0C0] flex items-center justify-center text-[#D4380D] hover:bg-[#D4380D] hover:text-white transition-colors shadow-sm font-bold"
               >←</button>
               <div className="flex gap-2">
                 {TESTIMONIALS.map((_, i) => (
                   <button key={i} onClick={() => { setTestimonialIdx(i); resetTestimonialTimer() }}
-                    className={`h-2 rounded-full transition-all duration-300 ${i === testimonialIdx ? "bg-[#8B4513] w-6" : "bg-[#e0d0bc] w-2"}`}
+                    className={`h-2 rounded-full transition-all duration-300 ${i === testimonialIdx ? "bg-[#D4380D] w-6" : "bg-[#FFD0C0] w-2"}`}
                   />
                 ))}
               </div>
               <button onClick={() => { setTestimonialIdx((i) => (i + 1) % TESTIMONIALS.length); resetTestimonialTimer() }}
-                className="w-10 h-10 rounded-full bg-white border border-[#e0d0bc] flex items-center justify-center text-[#8B4513] hover:bg-[#8B4513] hover:text-white transition-colors shadow-sm font-bold"
+                className="w-10 h-10 rounded-full bg-white border border-[#FFD0C0] flex items-center justify-center text-[#D4380D] hover:bg-[#D4380D] hover:text-white transition-colors shadow-sm font-bold"
               >→</button>
             </div>
             <p className="text-center text-xs text-[#aaa] mt-2">{testimonialIdx + 1} of {TESTIMONIALS.length} · Auto-plays every 5s</p>
@@ -909,7 +909,7 @@ export default function AjayFoodsWebsite() {
       </section>
 
       {/* ══ ABOUT ════════════════════════════════════════════════════════════ */}
-      <section id="about" className="py-20 bg-gradient-to-br from-[#3d1a07] to-[#8B4513]">
+      <section id="about" className="py-20 bg-gradient-to-br from-[#5C1209] to-[#D4380D]">
         <div className="max-w-4xl mx-auto px-4 text-center text-white">
           <span className="text-[#D4A853] text-sm font-semibold tracking-widest uppercase">Our Story</span>
           <h2 className="font-playfair text-4xl md:text-5xl font-bold mt-2 mb-6">Rooted in Tradition,<br />Grown with Love</h2>
@@ -935,12 +935,12 @@ export default function AjayFoodsWebsite() {
         <div className="max-w-5xl mx-auto px-4">
           <div className="text-center mb-8">
             <span className="text-[#D4A853] text-sm font-semibold tracking-widest uppercase">Our Location</span>
-            <h2 className="font-playfair text-3xl md:text-4xl font-bold text-[#8B4513] mt-2">Find Us</h2>
+            <h2 className="font-playfair text-3xl md:text-4xl font-bold text-[#D4380D] mt-2">Find Us</h2>
           </div>
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div className="space-y-5">
               <div className="flex gap-4">
-                <div className="w-12 h-12 rounded-xl bg-[#FDF6EC] border border-[#f0e6d3] flex items-center justify-center text-xl shadow-sm flex-shrink-0">📍</div>
+                <div className="w-12 h-12 rounded-xl bg-[#FFF8F5] border border-[#FFE0D4] flex items-center justify-center text-xl shadow-sm flex-shrink-0">📍</div>
                 <div>
                   <p className="text-[#D4A853] text-xs font-semibold uppercase tracking-wider">Location</p>
                   <p className="font-medium text-[#1a1a1a] text-sm">Hyderabad, Telangana</p>
@@ -948,7 +948,7 @@ export default function AjayFoodsWebsite() {
                 </div>
               </div>
               <div className="flex gap-4">
-                <div className="w-12 h-12 rounded-xl bg-[#FDF6EC] border border-[#f0e6d3] flex items-center justify-center text-xl shadow-sm flex-shrink-0">⏰</div>
+                <div className="w-12 h-12 rounded-xl bg-[#FFF8F5] border border-[#FFE0D4] flex items-center justify-center text-xl shadow-sm flex-shrink-0">⏰</div>
                 <div>
                   <p className="text-[#D4A853] text-xs font-semibold uppercase tracking-wider">Service Hours</p>
                   <p className="font-medium text-[#1a1a1a] text-sm">Morning ☀️ delivery by 12:00 PM</p>
@@ -956,20 +956,20 @@ export default function AjayFoodsWebsite() {
                 </div>
               </div>
               <div className="flex gap-4">
-                <div className="w-12 h-12 rounded-xl bg-[#FDF6EC] border border-[#f0e6d3] flex items-center justify-center text-xl shadow-sm flex-shrink-0">📧</div>
+                <div className="w-12 h-12 rounded-xl bg-[#FFF8F5] border border-[#FFE0D4] flex items-center justify-center text-xl shadow-sm flex-shrink-0">📧</div>
                 <div>
                   <p className="text-[#D4A853] text-xs font-semibold uppercase tracking-wider">Email Us</p>
-                  <a href="mailto:ajayfoods.co.in@gmail.com" className="font-medium text-[#8B4513] text-sm hover:underline">ajayfoods.co.in@gmail.com</a>
+                  <a href="mailto:ajayfoods.co.in@gmail.com" className="font-medium text-[#D4380D] text-sm hover:underline">ajayfoods.co.in@gmail.com</a>
                   <p className="text-[#888] text-xs mt-0.5">We reply within 24 hours</p>
                 </div>
               </div>
               <a href="https://maps.app.goo.gl/pXH84d2EoCmZ11S7A" target="_blank" rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-[#8B4513] text-white px-6 py-3 rounded-xl font-semibold text-sm hover:bg-[#6d3410] transition-colors shadow-md"
+                className="inline-flex items-center gap-2 bg-[#D4380D] text-white px-6 py-3 rounded-xl font-semibold text-sm hover:bg-[#6d3410] transition-colors shadow-md"
               >
                 📍 Get Directions on Google Maps
               </a>
             </div>
-            <div className="rounded-2xl overflow-hidden shadow-lg border border-[#f0e6d3] aspect-video">
+            <div className="rounded-2xl overflow-hidden shadow-lg border border-[#FFE0D4] aspect-video">
               <iframe
                 src="https://maps.google.com/maps?q=Hyderabad,Telangana,India&output=embed&z=12"
                 className="w-full h-full"
@@ -985,18 +985,18 @@ export default function AjayFoodsWebsite() {
       </section>
 
       {/* ══ CONTACT ══════════════════════════════════════════════════════════ */}
-      {/* <section id="contact" className="py-20 bg-[#FDF6EC]">
+      {/* <section id="contact" className="py-20 bg-[#FFF8F5]">
         <div className="max-w-6xl mx-auto px-4">
           <div className="text-center mb-14">
             <span className="text-[#D4A853] text-sm font-semibold tracking-widest uppercase">Get In Touch</span>
-            <h2 className="font-playfair text-4xl md:text-5xl font-bold text-[#8B4513] mt-2 mb-4">Let&apos;s Plan Your Event</h2>
+            <h2 className="font-playfair text-4xl md:text-5xl font-bold text-[#D4380D] mt-2 mb-4">Let&apos;s Plan Your Event</h2>
             <p className="text-[#555] max-w-xl mx-auto">Tell us about your event and we&apos;ll get back to you within 24 hours with a customised menu and pricing.</p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-12">
             <div className="space-y-6">
               <div>
-                <h3 className="font-playfair text-2xl font-bold text-[#8B4513] mb-5">Contact Details</h3>
+                <h3 className="font-playfair text-2xl font-bold text-[#D4380D] mb-5">Contact Details</h3>
                 <div className="space-y-4">
                   {[
                     { icon: "📧", label: "Email",        value: "ajayfoods.co.in@gmail.com", sub: "We reply within 24 hours",  href: "mailto:ajayfoods.co.in@gmail.com" },
@@ -1004,11 +1004,11 @@ export default function AjayFoodsWebsite() {
                     { icon: "⏰", label: "Service Hours",value: "Morning ☀️ by 12:00 PM",    sub: "Evening 🌙 by 6:00 PM",     href: null },
                   ].map((c) => (
                     <div key={c.label} className="flex gap-4">
-                      <div className="w-12 h-12 rounded-xl bg-white border border-[#f0e6d3] flex items-center justify-center text-xl shadow-sm flex-shrink-0">{c.icon}</div>
+                      <div className="w-12 h-12 rounded-xl bg-white border border-[#FFE0D4] flex items-center justify-center text-xl shadow-sm flex-shrink-0">{c.icon}</div>
                       <div>
                         <p className="text-[#D4A853] text-xs font-semibold uppercase tracking-wider">{c.label}</p>
                         {c.href ? (
-                          <a href={c.href} className="font-medium text-[#1a1a1a] text-sm hover:text-[#8B4513] transition-colors">{c.value}</a>
+                          <a href={c.href} className="font-medium text-[#1a1a1a] text-sm hover:text-[#D4380D] transition-colors">{c.value}</a>
                         ) : (
                           <p className="font-medium text-[#1a1a1a] text-sm">{c.value}</p>
                         )}
@@ -1019,20 +1019,9 @@ export default function AjayFoodsWebsite() {
                 </div>
               </div>
 
-              <a href="https://wa.me/?text=Hi! I'd like to book catering for my event."
-                target="_blank" rel="noopener noreferrer"
-                className="flex items-center gap-3 bg-[#25D366] text-white px-5 py-4 rounded-2xl font-semibold hover:bg-[#1da851] transition-colors shadow-md"
-              >
-                <span className="text-2xl">💬</span>
-                <div>
-                  <p className="font-bold text-sm">Prefer WhatsApp?</p>
-                  <p className="text-xs text-white/80">Chat with us instantly →</p>
-                </div>
-              </a>
-
-              <div className="bg-gradient-to-br from-[#FDF6EC] to-[#fef9f2] rounded-2xl p-6 border border-[#f0e6d3]">
+              <div className="bg-gradient-to-br from-[#FFF8F5] to-[#fef9f2] rounded-2xl p-6 border border-[#FFE0D4]">
                 <p className="text-3xl mb-3">⏰</p>
-                <h4 className="font-playfair text-xl font-bold text-[#8B4513] mb-2">Service Hours</h4>
+                <h4 className="font-playfair text-xl font-bold text-[#D4380D] mb-2">Service Hours</h4>
                 <div className="space-y-2 text-sm text-[#555]">
                   <div className="flex items-center gap-2"><span className="text-base">☀️</span><span><strong>Lunch shift:</strong> Ready by 12 PM</span></div>
                   <div className="flex items-center gap-2"><span className="text-base">🌙</span><span><strong>Evening shift:</strong> Ready by 6 PM</span></div>
@@ -1041,8 +1030,8 @@ export default function AjayFoodsWebsite() {
               </div>
             </div>
 
-            <div className="bg-white rounded-2xl shadow-md border border-[#f0e6d3] p-8">
-              <h3 className="font-playfair text-2xl font-bold text-[#8B4513] mb-1">Quick Booking</h3>
+            <div className="bg-white rounded-2xl shadow-md border border-[#FFE0D4] p-8">
+              <h3 className="font-playfair text-2xl font-bold text-[#D4380D] mb-1">Quick Booking</h3>
               <p className="text-xs text-[#888] mb-5">Fill in your details and we&apos;ll call you within 24 hours.</p>
               <form className="space-y-4" onSubmit={handleBookingSubmit} noValidate>
                 <div className="grid grid-cols-2 gap-4">
@@ -1050,7 +1039,7 @@ export default function AjayFoodsWebsite() {
                     <label className="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wider">Your Name *</label>
                     <input type="text" placeholder="e.g. Ramesh Kumar" value={form.name}
                       onChange={(e) => { setForm((f) => ({ ...f, name: e.target.value })); if (formErrors.name) setFormErrors((fe) => ({ ...fe, name: "" })) }}
-                      className={`w-full border rounded-xl px-4 py-3 text-sm text-[#1a1a1a] focus:outline-none focus:border-[#8B4513] focus:ring-2 focus:ring-[#8B4513]/10 bg-white placeholder:text-[#b0a090] placeholder:italic ${formErrors.name ? "border-red-400 bg-red-50" : "border-[#e0d0bc]"}`}
+                      className={`w-full border rounded-xl px-4 py-3 text-sm text-[#1a1a1a] focus:outline-none focus:border-[#D4380D] focus:ring-2 focus:ring-[#D4380D]/10 bg-white placeholder:text-[#b0a090] placeholder:italic ${formErrors.name ? "border-red-400 bg-red-50" : "border-[#FFD0C0]"}`}
                     />
                     {formErrors.name && <p className="text-red-500 text-xs mt-1 flex items-center gap-1"><span>⚠</span>{formErrors.name}</p>}
                   </div>
@@ -1059,7 +1048,7 @@ export default function AjayFoodsWebsite() {
                     <div className="relative">
                       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-[#555] font-semibold select-none">+91</span>
                       <input type="tel" placeholder="10-digit mobile" value={form.phone} onChange={(e) => { handlePhone(e.target.value); if (formErrors.phone) setFormErrors((fe) => ({ ...fe, phone: "" })) }} maxLength={10}
-                        className={`w-full border rounded-xl pl-11 pr-4 py-3 text-sm text-[#1a1a1a] focus:outline-none focus:border-[#8B4513] focus:ring-2 focus:ring-[#8B4513]/10 bg-white placeholder:text-[#b0a090] placeholder:italic ${formErrors.phone ? "border-red-400 bg-red-50" : "border-[#e0d0bc]"}`}
+                        className={`w-full border rounded-xl pl-11 pr-4 py-3 text-sm text-[#1a1a1a] focus:outline-none focus:border-[#D4380D] focus:ring-2 focus:ring-[#D4380D]/10 bg-white placeholder:text-[#b0a090] placeholder:italic ${formErrors.phone ? "border-red-400 bg-red-50" : "border-[#FFD0C0]"}`}
                       />
                     </div>
                     {formErrors.phone && <p className="text-red-500 text-xs mt-1 flex items-center gap-1"><span>⚠</span>{formErrors.phone}</p>}
@@ -1070,7 +1059,7 @@ export default function AjayFoodsWebsite() {
                   <div>
                     <label className="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wider">Event Type *</label>
                     <select value={form.eventType} onChange={(e) => { setForm((f) => ({ ...f, eventType: e.target.value })); if (formErrors.eventType) setFormErrors((fe) => ({ ...fe, eventType: "" })) }}
-                      className={`w-full border rounded-xl px-4 py-3 text-sm text-[#1a1a1a] focus:outline-none focus:border-[#8B4513] focus:ring-2 focus:ring-[#8B4513]/10 bg-white ${formErrors.eventType ? "border-red-400 bg-red-50" : "border-[#e0d0bc]"}`}
+                      className={`w-full border rounded-xl px-4 py-3 text-sm text-[#1a1a1a] focus:outline-none focus:border-[#D4380D] focus:ring-2 focus:ring-[#D4380D]/10 bg-white ${formErrors.eventType ? "border-red-400 bg-red-50" : "border-[#FFD0C0]"}`}
                     >
                       <option value="">— Select event type —</option>
                       {EVENT_TYPES.map((t) => <option key={t.value} value={t.value}>{t.label}</option>)}
@@ -1081,13 +1070,13 @@ export default function AjayFoodsWebsite() {
                     <label className="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wider">Guest Count *</label>
                     <input type="number" placeholder="e.g. 150" min={30} max={5000} value={form.guestCount}
                       onChange={(e) => { setForm((f) => ({ ...f, guestCount: e.target.value })); if (formErrors.guestCount) setFormErrors((fe) => ({ ...fe, guestCount: "" })) }}
-                      className={`w-full border rounded-xl px-4 py-3 text-sm text-[#1a1a1a] focus:outline-none focus:border-[#8B4513] focus:ring-2 focus:ring-[#8B4513]/10 bg-white placeholder:text-[#b0a090] ${formErrors.guestCount ? "border-red-400 bg-red-50" : "border-[#e0d0bc]"}`}
+                      className={`w-full border rounded-xl px-4 py-3 text-sm text-[#1a1a1a] focus:outline-none focus:border-[#D4380D] focus:ring-2 focus:ring-[#D4380D]/10 bg-white placeholder:text-[#b0a090] ${formErrors.guestCount ? "border-red-400 bg-red-50" : "border-[#FFD0C0]"}`}
                     />
                     {formErrors.guestCount && <p className="text-red-500 text-xs mt-1 flex items-center gap-1"><span>⚠</span>{formErrors.guestCount}</p>}
                     <div className="flex gap-1 mt-1.5 flex-wrap">
                       {[50, 100, 200, 500].map((n) => (
                         <button key={n} type="button" onClick={() => { setForm((f) => ({ ...f, guestCount: String(n) })); if (formErrors.guestCount) setFormErrors((fe) => ({ ...fe, guestCount: "" })) }}
-                          className={`text-[10px] px-2 py-0.5 rounded-full border transition-colors ${form.guestCount === String(n) ? "bg-[#8B4513] border-[#8B4513] text-white" : "bg-[#FDF6EC] border-[#e0d0bc] text-[#666] hover:border-[#8B4513] hover:text-[#8B4513]"}`}
+                          className={`text-[10px] px-2 py-0.5 rounded-full border transition-colors ${form.guestCount === String(n) ? "bg-[#D4380D] border-[#D4380D] text-white" : "bg-[#FFF8F5] border-[#FFD0C0] text-[#666] hover:border-[#D4380D] hover:text-[#D4380D]"}`}
                         >{n}</button>
                       ))}
                     </div>
@@ -1099,11 +1088,11 @@ export default function AjayFoodsWebsite() {
                   <input type="date" min={tomorrowStr} max={oneYearStr} value={form.eventDate} disabled={form.flexDates}
                     onChange={(e) => { setForm((f) => ({ ...f, eventDate: e.target.value })); if (formErrors.eventDate) setFormErrors((fe) => ({ ...fe, eventDate: "" })) }}
                     onInput={(e) => { const v = (e.target as HTMLInputElement).value; if (v) { setForm((f) => ({ ...f, eventDate: v })); if (formErrors.eventDate) setFormErrors((fe) => ({ ...fe, eventDate: "" })) } }}
-                    className={`w-full border rounded-xl px-4 py-3 text-sm text-[#1a1a1a] focus:outline-none focus:border-[#8B4513] focus:ring-2 focus:ring-[#8B4513]/10 bg-white disabled:opacity-40 disabled:cursor-not-allowed ${formErrors.eventDate ? "border-red-400 bg-red-50" : "border-[#e0d0bc]"}`}
+                    className={`w-full border rounded-xl px-4 py-3 text-sm text-[#1a1a1a] focus:outline-none focus:border-[#D4380D] focus:ring-2 focus:ring-[#D4380D]/10 bg-white disabled:opacity-40 disabled:cursor-not-allowed ${formErrors.eventDate ? "border-red-400 bg-red-50" : "border-[#FFD0C0]"}`}
                   />
                   <label className="flex items-center gap-2 mt-2 cursor-pointer select-none">
                     <input type="checkbox" checked={form.flexDates} onChange={(e) => setForm((f) => ({ ...f, flexDates: e.target.checked, eventDate: "" }))}
-                      className="w-4 h-4 accent-[#8B4513]"
+                      className="w-4 h-4 accent-[#D4380D]"
                     />
                     <span className="text-xs text-[#666]">I&apos;m flexible with dates — discuss over call</span>
                   </label>
@@ -1114,17 +1103,17 @@ export default function AjayFoodsWebsite() {
                   <label className="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wider">Special Requests</label>
                   <textarea rows={3} placeholder="Any dietary requirements, special dishes, or preferences..." value={form.notes}
                     onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))}
-                    className="w-full border border-[#e0d0bc] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#8B4513] focus:ring-2 focus:ring-[#8B4513]/10 bg-[#FDF6EC] resize-none"
+                    className="w-full border border-[#FFD0C0] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#D4380D] focus:ring-2 focus:ring-[#D4380D]/10 bg-[#FFF8F5] resize-none"
                   />
                 </div>
 
                 {parseInt(form.guestCount) > 0 ? (
-                  <div className="bg-[#FDF6EC] border border-[#e0d0bc] rounded-xl px-4 py-3 text-sm">
+                  <div className="bg-[#FFF8F5] border border-[#FFD0C0] rounded-xl px-4 py-3 text-sm">
                     <p className="text-[#888] text-xs font-semibold uppercase tracking-wider mb-1">Quick Estimate</p>
                     <div className="flex flex-wrap gap-3">
                       {[{ name: "Veg Basic", price: 100 }, { name: "Non-Veg Basic", price: 150 }, { name: "Non-Veg Premium", price: 180 }].map((p) => (
                         <span key={p.name} className="text-xs text-[#555]">
-                          <span className="font-semibold text-[#8B4513]">{p.name}:</span> ₹{(p.price * parseInt(form.guestCount)).toLocaleString("en-IN")}
+                          <span className="font-semibold text-[#D4380D]">{p.name}:</span> ₹{(p.price * parseInt(form.guestCount)).toLocaleString("en-IN")}
                         </span>
                       ))}
                     </div>
@@ -1132,7 +1121,7 @@ export default function AjayFoodsWebsite() {
                 ) : null}
 
                 <button type="submit" disabled={formLoading}
-                  className="w-full bg-[#8B4513] text-white py-4 rounded-xl font-semibold text-sm hover:bg-[#6d3410] transition-colors shadow-md disabled:opacity-70 flex items-center justify-center gap-2"
+                  className="w-full bg-[#D4380D] text-white py-4 rounded-xl font-semibold text-sm hover:bg-[#6d3410] transition-colors shadow-md disabled:opacity-70 flex items-center justify-center gap-2"
                 >
                   {formLoading ? (
                     <>
@@ -1229,19 +1218,10 @@ export default function AjayFoodsWebsite() {
       </footer>
 
       {/* ── Mobile sticky CTA bar ───────────────────────────────────────────── */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-white border-t border-[#f0e6d3] shadow-[0_-4px_20px_rgba(0,0,0,0.08)] px-4 py-3 flex gap-3">
-        <a
-          href="https://wa.me/919876543210?text=Hi! I'd like to book catering for my event."
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex-1 flex items-center justify-center gap-2 bg-[#25D366] text-white py-3 rounded-xl font-bold text-sm shadow-sm active:scale-95 transition-transform"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.554 4.118 1.524 5.847L.057 23.882l6.198-1.438A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.806 9.806 0 01-5.031-1.386l-.36-.214-3.732.866.938-3.63-.235-.373A9.818 9.818 0 012.18 12C2.18 6.57 6.57 2.18 12 2.18c5.43 0 9.82 4.39 9.82 9.82 0 5.43-4.39 9.818-9.82 9.818z"/></svg>
-          WhatsApp
-        </a>
+      <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-white border-t border-[#FFE0D4] shadow-[0_-4px_20px_rgba(0,0,0,0.08)] px-4 py-3">
         <button
           onClick={() => router.push("/packages")}
-          className="flex-1 bg-[#8B4513] text-white py-3 rounded-xl font-bold text-sm shadow-sm active:scale-95 transition-transform"
+          className="w-full bg-[#D4380D] text-white py-3 rounded-xl font-bold text-sm shadow-sm active:scale-95 transition-transform"
         >
           Book Now
         </button>

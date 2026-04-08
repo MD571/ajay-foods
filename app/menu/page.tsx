@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useMemo } from "react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 import { getMenuSections } from "../lib/siteData"
@@ -121,46 +121,58 @@ export default function MenuPage() {
   const [search, setSearch] = useState("")
   const [navOpen, setNavOpen] = useState(false)
 
-  // Load admin-edited menu from localStorage
-  const [menuSections, setMenuSectionState] = useState(MENU_SECTIONS)
-  useEffect(() => {
-    setMenuSectionState(getMenuSections())
-  }, [])
+  // Load admin-edited menu from localStorage (lazy init avoids a wasted re-render)
+  const [menuSections] = useState(() => getMenuSections())
 
-  const allItems = menuSections.flatMap((s) =>
-    s.items
-      .filter((i) => (i as { available?: boolean }).available !== false)
-      .map((i) => ({ ...i, sectionId: s.id, sectionLabel: s.label, sectionEmoji: s.emoji }))
+  const allItems = useMemo(
+    () =>
+      menuSections.flatMap((s) =>
+        s.items
+          .filter((i) => (i as { available?: boolean }).available !== false)
+          .map((i) => ({ ...i, sectionId: s.id, sectionLabel: s.label, sectionEmoji: s.emoji }))
+      ),
+    [menuSections]
   )
 
-  const filtered = allItems.filter((item) => {
-    const matchSection = activeFilter === "all" || item.sectionId === activeFilter
-    const matchDiet = dietFilter === "all" || item.diet === dietFilter
-    const matchSearch = !search || item.name.toLowerCase().includes(search.toLowerCase()) || item.desc.toLowerCase().includes(search.toLowerCase())
-    return matchSection && matchDiet && matchSearch
-  })
+  const filtered = useMemo(
+    () =>
+      allItems.filter((item) => {
+        const matchSection = activeFilter === "all" || item.sectionId === activeFilter
+        const matchDiet = dietFilter === "all" || item.diet === dietFilter
+        const matchSearch =
+          !search ||
+          item.name.toLowerCase().includes(search.toLowerCase()) ||
+          item.desc.toLowerCase().includes(search.toLowerCase())
+        return matchSection && matchDiet && matchSearch
+      }),
+    [allItems, activeFilter, dietFilter, search]
+  )
 
-  const { vegCount, nonVegCount } = allItems.reduce(
-    (acc, i) => {
-      if (i.diet === "veg") acc.vegCount++
-      else if (i.diet === "non-veg") acc.nonVegCount++
-      return acc
-    },
-    { vegCount: 0, nonVegCount: 0 }
+  const { vegCount, nonVegCount } = useMemo(
+    () =>
+      allItems.reduce(
+        (acc, i) => {
+          if (i.diet === "veg") acc.vegCount++
+          else if (i.diet === "non-veg") acc.nonVegCount++
+          return acc
+        },
+        { vegCount: 0, nonVegCount: 0 }
+      ),
+    [allItems]
   )
 
   return (
-    <div className="min-h-screen bg-[#FDF6EC]">
+    <div className="min-h-screen bg-[#FFF8F5]">
 
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur shadow-sm border-b border-[#f0e6d3]">
+      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur shadow-sm border-b border-[#FFE0D4]">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
           <button onClick={() => router.push("/")} className="flex items-center gap-3 flex-shrink-0">
             <div className="relative w-11 h-11 flex-shrink-0 rounded-full bg-white border-2 border-[#D4A853] overflow-hidden shadow-sm">
               <Image src="/logo.png" alt="Ajay Foods logo" fill className="object-contain p-0.5" priority sizes="44px" />
             </div>
             <div className="hidden sm:block">
-              <h1 className="text-base sm:text-lg font-bold text-[#8B4513] font-playfair leading-tight">Ajay Foods &amp; Beverages</h1>
+              <h1 className="text-base sm:text-lg font-bold text-[#D4380D] font-playfair leading-tight">Ajay Foods &amp; Beverages</h1>
               <p className="text-xs text-[#D4A853] font-medium tracking-wide">Full Menu</p>
             </div>
           </button>
@@ -174,12 +186,12 @@ export default function MenuPage() {
             ].map((l) => (
               <button key={l.path} onClick={() => router.push(l.path)}
                 className={`px-3 py-1.5 rounded-full font-medium transition-colors ${
-                  l.active ? "bg-[#8B4513] text-white" : "text-[#555] hover:text-[#8B4513] hover:bg-[#f5ece0]"
+                  l.active ? "bg-[#D4380D] text-white" : "text-[#555] hover:text-[#D4380D] hover:bg-[#f5ece0]"
                 }`}
               >{l.label}</button>
             ))}
             <button onClick={() => router.push("/packages")}
-              className="ml-2 bg-[#D4A853] text-[#3d1a07] px-4 py-1.5 rounded-full font-bold text-xs hover:opacity-90 transition-opacity"
+              className="ml-2 bg-[#D4A853] text-[#5C1209] px-4 py-1.5 rounded-full font-bold text-xs hover:opacity-90 transition-opacity"
             >Book Now →</button>
           </nav>
 
@@ -188,15 +200,15 @@ export default function MenuPage() {
             className="md:hidden flex flex-col gap-[5px] p-2 flex-shrink-0"
             aria-label="Toggle menu"
           >
-            <span className={`block w-5 h-0.5 bg-[#8B4513] transition-all ${navOpen ? "rotate-45 translate-y-[7px]" : ""}`} />
-            <span className={`block w-5 h-0.5 bg-[#8B4513] transition-all ${navOpen ? "opacity-0" : ""}`} />
-            <span className={`block w-5 h-0.5 bg-[#8B4513] transition-all ${navOpen ? "-rotate-45 -translate-y-[7px]" : ""}`} />
+            <span className={`block w-5 h-0.5 bg-[#D4380D] transition-all ${navOpen ? "rotate-45 translate-y-[7px]" : ""}`} />
+            <span className={`block w-5 h-0.5 bg-[#D4380D] transition-all ${navOpen ? "opacity-0" : ""}`} />
+            <span className={`block w-5 h-0.5 bg-[#D4380D] transition-all ${navOpen ? "-rotate-45 -translate-y-[7px]" : ""}`} />
           </button>
         </div>
 
         {/* Mobile nav dropdown */}
         {navOpen && (
-          <div className="md:hidden bg-white border-t border-[#f0e6d3] shadow-lg">
+          <div className="md:hidden bg-white border-t border-[#FFE0D4] shadow-lg">
             <div className="max-w-6xl mx-auto px-4 py-3 flex flex-col gap-1">
               {[
                 { label: "🏠 Home", path: "/" },
@@ -204,11 +216,11 @@ export default function MenuPage() {
                 { label: "📦 Packages", path: "/packages" },
               ].map((l) => (
                 <button key={l.path} onClick={() => { router.push(l.path); setNavOpen(false) }}
-                  className="text-left px-3 py-2.5 rounded-xl text-sm font-medium text-[#333] hover:bg-[#f5ece0] hover:text-[#8B4513] transition-colors"
+                  className="text-left px-3 py-2.5 rounded-xl text-sm font-medium text-[#333] hover:bg-[#f5ece0] hover:text-[#D4380D] transition-colors"
                 >{l.label}</button>
               ))}
               <button onClick={() => { router.push("/packages"); setNavOpen(false) }}
-                className="mt-1 w-full bg-[#8B4513] text-white py-2.5 rounded-xl text-sm font-bold hover:bg-[#6d3410] transition-colors"
+                className="mt-1 w-full bg-[#D4380D] text-white py-2.5 rounded-xl text-sm font-bold hover:bg-[#6d3410] transition-colors"
               >Book Now →</button>
             </div>
           </div>
@@ -216,7 +228,7 @@ export default function MenuPage() {
       </header>
 
       {/* Hero */}
-      <div className="bg-gradient-to-br from-[#3d1a07] to-[#8B4513] py-14 px-4 text-center text-white">
+      <div className="bg-gradient-to-br from-[#5C1209] to-[#D4380D] py-14 px-4 text-center text-white">
         <span className="text-[#D4A853] text-xs font-bold tracking-widest uppercase">Taste the Tradition</span>
         <h1 className="font-playfair text-4xl md:text-5xl font-bold mt-2 mb-3">Our Full Menu</h1>
         <p className="text-white/70 max-w-xl mx-auto text-sm">
@@ -240,7 +252,7 @@ export default function MenuPage() {
       </div>
 
       {/* Filters */}
-      <div className="bg-white border-b border-[#f0e6d3] shadow-sm sticky top-[57px] z-30">
+      <div className="bg-white border-b border-[#FFE0D4] shadow-sm sticky top-[57px] z-30">
         <div className="max-w-6xl mx-auto px-4 py-3 space-y-2.5">
           {/* Row 1: Search + Diet filter */}
           <div className="flex gap-3 items-center">
@@ -251,17 +263,17 @@ export default function MenuPage() {
                 placeholder="Search dishes…"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full border border-[#e0d0bc] rounded-full pl-9 pr-4 py-2 text-sm focus:outline-none focus:border-[#8B4513] bg-[#FDF6EC] placeholder:text-[#b0a090]"
+                className="w-full border border-[#FFD0C0] rounded-full pl-9 pr-4 py-2 text-sm focus:outline-none focus:border-[#D4380D] bg-[#FFF8F5] placeholder:text-[#b0a090]"
               />
               {search.length > 0 ? (
                 <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#aaa] hover:text-[#555] text-base leading-none">×</button>
               ) : null}
             </div>
-            <div className="inline-flex bg-[#FDF6EC] border border-[#e0d0bc] rounded-full p-1 gap-0.5 flex-shrink-0">
+            <div className="inline-flex bg-[#FFF8F5] border border-[#FFD0C0] rounded-full p-1 gap-0.5 flex-shrink-0">
               {(["all", "veg", "non-veg"] as const).map((d) => (
                 <button key={d} onClick={() => setDietFilter(d)}
                   className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-all capitalize ${
-                    dietFilter === d ? "bg-[#8B4513] text-white shadow-sm" : "text-[#666] hover:text-[#555]"
+                    dietFilter === d ? "bg-[#D4380D] text-white shadow-sm" : "text-[#666] hover:text-[#555]"
                   }`}
                 >
                   {d === "all" ? "All" : d === "veg" ? "🌿 Veg" : "🍗 Non-Veg"}
@@ -274,7 +286,7 @@ export default function MenuPage() {
             {ALL_FILTERS.map((f) => (
               <button key={f.id} onClick={() => setActiveFilter(f.id)}
                 className={`flex-shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-semibold transition-all whitespace-nowrap ${
-                  activeFilter === f.id ? "bg-[#8B4513] text-white shadow-sm" : "bg-[#FDF6EC] border border-[#e0d0bc] text-[#555] hover:border-[#8B4513] hover:text-[#8B4513]"
+                  activeFilter === f.id ? "bg-[#D4380D] text-white shadow-sm" : "bg-[#FFF8F5] border border-[#FFD0C0] text-[#555] hover:border-[#D4380D] hover:text-[#D4380D]"
                 }`}
               >
                 <span>{f.emoji}</span> {f.label}
@@ -292,7 +304,7 @@ export default function MenuPage() {
         </p>
         {(activeFilter !== "all" || dietFilter !== "all" || search) && (
           <button onClick={() => { setActiveFilter("all"); setDietFilter("all"); setSearch("") }}
-            className="text-xs text-[#8B4513] font-semibold hover:underline">Clear filters</button>
+            className="text-xs text-[#D4380D] font-semibold hover:underline">Clear filters</button>
         )}
       </div>
 
@@ -303,12 +315,12 @@ export default function MenuPage() {
             <p className="text-5xl mb-4">🍽️</p>
             <p className="text-[#888] font-medium">No items match your filters.</p>
             <button onClick={() => { setActiveFilter("all"); setDietFilter("all"); setSearch("") }}
-              className="mt-4 text-[#8B4513] font-semibold underline text-sm">Show all items</button>
+              className="mt-4 text-[#D4380D] font-semibold underline text-sm">Show all items</button>
           </div>
         ) : (
           <>
-            {/* Section headers when not searching */}
-            {activeFilter !== "all" || search ? (
+            {/* Flat grid when category/diet filter or search active; section-grouped when browsing all */}
+            {activeFilter !== "all" || dietFilter !== "all" || search ? (
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 mt-2">
                 {filtered.map((item) => (
                   <MenuCard key={`${item.sectionId}-${item.name}`} item={item} showSection={activeFilter === "all"} />
@@ -327,10 +339,10 @@ export default function MenuPage() {
                       <div className="flex items-center gap-3 mb-4">
                         <span className="text-2xl">{section.emoji}</span>
                         <div>
-                          <h2 className="font-playfair text-xl font-bold text-[#8B4513]">{section.label}</h2>
+                          <h2 className="font-playfair text-xl font-bold text-[#D4380D]">{section.label}</h2>
                           <p className="text-xs text-[#888]">{section.desc}</p>
                         </div>
-                        <span className="ml-auto text-xs text-[#aaa] bg-[#f0e6d3] px-2 py-0.5 rounded-full">{sItems.length} items</span>
+                        <span className="ml-auto text-xs text-[#aaa] bg-[#FFE0D4] px-2 py-0.5 rounded-full">{sItems.length} items</span>
                       </div>
                       <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
                         {sItems.map((item) => (
@@ -346,21 +358,15 @@ export default function MenuPage() {
         )}
 
         {/* Book CTA */}
-        <div className="mt-14 bg-gradient-to-br from-[#3d1a07] to-[#8B4513] rounded-3xl p-10 text-center text-white">
+        <div className="mt-14 bg-gradient-to-br from-[#5C1209] to-[#D4380D] rounded-3xl p-10 text-center text-white">
           <h2 className="font-playfair text-3xl font-bold mb-3">Ready to Book?</h2>
           <p className="text-white/70 mb-6 max-w-md mx-auto">Choose a package and customise with any of these dishes for your event.</p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <div className="flex justify-center">
             <button onClick={() => router.push("/packages")}
-              className="bg-[#D4A853] text-[#3d1a07] px-8 py-3.5 rounded-full font-bold hover:bg-[#e8bc6a] transition-colors shadow-lg"
+              className="bg-[#D4A853] text-[#5C1209] px-8 py-3.5 rounded-full font-bold hover:bg-[#e8bc6a] transition-colors shadow-lg"
             >
               Browse Packages →
             </button>
-            <a href="https://wa.me/919876543210?text=Hi! I'd like to book catering."
-              target="_blank" rel="noopener noreferrer"
-              className="bg-[#25D366] text-white px-8 py-3.5 rounded-full font-bold hover:bg-[#1da851] transition-colors shadow-lg flex items-center justify-center gap-2"
-            >
-              💬 WhatsApp Us
-            </a>
           </div>
         </div>
       </div>
@@ -376,7 +382,7 @@ function MenuCard({ item, showSection }: {
   showSection: boolean
 }) {
   return (
-    <div className="bg-white rounded-2xl border border-[#f0e6d3] shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all p-4 flex flex-col gap-2">
+    <div className="bg-white rounded-2xl border border-[#FFE0D4] shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all p-4 flex flex-col gap-2">
       <div className="flex items-start justify-between gap-2">
         <div className="flex items-center gap-1.5 flex-1 min-w-0">
           <span className={`w-2.5 h-2.5 rounded-sm border-2 flex-shrink-0 mt-0.5 ${
@@ -386,9 +392,9 @@ function MenuCard({ item, showSection }: {
         </div>
         <div className="flex flex-col items-end flex-shrink-0 gap-1">
           {item.popular && (
-            <span className="text-[8px] font-bold bg-[#D4A853]/20 text-[#8B4513] px-1.5 py-0.5 rounded-full uppercase tracking-wide">Popular</span>
+            <span className="text-[8px] font-bold bg-[#D4A853]/20 text-[#D4380D] px-1.5 py-0.5 rounded-full uppercase tracking-wide">Popular</span>
           )}
-          <span className={`text-sm font-bold ${item.price === 0 ? "text-green-600" : "text-[#8B4513]"}`}>
+          <span className={`text-sm font-bold ${item.price === 0 ? "text-green-600" : "text-[#D4380D]"}`}>
             {item.price === 0 ? "Included" : `₹${item.price}`}
           </span>
         </div>

@@ -140,11 +140,11 @@ export default function AdminPage() {
   // ── Login Screen ─────────────────────────────────────────────────────────
   if (!loggedIn) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#1a0a03] to-[#3d1a07] flex items-center justify-center px-4">
+      <div className="min-h-screen bg-gradient-to-br from-[#1a0a03] to-[#5C1209] flex items-center justify-center px-4">
         <div className="bg-white rounded-3xl shadow-2xl p-8 w-full max-w-sm">
           <div className="text-center mb-8">
-            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#8B4513] to-[#D4A853] flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg">🔐</div>
-            <h1 className="font-playfair text-2xl font-bold text-[#8B4513]">Admin Login</h1>
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#D4380D] to-[#D4A853] flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg">🔐</div>
+            <h1 className="font-playfair text-2xl font-bold text-[#D4380D]">Admin Login</h1>
             <p className="text-gray-500 text-sm mt-1">Ajay Foods &amp; Beverages</p>
           </div>
           <div className="space-y-4">
@@ -156,17 +156,17 @@ export default function AdminPage() {
                 value={pinInput}
                 onChange={(e) => { setPinInput(e.target.value); setPinError("") }}
                 onKeyDown={(e) => e.key === "Enter" && handleLogin()}
-                className="w-full border border-amber-200 rounded-xl px-4 py-3 text-center text-2xl tracking-widest bg-amber-50 focus:outline-none focus:ring-2 focus:ring-[#D4A853]"
+                className="w-full border border-red-200 rounded-xl px-4 py-3 text-center text-2xl tracking-widest bg-red-50 focus:outline-none focus:ring-2 focus:ring-[#D4A853]"
                 autoFocus
               />
               {pinError && <p className="text-red-500 text-xs mt-1.5 text-center">{pinError}</p>}
             </div>
             <button onClick={handleLogin}
-              className="w-full bg-[#8B4513] text-white py-3.5 rounded-xl font-bold hover:bg-[#6d3410] transition-colors shadow-md"
+              className="w-full bg-[#D4380D] text-white py-3.5 rounded-xl font-bold hover:bg-[#6d3410] transition-colors shadow-md"
             >
               Login →
             </button>
-            <button onClick={() => router.push("/")} className="w-full text-center text-sm text-gray-500 hover:text-[#8B4513] transition-colors py-1">
+            <button onClick={() => router.push("/")} className="w-full text-center text-sm text-gray-500 hover:text-[#D4380D] transition-colors py-1">
               ← Back to website
             </button>
             <p className="text-center text-[10px] text-gray-300">Default PIN: AJAY1234</p>
@@ -187,7 +187,7 @@ export default function AdminPage() {
   ]
 
   return (
-    <div className="min-h-screen bg-[#FDF6EC]" onClick={refreshSession} onKeyDown={refreshSession}>
+    <div className="min-h-screen bg-[#FFF8F5]" onClick={refreshSession} onKeyDown={refreshSession}>
 
       {/* ── Toast notification ─────────────────────────────────────────────── */}
       {toast && (
@@ -201,9 +201,9 @@ export default function AdminPage() {
 
       {/* ── Session warning ────────────────────────────────────────────────── */}
       {sessionWarning && (
-        <div className="fixed top-0 left-0 right-0 z-[90] bg-amber-500 text-white text-center text-xs font-semibold py-2 flex items-center justify-center gap-3">
+        <div className="fixed top-0 left-0 right-0 z-[90] bg-red-500 text-white text-center text-xs font-semibold py-2 flex items-center justify-center gap-3">
           ⏰ Your session will expire soon due to inactivity.
-          <button onClick={refreshSession} className="bg-white text-amber-700 px-3 py-0.5 rounded-full text-xs font-bold hover:bg-amber-50 transition-colors">
+          <button onClick={refreshSession} className="bg-white text-red-700 px-3 py-0.5 rounded-full text-xs font-bold hover:bg-red-50 transition-colors">
             Stay Logged In
           </button>
         </div>
@@ -211,29 +211,29 @@ export default function AdminPage() {
 
       {/* Top Nav */}
       <div className="sticky top-0 z-40">
-        <header className="bg-white border-b border-amber-200 shadow-sm">
+        <header className="bg-white border-b border-red-200 shadow-sm">
           <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
             {/* Logo + branding */}
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#8B4513] to-[#D4A853] flex items-center justify-center text-white font-bold text-lg flex-shrink-0">A</div>
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#D4380D] to-[#D4A853] flex items-center justify-center text-white font-bold text-lg flex-shrink-0">A</div>
               <div>
-                <h1 className="text-base sm:text-lg font-bold text-[#8B4513] font-playfair leading-tight">Ajay Foods Admin</h1>
+                <h1 className="text-base sm:text-lg font-bold text-[#D4380D] font-playfair leading-tight">Ajay Foods Admin</h1>
                 <p className="text-xs text-[#D4A853] font-medium tracking-wide">Owner Dashboard</p>
               </div>
             </div>
             {/* Right: desktop links + small brown hamburger */}
             <div className="flex items-center gap-2">
               <a href="/" target="_blank" rel="noopener noreferrer"
-                className="hidden sm:flex items-center gap-1.5 text-xs text-gray-500 border border-amber-200 px-3 py-1.5 rounded-full hover:bg-amber-50 transition-colors font-medium"
+                className="hidden sm:flex items-center gap-1.5 text-xs text-gray-500 border border-red-200 px-3 py-1.5 rounded-full hover:bg-red-50 transition-colors font-medium"
               >View Site 🔗</a>
               <button onClick={doLogout}
-                className="hidden sm:flex items-center gap-1.5 text-xs text-gray-500 border border-amber-200 px-3 py-1.5 rounded-full hover:bg-amber-50 transition-colors font-medium"
+                className="hidden sm:flex items-center gap-1.5 text-xs text-gray-500 border border-red-200 px-3 py-1.5 rounded-full hover:bg-red-50 transition-colors font-medium"
               >Logout</button>
               {/* Hamburger — small rounded brown square, like ajay-catering */}
               <div className="relative">
                 <button
                   onClick={(e) => { e.stopPropagation(); setMobileNavOpen(v => !v) }}
-                  className="w-11 h-11 bg-[#8B4513] rounded-2xl flex items-center justify-center shadow-md hover:bg-[#6d3410] transition-colors flex-shrink-0"
+                  className="w-11 h-11 bg-[#D4380D] rounded-2xl flex items-center justify-center shadow-md hover:bg-[#6d3410] transition-colors flex-shrink-0"
                   aria-label="Toggle navigation"
                 >
                   <div className="flex flex-col gap-[5px]">
@@ -247,7 +247,7 @@ export default function AdminPage() {
                 {mobileNavOpen && (
                   <div
                     onClick={(e) => e.stopPropagation()}
-                    className="absolute top-14 right-0 w-72 bg-white rounded-2xl shadow-2xl border border-amber-100 overflow-hidden"
+                    className="absolute top-14 right-0 w-72 bg-white rounded-2xl shadow-2xl border border-red-100 overflow-hidden"
                   >
                     {/* Dashboard — always at top */}
                     <div className="px-4 pt-3 pb-0.5">
@@ -255,9 +255,9 @@ export default function AdminPage() {
                     </div>
                     <button
                       onClick={() => { setActiveTab("dashboard"); setMobileNavOpen(false) }}
-                      className={`w-full flex items-center gap-3 px-4 py-2.5 hover:bg-amber-50 transition-colors text-left ${activeTab === "dashboard" ? "bg-amber-100" : ""}`}
+                      className={`w-full flex items-center gap-3 px-4 py-2.5 hover:bg-red-50 transition-colors text-left ${activeTab === "dashboard" ? "bg-red-100" : ""}`}
                     >
-                      <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center text-xl flex-shrink-0">📊</div>
+                      <div className="w-10 h-10 rounded-xl bg-red-50 border border-red-100 flex items-center justify-center text-xl flex-shrink-0">📊</div>
                       <div className="flex-1 min-w-0">
                         <p className="font-semibold text-gray-800 text-sm leading-tight">Dashboard</p>
                         <p className="text-gray-400 text-xs mt-0.5">{packages.length} packages · {totalMenuItems(menuSections)} dishes</p>
@@ -265,7 +265,7 @@ export default function AdminPage() {
                     </button>
 
                     {/* Manage section — all tabs except dashboard */}
-                    <div className="mx-4 my-1 border-t border-amber-100" />
+                    <div className="mx-4 my-1 border-t border-red-100" />
                     <div className="px-4 pt-2 pb-0.5">
                       <p className="text-[10px] font-bold text-[#D4A853] uppercase tracking-widest">Manage</p>
                     </div>
@@ -273,9 +273,9 @@ export default function AdminPage() {
                       {tabs.filter(t => t.id !== "dashboard").map((t) => (
                         <button key={t.id}
                           onClick={() => { setActiveTab(t.id); setMobileNavOpen(false) }}
-                          className={`w-full flex items-center gap-3 px-4 py-2.5 hover:bg-amber-50 transition-colors text-left ${activeTab === t.id ? "bg-amber-100" : ""}`}
+                          className={`w-full flex items-center gap-3 px-4 py-2.5 hover:bg-red-50 transition-colors text-left ${activeTab === t.id ? "bg-red-100" : ""}`}
                         >
-                          <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-100 flex items-center justify-center text-xl flex-shrink-0">
+                          <div className="w-10 h-10 rounded-xl bg-red-50 border border-red-100 flex items-center justify-center text-xl flex-shrink-0">
                             {t.emoji}
                           </div>
                           <div className="flex-1 min-w-0">
@@ -297,7 +297,7 @@ export default function AdminPage() {
                           )}
                         </button>
                       ))}
-                      <div className="mx-4 my-1 border-t border-amber-100" />
+                      <div className="mx-4 my-1 border-t border-red-100" />
                       <button onClick={doLogout}
                         className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-red-50 transition-colors text-left"
                       >
@@ -394,7 +394,7 @@ const DashboardTab = memo(function DashboardTab({ packages, menuSections, extraC
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="font-playfair text-2xl font-bold text-[#8B4513] mb-1">Good day! 👋</h2>
+        <h2 className="font-playfair text-2xl font-bold text-[#D4380D] mb-1">Good day! 👋</h2>
         <p className="text-gray-500 text-sm">Here&apos;s an overview of your menu data. Click any card to edit.</p>
       </div>
 
@@ -403,34 +403,34 @@ const DashboardTab = memo(function DashboardTab({ packages, menuSections, extraC
         {stats.map((s) => (
           <button key={s.label} onClick={() => setActiveTab(s.tab)}
             className={`bg-white rounded-2xl p-5 text-left border shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all ${
-              s.warn ? "border-amber-300 bg-amber-50" : "border-amber-100"
+              s.warn ? "border-red-300 bg-red-50" : "border-red-100"
             }`}
           >
             <div className="text-2xl mb-2">{s.icon}</div>
-            <div className={`font-playfair text-3xl font-bold ${s.warn ? "text-amber-600" : "text-[#8B4513]"}`}>{s.value}</div>
+            <div className={`font-playfair text-3xl font-bold ${s.warn ? "text-red-600" : "text-[#D4380D]"}`}>{s.value}</div>
             <div className="text-xs text-gray-500 mt-1 font-medium">{s.label}</div>
           </button>
         ))}
       </div>
 
       {/* Package summary with full includes */}
-      <div className="bg-white rounded-2xl border border-amber-100 shadow-md overflow-hidden">
-        <div className="px-6 py-4 border-b border-amber-100 flex items-center justify-between">
-          <h3 className="font-playfair text-lg font-bold text-[#8B4513]">Packages Overview</h3>
-          <button onClick={() => setActiveTab("packages")} className="text-xs text-[#8B4513] border border-[#8B4513] px-3 py-1 rounded-full hover:bg-[#8B4513] hover:text-white transition-colors font-semibold">Edit Packages →</button>
+      <div className="bg-white rounded-2xl border border-red-100 shadow-md overflow-hidden">
+        <div className="px-6 py-4 border-b border-red-100 flex items-center justify-between">
+          <h3 className="font-playfair text-lg font-bold text-[#D4380D]">Packages Overview</h3>
+          <button onClick={() => setActiveTab("packages")} className="text-xs text-[#D4380D] border border-[#D4380D] px-3 py-1 rounded-full hover:bg-[#D4380D] hover:text-white transition-colors font-semibold">Edit Packages →</button>
         </div>
-        <div className="grid sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#f0e6d3]">
+        <div className="grid sm:grid-cols-2 md:grid-cols-4 divide-y sm:divide-y-0 sm:divide-x divide-[#FFE0D4]">
           {packages.map((p) => (
             <div key={p.id} className="flex flex-col">
               {/* Gradient header */}
               <div className={`bg-gradient-to-br ${p.color} px-4 py-3 relative`}>
-                {p.popular && <span className="absolute top-2 right-2 text-[8px] bg-[#D4A853] text-[#3d1a07] font-bold px-1.5 py-0.5 rounded-full">★ Popular</span>}
+                {p.popular && <span className="absolute top-2 right-2 text-[8px] bg-[#D4A853] text-[#5C1209] font-bold px-1.5 py-0.5 rounded-full">★ Popular</span>}
                 <p className="text-white/70 text-[9px] font-bold uppercase tracking-wider">{p.tag}</p>
                 <p className="font-playfair font-bold text-base text-white mt-0.5">{p.name}</p>
                 <p className="text-xl font-bold text-white mt-1">₹{p.price} <span className="text-white/60 text-[10px] font-normal">/person</span></p>
               </div>
               {/* Includes list */}
-              <div className="px-4 py-3 flex-1 bg-amber-50/40">
+              <div className="px-4 py-3 flex-1 bg-red-50/40">
                 <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider mb-2">Includes</p>
                 <ul className="space-y-1">
                   {(p.includes ?? []).map((inc, i) => (
@@ -440,10 +440,10 @@ const DashboardTab = memo(function DashboardTab({ packages, menuSections, extraC
                   ))}
                 </ul>
                 {(p.choiceGroups ?? []).length > 0 && (
-                  <div className="mt-2 pt-2 border-t border-amber-100">
+                  <div className="mt-2 pt-2 border-t border-red-100">
                     {(p.choiceGroups ?? []).map(g => (
                       <p key={g.id} className="text-[10px] text-gray-500 mb-0.5 leading-snug">
-                        <span className="font-semibold text-[#8B4513]">🎯 {g.label}:</span>{" "}
+                        <span className="font-semibold text-[#D4380D]">🎯 {g.label}:</span>{" "}
                         {g.options.slice(0, 3).join(", ")}{g.options.length > 3 ? ` +${g.options.length - 3} more` : ""}
                       </p>
                     ))}
@@ -453,7 +453,7 @@ const DashboardTab = memo(function DashboardTab({ packages, menuSections, extraC
             </div>
           ))}
         </div>
-        <p className="text-xs text-gray-400 px-6 py-3 border-t border-amber-100">Price range: ₹{priceRange.min} – ₹{priceRange.max} per person · Click "Edit Packages" to modify</p>
+        <p className="text-xs text-gray-400 px-6 py-3 border-t border-red-100">Price range: ₹{priceRange.min} – ₹{priceRange.max} per person · Click "Edit Packages" to modify</p>
       </div>
 
     </div>
@@ -464,8 +464,8 @@ const DashboardTab = memo(function DashboardTab({ packages, menuSections, extraC
 const PKG_STYLE_TEMPLATES = [
   { color: "from-[#2d6a4f] to-[#40916c]", lightColor: "bg-[#d8f3dc]", textColor: "text-[#1b4332]", badgeColor: "bg-green-100 text-green-800", tag: "VEG" as const, image: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&q=80", alt: "Vegetarian thali" },
   { color: "from-[#e9c46a] to-[#f4a261]", lightColor: "bg-[#fff3cd]", textColor: "text-[#5c3d11]", badgeColor: "bg-yellow-100 text-yellow-800", tag: "VEG" as const, image: "https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?w=600&q=80", alt: "Indian vegetarian spread" },
-  { color: "from-[#8B4513] to-[#b5601e]", lightColor: "bg-[#fce8d8]", textColor: "text-[#4a1a05]", badgeColor: "bg-red-100 text-red-800", tag: "NON-VEG" as const, image: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=600&q=80", alt: "Chicken biryani" },
-  { color: "from-[#3d1a07] to-[#6b2d0f]", lightColor: "bg-[#f5ddd0]", textColor: "text-[#2a0f03]", badgeColor: "bg-red-100 text-red-800", tag: "NON-VEG" as const, image: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=600&q=80", alt: "Indian non-veg feast" },
+  { color: "from-[#D4380D] to-[#E5622B]", lightColor: "bg-[#fce8d8]", textColor: "text-[#4a1a05]", badgeColor: "bg-red-100 text-red-800", tag: "NON-VEG" as const, image: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=600&q=80", alt: "Chicken biryani" },
+  { color: "from-[#5C1209] to-[#9E2D1A]", lightColor: "bg-[#f5ddd0]", textColor: "text-[#2a0f03]", badgeColor: "bg-red-100 text-red-800", tag: "NON-VEG" as const, image: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=600&q=80", alt: "Indian non-veg feast" },
 ]
 
 const PackagesTab = memo(function PackagesTab({ packages, onSave, menuSections }: {
@@ -579,19 +579,19 @@ const PackagesTab = memo(function PackagesTab({ packages, onSave, menuSections }
     <div className="space-y-5">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h2 className="font-playfair text-2xl font-bold text-[#8B4513]">Edit Packages</h2>
+          <h2 className="font-playfair text-2xl font-bold text-[#D4380D]">Edit Packages</h2>
           <p className="text-gray-500 text-sm mt-0.5">Manage packages, items, and customer choice options.</p>
         </div>
         <div className="flex items-center gap-3">
           {dirty && (
             <button onClick={() => { onSave(local); setDirty(false) }}
-              className="bg-[#8B4513] text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-[#6d3410] transition-colors shadow-md flex items-center gap-2"
+              className="bg-[#D4380D] text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-[#6d3410] transition-colors shadow-md flex items-center gap-2"
             >
               💾 Save All
             </button>
           )}
           <button onClick={addNewPackage}
-            className="flex items-center gap-2 bg-[#8B4513] text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-[#6d3410] transition-colors shadow-sm"
+            className="flex items-center gap-2 bg-[#D4380D] text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-[#6d3410] transition-colors shadow-sm"
           >
             + New Package
           </button>
@@ -600,7 +600,7 @@ const PackagesTab = memo(function PackagesTab({ packages, onSave, menuSections }
 
       <div className="grid md:grid-cols-2 gap-4">
         {local.map((pkg) => (
-          <div key={pkg.id} className={`bg-white rounded-2xl border shadow-sm overflow-hidden transition-all ${editId === pkg.id ? "border-[#8B4513] shadow-lg" : "border-amber-100"}`}>
+          <div key={pkg.id} className={`bg-white rounded-2xl border shadow-sm overflow-hidden transition-all ${editId === pkg.id ? "border-[#D4380D] shadow-lg" : "border-red-100"}`}>
             {/* Card header */}
             <div className={`bg-gradient-to-r ${pkg.color} p-4`}>
               <div className="flex items-start justify-between gap-3">
@@ -608,7 +608,7 @@ const PackagesTab = memo(function PackagesTab({ packages, onSave, menuSections }
                   <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full uppercase ${pkg.badgeColor}`}>{pkg.tag}</span>
                   <div className="flex items-center gap-2 mt-1">
                     <h3 className="font-playfair text-xl font-bold text-white">{pkg.name}</h3>
-                    {pkg.popular && <span className="text-[9px] bg-[#D4A853] text-[#3d1a07] font-bold px-2 py-0.5 rounded-full">★ Popular</span>}
+                    {pkg.popular && <span className="text-[9px] bg-[#D4A853] text-[#5C1209] font-bold px-2 py-0.5 rounded-full">★ Popular</span>}
                   </div>
                   <p className="text-white/70 text-xs">{pkg.tagline}</p>
                 </div>
@@ -620,22 +620,22 @@ const PackagesTab = memo(function PackagesTab({ packages, onSave, menuSections }
             </div>
 
             {/* Includes list — always visible below header */}
-            <div className="px-4 py-3 bg-amber-50/40 border-b border-amber-100">
+            <div className="px-4 py-3 bg-red-50/40 border-b border-red-100">
               <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">What&apos;s Included</p>
               <ul className="space-y-1">
                 {pkg.includes.map((inc, i) => (
                   <li key={i} className="flex items-start gap-2 text-xs text-gray-700">
-                    <span className="w-3.5 h-3.5 rounded-full bg-[#D4A853]/30 flex items-center justify-center text-[#8B4513] text-[8px] flex-shrink-0 mt-0.5 font-bold">✓</span>
+                    <span className="w-3.5 h-3.5 rounded-full bg-[#D4A853]/30 flex items-center justify-center text-[#D4380D] text-[8px] flex-shrink-0 mt-0.5 font-bold">✓</span>
                     {inc}
                   </li>
                 ))}
               </ul>
               {(pkg.choiceGroups ?? []).length > 0 && (
-                <div className="mt-2 pt-2 border-t border-amber-100">
+                <div className="mt-2 pt-2 border-t border-red-100">
                   <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Choice Options</p>
                   {(pkg.choiceGroups ?? []).map(g => (
                     <p key={g.id} className="text-[10px] text-gray-500 mb-0.5">
-                      <span className="font-semibold text-[#8B4513]">🎯 {g.label}:</span> {g.options.slice(0, 4).join(", ")}{g.options.length > 4 ? ` +${g.options.length - 4} more` : ""}
+                      <span className="font-semibold text-[#D4380D]">🎯 {g.label}:</span> {g.options.slice(0, 4).join(", ")}{g.options.length > 4 ? ` +${g.options.length - 4} more` : ""}
                     </p>
                   ))}
                 </div>
@@ -643,7 +643,7 @@ const PackagesTab = memo(function PackagesTab({ packages, onSave, menuSections }
             </div>
 
             {/* Action bar */}
-            <div className="flex border-b border-amber-100">
+            <div className="flex border-b border-red-100">
               <button
                 onClick={() => {
                   if (editId === pkg.id) {
@@ -654,19 +654,19 @@ const PackagesTab = memo(function PackagesTab({ packages, onSave, menuSections }
                     setEditId(pkg.id)
                   }
                 }}
-                className={`flex-1 text-center text-xs font-semibold py-2.5 transition-colors flex items-center justify-center gap-1.5 ${editId === pkg.id ? "bg-green-50 text-green-700 hover:bg-green-100" : "text-[#8B4513] hover:bg-amber-50"}`}
+                className={`flex-1 text-center text-xs font-semibold py-2.5 transition-colors flex items-center justify-center gap-1.5 ${editId === pkg.id ? "bg-green-50 text-green-700 hover:bg-green-100" : "text-[#D4380D] hover:bg-red-50"}`}
               >
                 {editId === pkg.id ? "✅ Save & Close" : "✏️ Edit"}
               </button>
-              <div className="w-px bg-amber-100" />
+              <div className="w-px bg-red-100" />
               <button
                 onClick={() => copyPackage(pkg)}
-                className="flex-1 text-center text-xs font-semibold text-gray-500 border-0 py-2.5 hover:bg-amber-50 transition-colors flex items-center justify-center gap-1.5"
+                className="flex-1 text-center text-xs font-semibold text-gray-500 border-0 py-2.5 hover:bg-red-50 transition-colors flex items-center justify-center gap-1.5"
                 title="Duplicate this package"
               >
                 📋 Copy
               </button>
-              <div className="w-px bg-amber-100" />
+              <div className="w-px bg-red-100" />
               <button
                 onClick={() => deletePackage(pkg.id)}
                 className="flex-1 text-center text-xs font-semibold text-red-400 py-2.5 hover:bg-red-50 transition-colors flex items-center justify-center gap-1.5"
@@ -684,10 +684,10 @@ const PackagesTab = memo(function PackagesTab({ packages, onSave, menuSections }
                   <div className="flex items-center gap-3">
                     <input type="range" min={50} max={500} step={5} value={pkg.price}
                       onChange={(e) => update(pkg.id, "price", Number(e.target.value))}
-                      className="flex-1 accent-[#8B4513]"
+                      className="flex-1 accent-[#D4380D]"
                     />
-                    <div className="flex items-center border border-amber-200 rounded-xl overflow-hidden">
-                      <span className="px-3 py-2 text-sm font-bold text-[#8B4513] bg-amber-50">₹</span>
+                    <div className="flex items-center border border-red-200 rounded-xl overflow-hidden">
+                      <span className="px-3 py-2 text-sm font-bold text-[#D4380D] bg-red-50">₹</span>
                       <input type="number" min={50} max={1000} step={5} value={pkg.price}
                         onChange={(e) => update(pkg.id, "price", Number(e.target.value))}
                         className="w-20 px-2 py-2 text-sm font-bold text-gray-900 focus:outline-none"
@@ -702,7 +702,7 @@ const PackagesTab = memo(function PackagesTab({ packages, onSave, menuSections }
                   <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">Package Name</label>
                   <input type="text" value={pkg.name}
                     onChange={(e) => update(pkg.id, "name", e.target.value)}
-                    className="w-full border border-amber-200 rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#D4A853]"
+                    className="w-full border border-red-200 rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#D4A853]"
                   />
                 </div>
 
@@ -711,7 +711,7 @@ const PackagesTab = memo(function PackagesTab({ packages, onSave, menuSections }
                   <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">Tagline</label>
                   <input type="text" value={pkg.tagline}
                     onChange={(e) => update(pkg.id, "tagline", e.target.value)}
-                    className="w-full border border-amber-200 rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#D4A853]"
+                    className="w-full border border-red-200 rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#D4A853]"
                   />
                 </div>
 
@@ -720,19 +720,19 @@ const PackagesTab = memo(function PackagesTab({ packages, onSave, menuSections }
                   <label className="block text-xs font-bold text-gray-600 mb-1.5 uppercase tracking-wider">Ideal For Hint</label>
                   <input type="text" value={pkg.ideal}
                     onChange={(e) => update(pkg.id, "ideal", e.target.value)}
-                    className="w-full border border-amber-200 rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#D4A853]"
+                    className="w-full border border-red-200 rounded-xl px-4 py-2.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#D4A853]"
                     placeholder="e.g. Ideal for 50–200 guests"
                   />
                 </div>
 
                 {/* Popular toggle */}
-                <div className="flex items-center justify-between bg-amber-50 rounded-xl px-4 py-3">
+                <div className="flex items-center justify-between bg-red-50 rounded-xl px-4 py-3">
                   <div>
                     <p className="text-sm font-semibold text-gray-800">⭐ Mark as Most Popular</p>
                     <p className="text-xs text-gray-500">Shows a badge on the packages page</p>
                   </div>
                   <button onClick={() => update(pkg.id, "popular", !pkg.popular)}
-                    className={`relative w-12 h-6 rounded-full transition-all ${pkg.popular ? "bg-[#8B4513]" : "bg-[#ddd]"}`}
+                    className={`relative w-12 h-6 rounded-full transition-all ${pkg.popular ? "bg-[#D4380D]" : "bg-[#ddd]"}`}
                   >
                     <span className={`absolute top-0.5 w-5 h-5 rounded-full bg-white shadow transition-all ${pkg.popular ? "left-6" : "left-0.5"}`} />
                   </button>
@@ -743,8 +743,8 @@ const PackagesTab = memo(function PackagesTab({ packages, onSave, menuSections }
                   <label className="block text-xs font-bold text-gray-600 mb-2 uppercase tracking-wider">📋 What&apos;s Included ({pkg.includes.length} items)</label>
                   <div className="space-y-2 mb-3">
                     {pkg.includes.map((inc, idx) => (
-                      <div key={idx} className="flex items-center gap-2 bg-amber-50 rounded-xl px-3 py-2">
-                        <span className="w-4 h-4 rounded-full bg-[#D4A853]/30 flex items-center justify-center text-[#8B4513] text-[10px] flex-shrink-0">✓</span>
+                      <div key={idx} className="flex items-center gap-2 bg-red-50 rounded-xl px-3 py-2">
+                        <span className="w-4 h-4 rounded-full bg-[#D4A853]/30 flex items-center justify-center text-[#D4380D] text-[10px] flex-shrink-0">✓</span>
                         <input type="text" value={inc}
                           onChange={(e) => {
                             const updated = [...pkg.includes]
@@ -761,14 +761,14 @@ const PackagesTab = memo(function PackagesTab({ packages, onSave, menuSections }
                     <input type="text" value={newInclude} placeholder="Add included item…"
                       onChange={(e) => setNewInclude(e.target.value)}
                       onKeyDown={(e) => e.key === "Enter" && addInclude(pkg.id)}
-                      className="flex-1 border border-amber-200 rounded-xl px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#D4A853]"
+                      className="flex-1 border border-red-200 rounded-xl px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#D4A853]"
                     />
                     <button onClick={() => addInclude(pkg.id)}
-                      className="bg-[#8B4513] text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-[#6d3410] transition-colors"
+                      className="bg-[#D4380D] text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-[#6d3410] transition-colors"
                     >+ Add</button>
                   </div>
                   {/* Pick from menu items */}
-                  <div className="mt-3 pt-3 border-t border-amber-100">
+                  <div className="mt-3 pt-3 border-t border-red-100">
                     <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-2">Or pick from menu items</p>
                     <ItemPickerPanel
                       sections={menuSections}
@@ -792,20 +792,20 @@ const PackagesTab = memo(function PackagesTab({ packages, onSave, menuSections }
                       <p className="text-[10px] text-gray-400 mt-0.5">Items marked &quot;your choice&quot; — customers pick from these options</p>
                     </div>
                     <button onClick={() => addChoice(pkg.id)}
-                      className="text-xs bg-amber-50 border border-[#D4A853] text-[#8B4513] px-3 py-1.5 rounded-lg font-semibold hover:bg-[#D4A853]/20 transition-colors"
+                      className="text-xs bg-red-50 border border-[#D4A853] text-[#D4380D] px-3 py-1.5 rounded-lg font-semibold hover:bg-[#D4A853]/20 transition-colors"
                     >+ Add Group</button>
                   </div>
 
                   {(pkg.choiceGroups ?? []).length === 0 && (
-                    <p className="text-xs text-gray-300 italic text-center py-3 bg-gray-50 rounded-xl border border-dashed border-amber-200">No choice groups yet. Add one above.</p>
+                    <p className="text-xs text-gray-300 italic text-center py-3 bg-gray-50 rounded-xl border border-dashed border-red-200">No choice groups yet. Add one above.</p>
                   )}
 
                   <div className="space-y-3">
                     {(pkg.choiceGroups ?? []).map((group) => {
                       const key = pkg.id + "-" + group.id
                       return (
-                        <div key={group.id} className="border border-amber-200 rounded-xl overflow-hidden">
-                          <div className="bg-amber-50 px-3 py-2 flex items-center gap-2">
+                        <div key={group.id} className="border border-red-200 rounded-xl overflow-hidden">
+                          <div className="bg-red-50 px-3 py-2 flex items-center gap-2">
                             <input type="text" value={group.label}
                               onChange={e => updateChoiceGroup(pkg.id, group.id, "label", e.target.value)}
                               className="flex-1 bg-transparent text-sm font-semibold text-gray-800 focus:outline-none"
@@ -815,7 +815,7 @@ const PackagesTab = memo(function PackagesTab({ packages, onSave, menuSections }
                               <span className="text-xs text-gray-500">Pick:</span>
                               <input type="number" min={1} max={5} value={group.pick}
                                 onChange={e => updateChoiceGroup(pkg.id, group.id, "pick", Number(e.target.value))}
-                                className="w-12 border border-amber-200 rounded-lg px-2 py-1 text-xs text-center bg-white focus:outline-none focus:ring-2 focus:ring-[#D4A853]"
+                                className="w-12 border border-red-200 rounded-lg px-2 py-1 text-xs text-center bg-white focus:outline-none focus:ring-2 focus:ring-[#D4A853]"
                               />
                             </div>
                             <button onClick={() => removeChoiceGroup(pkg.id, group.id)} className="text-gray-300 hover:text-red-500 transition-colors text-base leading-none ml-1">×</button>
@@ -823,7 +823,7 @@ const PackagesTab = memo(function PackagesTab({ packages, onSave, menuSections }
                           <div className="p-3">
                             <div className="flex flex-wrap gap-1.5 mb-2">
                               {group.options.map((opt, oi) => (
-                                <span key={oi} className="flex items-center gap-1 bg-amber-100 text-gray-600 text-xs px-2.5 py-1 rounded-full">
+                                <span key={oi} className="flex items-center gap-1 bg-red-100 text-gray-600 text-xs px-2.5 py-1 rounded-full">
                                   {opt}
                                   <button onClick={() => removeOption(pkg.id, group.id, oi)} className="text-gray-400 hover:text-red-500 transition-colors ml-0.5 leading-none">×</button>
                                 </span>
@@ -836,10 +836,10 @@ const PackagesTab = memo(function PackagesTab({ packages, onSave, menuSections }
                                 onChange={e => setNewOptionText(prev => ({ ...prev, [key]: e.target.value }))}
                                 onKeyDown={e => e.key === "Enter" && addOption(pkg.id, group.id)}
                                 placeholder="Add option e.g. Kandi Pappu"
-                                className="flex-1 border border-amber-200 rounded-lg px-3 py-1.5 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[#D4A853]"
+                                className="flex-1 border border-red-200 rounded-lg px-3 py-1.5 text-xs bg-white focus:outline-none focus:ring-2 focus:ring-[#D4A853]"
                               />
                               <button onClick={() => addOption(pkg.id, group.id)}
-                                className="bg-[#8B4513] text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-[#6d3410] transition-colors"
+                                className="bg-[#D4380D] text-white px-3 py-1.5 rounded-lg text-xs font-semibold hover:bg-[#6d3410] transition-colors"
                               >Add</button>
                             </div>
                           </div>
@@ -856,14 +856,14 @@ const PackagesTab = memo(function PackagesTab({ packages, onSave, menuSections }
 
       {dirty && (
         <div className="sticky bottom-4">
-          <div className="bg-[#8B4513] text-white rounded-2xl px-5 py-4 flex items-center justify-between shadow-xl max-w-2xl mx-auto">
+          <div className="bg-[#D4380D] text-white rounded-2xl px-5 py-4 flex items-center justify-between shadow-xl max-w-2xl mx-auto">
             <p className="font-semibold text-sm">You have unsaved changes</p>
             <div className="flex gap-3">
               <button onClick={() => { setLocal(JSON.parse(JSON.stringify(packages))); setDirty(false) }}
                 className="border border-white/30 text-white/80 px-4 py-2 rounded-xl text-xs font-semibold hover:bg-white/10 transition-colors"
               >Discard</button>
               <button onClick={() => { onSave(local); setDirty(false) }}
-                className="bg-white text-[#8B4513] px-4 py-2 rounded-xl text-xs font-bold hover:bg-amber-50 transition-colors"
+                className="bg-white text-[#D4380D] px-4 py-2 rounded-xl text-xs font-bold hover:bg-red-50 transition-colors"
               >💾 Save Changes</button>
             </div>
           </div>
@@ -933,12 +933,12 @@ const MenuTab = memo(function MenuTab({ sections, onSave }: { sections: AdminMen
     <div className="space-y-5">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h2 className="font-playfair text-2xl font-bold text-[#8B4513]">Edit Menu Items</h2>
+          <h2 className="font-playfair text-2xl font-bold text-[#D4380D]">Edit Menu Items</h2>
           <p className="text-gray-500 text-sm mt-0.5">Manage items shown on the /menu page and quick booking modal.</p>
         </div>
         {dirty && (
           <button onClick={() => { onSave(local); setDirty(false) }}
-            className="bg-[#8B4513] text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-[#6d3410] transition-colors shadow-md flex items-center gap-2"
+            className="bg-[#D4380D] text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-[#6d3410] transition-colors shadow-md flex items-center gap-2"
           >💾 Save Changes</button>
         )}
       </div>
@@ -952,17 +952,17 @@ const MenuTab = memo(function MenuTab({ sections, onSave }: { sections: AdminMen
             placeholder="Search menu items by name or description…"
             value={menuSearch}
             onChange={e => setMenuSearch(e.target.value)}
-            className="w-full border border-amber-200 rounded-xl pl-10 pr-10 py-2.5 text-sm bg-amber-50 focus:outline-none focus:ring-2 focus:ring-[#D4A853] placeholder:text-gray-400"
+            className="w-full border border-red-200 rounded-xl pl-10 pr-10 py-2.5 text-sm bg-red-50 focus:outline-none focus:ring-2 focus:ring-[#D4A853] placeholder:text-gray-400"
           />
           {menuSearch && (
             <button onClick={() => setMenuSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-lg leading-none">×</button>
           )}
         </div>
-        <div className="inline-flex bg-amber-50 border border-amber-200 rounded-xl p-1 gap-0.5 flex-shrink-0">
+        <div className="inline-flex bg-red-50 border border-red-200 rounded-xl p-1 gap-0.5 flex-shrink-0">
           {(["all", "veg", "non-veg"] as const).map((d) => (
             <button key={d} onClick={() => setDietFilter(d)}
               className={`px-3 py-1 rounded-full text-xs font-semibold transition-all ${
-                dietFilter === d ? "bg-[#8B4513] text-white shadow-sm" : "text-gray-600 hover:text-gray-800"
+                dietFilter === d ? "bg-[#D4380D] text-white shadow-sm" : "text-gray-600 hover:text-gray-800"
               }`}
             >
               {d === "all" ? "All" : d === "veg" ? "🌿 Veg" : "🍗 Non-Veg"}
@@ -979,11 +979,11 @@ const MenuTab = memo(function MenuTab({ sections, onSave }: { sections: AdminMen
             return (
               <button key={sec.id} onClick={() => setActiveSection(sec.id)}
                 className={`flex-shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all whitespace-nowrap ${
-                  activeSection === sec.id ? "bg-[#8B4513] text-white shadow-sm" : "bg-white border border-amber-200 text-gray-600 hover:border-[#8B4513] hover:text-[#8B4513]"
+                  activeSection === sec.id ? "bg-[#D4380D] text-white shadow-sm" : "bg-white border border-red-200 text-gray-600 hover:border-[#D4380D] hover:text-[#D4380D]"
                 }`}
               >
                 <span>{sec.emoji}</span> {sec.label}
-                {unavail > 0 && <span className="bg-amber-400 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">{unavail}</span>}
+                {unavail > 0 && <span className="bg-red-400 text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center">{unavail}</span>}
               </button>
             )
           })}
@@ -995,15 +995,15 @@ const MenuTab = memo(function MenuTab({ sections, onSave }: { sections: AdminMen
         <>
 
       {sectionData && (
-        <div className="bg-white rounded-2xl border border-amber-100 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-2xl border border-red-100 shadow-sm overflow-hidden">
           {/* Section header */}
-          <div className="px-5 py-4 border-b border-amber-100 flex items-center justify-between">
+          <div className="px-5 py-4 border-b border-red-100 flex items-center justify-between">
             <div>
-              <h3 className="font-playfair text-lg font-bold text-[#8B4513]">{sectionData.emoji} {sectionData.label}</h3>
+              <h3 className="font-playfair text-lg font-bold text-[#D4380D]">{sectionData.emoji} {sectionData.label}</h3>
               <p className="text-xs text-gray-500">{sectionData.items.length} items · {sectionData.items.filter(i => !i.available).length} unavailable</p>
             </div>
             <button onClick={() => setShowAddForm(v => !v)}
-              className="flex items-center gap-1.5 bg-[#8B4513] text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-[#6d3410] transition-colors"
+              className="flex items-center gap-1.5 bg-[#D4380D] text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-[#6d3410] transition-colors"
             >
               + Add Item
             </button>
@@ -1011,33 +1011,33 @@ const MenuTab = memo(function MenuTab({ sections, onSave }: { sections: AdminMen
 
           {/* Add new item form */}
           {showAddForm && (
-            <div className="bg-amber-50/80 border-b border-amber-100 px-5 py-4 space-y-3">
-              <h4 className="font-semibold text-sm text-[#8B4513]">New Item in {sectionData.label}</h4>
+            <div className="bg-red-50/80 border-b border-red-100 px-5 py-4 space-y-3">
+              <h4 className="font-semibold text-sm text-[#D4380D]">New Item in {sectionData.label}</h4>
               <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-3">
                 <input type="text" placeholder="Item name *" value={newItem.name}
                   onChange={e => setNewItem(n => ({ ...n, name: e.target.value }))}
-                  className="border border-amber-200 rounded-xl px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#D4A853] col-span-2 md:col-span-2"
+                  className="border border-red-200 rounded-xl px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#D4A853] col-span-2 md:col-span-2"
                 />
-                <div className="flex border border-amber-200 rounded-xl overflow-hidden bg-white">
-                  <span className="px-3 py-2 bg-amber-50 text-sm font-bold text-[#8B4513]">₹</span>
+                <div className="flex border border-red-200 rounded-xl overflow-hidden bg-white">
+                  <span className="px-3 py-2 bg-red-50 text-sm font-bold text-[#D4380D]">₹</span>
                   <input type="number" min={0} placeholder="Price" value={newItem.price || ""}
                     onChange={e => setNewItem(n => ({ ...n, price: Number(e.target.value) }))}
                     className="flex-1 px-2 py-2 text-sm focus:outline-none"
                   />
                 </div>
                 <select value={newItem.diet} onChange={e => setNewItem(n => ({ ...n, diet: e.target.value as "veg" | "non-veg" }))}
-                  className="border border-amber-200 rounded-xl px-3 py-2 text-sm bg-amber-50 focus:outline-none focus:ring-2 focus:ring-[#D4A853]"
+                  className="border border-red-200 rounded-xl px-3 py-2 text-sm bg-red-50 focus:outline-none focus:ring-2 focus:ring-[#D4A853]"
                 >
                   <option value="veg">🌿 Veg</option>
                   <option value="non-veg">🍗 Non-Veg</option>
                 </select>
                 <input type="text" placeholder="Short description" value={newItem.desc}
                   onChange={e => setNewItem(n => ({ ...n, desc: e.target.value }))}
-                  className="border border-amber-200 rounded-xl px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#D4A853] col-span-2 md:col-span-3"
+                  className="border border-red-200 rounded-xl px-3 py-2 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#D4A853] col-span-2 md:col-span-3"
                 />
                 <div className="flex gap-2">
-                  <button onClick={addItem} className="flex-1 bg-[#8B4513] text-white py-2 rounded-xl text-sm font-bold hover:bg-[#6d3410] transition-colors">Add</button>
-                  <button onClick={() => setShowAddForm(false)} className="border border-amber-200 text-gray-500 px-3 py-2 rounded-xl text-sm hover:border-red-300 hover:text-red-500 transition-colors">✕</button>
+                  <button onClick={addItem} className="flex-1 bg-[#D4380D] text-white py-2 rounded-xl text-sm font-bold hover:bg-[#6d3410] transition-colors">Add</button>
+                  <button onClick={() => setShowAddForm(false)} className="border border-red-200 text-gray-500 px-3 py-2 rounded-xl text-sm hover:border-red-300 hover:text-red-500 transition-colors">✕</button>
                 </div>
               </div>
             </div>
@@ -1050,7 +1050,7 @@ const MenuTab = memo(function MenuTab({ sections, onSave }: { sections: AdminMen
                 className={`border rounded-2xl overflow-hidden flex flex-col transition-all ${
                   !item.available
                     ? "bg-gray-50 border-gray-200 opacity-60"
-                    : "bg-white border-amber-100 hover:shadow-md hover:border-amber-300"
+                    : "bg-white border-red-100 hover:shadow-md hover:border-red-300"
                 }`}
               >
                 {/* Visual header */}
@@ -1072,7 +1072,7 @@ const MenuTab = memo(function MenuTab({ sections, onSave }: { sections: AdminMen
                     {editItemId === item.id ? (
                       <input type="text" value={item.name}
                         onChange={e => updateItem(sectionData.id, item.id, "name", e.target.value)}
-                        className="flex-1 border border-amber-200 rounded-lg px-2 py-0.5 text-xs bg-amber-50 focus:outline-none focus:ring-1 focus:ring-[#D4A853]"
+                        className="flex-1 border border-red-200 rounded-lg px-2 py-0.5 text-xs bg-red-50 focus:outline-none focus:ring-1 focus:ring-[#D4A853]"
                       />
                     ) : (
                       <p className={`font-semibold text-xs leading-tight ${!item.available ? "line-through text-gray-400" : "text-gray-800"}`}>{item.name}</p>
@@ -1081,7 +1081,7 @@ const MenuTab = memo(function MenuTab({ sections, onSave }: { sections: AdminMen
                   {editItemId === item.id ? (
                     <input type="text" value={item.desc}
                       onChange={e => updateItem(sectionData.id, item.id, "desc", e.target.value)}
-                      className="w-full border border-amber-200 rounded-lg px-2 py-0.5 text-[10px] bg-amber-50 focus:outline-none focus:ring-1 focus:ring-[#D4A853] mb-1"
+                      className="w-full border border-red-200 rounded-lg px-2 py-0.5 text-[10px] bg-red-50 focus:outline-none focus:ring-1 focus:ring-[#D4A853] mb-1"
                       placeholder="Description…"
                     />
                   ) : (
@@ -1089,29 +1089,29 @@ const MenuTab = memo(function MenuTab({ sections, onSave }: { sections: AdminMen
                   )}
                   {/* Price */}
                   {editItemId === item.id ? (
-                    <div className="flex items-center border border-amber-200 rounded-lg overflow-hidden h-6 w-full mb-1">
-                      <span className="px-1.5 text-[10px] font-bold text-[#8B4513] bg-amber-50 h-full flex items-center">₹</span>
+                    <div className="flex items-center border border-red-200 rounded-lg overflow-hidden h-6 w-full mb-1">
+                      <span className="px-1.5 text-[10px] font-bold text-[#D4380D] bg-red-50 h-full flex items-center">₹</span>
                       <input type="number" min={0} value={item.price}
                         onChange={e => updateItem(sectionData.id, item.id, "price", Number(e.target.value))}
                         className="flex-1 px-1 text-xs font-bold focus:outline-none h-full"
                       />
                     </div>
                   ) : (
-                    <span className="inline-block bg-[#8B4513]/10 text-[#8B4513] text-[10px] font-bold px-2 py-0.5 rounded-full">
+                    <span className="inline-block bg-[#D4380D]/10 text-[#D4380D] text-[10px] font-bold px-2 py-0.5 rounded-full">
                       {item.price === 0 ? "Free" : `₹${item.price}`}
                     </span>
                   )}
                 </div>
 
                 {/* Controls bar */}
-                <div className="flex items-center gap-1 px-2 py-1.5 border-t border-amber-50 bg-amber-50/50">
+                <div className="flex items-center gap-1 px-2 py-1.5 border-t border-amber-50 bg-red-50/50">
                   <button onClick={() => updateItem(sectionData.id, item.id, "available", !item.available)}
                     className={`flex-1 text-[10px] py-0.5 rounded-full font-semibold transition-all ${
                       item.available ? "bg-green-100 text-green-700 hover:bg-red-100 hover:text-red-600" : "bg-red-100 text-red-600 hover:bg-green-100 hover:text-green-700"
                     }`}
                   >{item.available ? "✓ On" : "✗ Off"}</button>
                   <button onClick={() => setEditItemId(editItemId === item.id ? null : item.id)}
-                    className="text-xs text-gray-400 hover:text-[#8B4513] transition-colors px-1.5"
+                    className="text-xs text-gray-400 hover:text-[#D4380D] transition-colors px-1.5"
                   >{editItemId === item.id ? "✓" : "✏️"}</button>
                   <button onClick={() => deleteItem(sectionData.id, item.id)}
                     className="text-xs text-gray-300 hover:text-red-500 transition-colors px-1"
@@ -1124,7 +1124,7 @@ const MenuTab = memo(function MenuTab({ sections, onSave }: { sections: AdminMen
           {sectionData.items.length === 0 && (
             <div className="text-center py-10 text-gray-400">
               <p>No items in this section.</p>
-              <button onClick={() => setShowAddForm(true)} className="text-[#8B4513] font-semibold text-sm mt-2">+ Add first item</button>
+              <button onClick={() => setShowAddForm(true)} className="text-[#D4380D] font-semibold text-sm mt-2">+ Add first item</button>
             </div>
           )}
         </div>
@@ -1132,12 +1132,12 @@ const MenuTab = memo(function MenuTab({ sections, onSave }: { sections: AdminMen
         </>
       ) : (
         /* ── Search results view ── */
-        <div className="bg-white rounded-2xl border border-amber-100 shadow-sm overflow-hidden">
-          <div className="px-5 py-4 border-b border-amber-100 bg-amber-50 flex items-center justify-between">
-            <p className="font-semibold text-sm text-[#8B4513]">
+        <div className="bg-white rounded-2xl border border-red-100 shadow-sm overflow-hidden">
+          <div className="px-5 py-4 border-b border-red-100 bg-red-50 flex items-center justify-between">
+            <p className="font-semibold text-sm text-[#D4380D]">
               🔍 {searchResults.length} result{searchResults.length !== 1 ? "s" : ""} for &ldquo;{menuSearch}&rdquo;
             </p>
-            <button onClick={() => setMenuSearch("")} className="text-xs text-gray-500 hover:text-[#8B4513] border border-amber-200 px-3 py-1 rounded-full">Clear search</button>
+            <button onClick={() => setMenuSearch("")} className="text-xs text-gray-500 hover:text-[#D4380D] border border-red-200 px-3 py-1 rounded-full">Clear search</button>
           </div>
           {searchResults.length === 0 ? (
             <div className="text-center py-10 text-gray-400">
@@ -1149,7 +1149,7 @@ const MenuTab = memo(function MenuTab({ sections, onSave }: { sections: AdminMen
               {searchResults.map((item) => (
                 <div key={item.id}
                   className={`border rounded-2xl p-4 flex flex-col gap-2 transition-all ${
-                    !item.available ? "bg-gray-50 border-amber-200 opacity-60" : "bg-white border-amber-200 hover:shadow-md hover:border-[#D4A853]/50"
+                    !item.available ? "bg-gray-50 border-red-200 opacity-60" : "bg-white border-red-200 hover:shadow-md hover:border-[#D4A853]/50"
                   }`}
                 >
                   <div className="flex items-start gap-2">
@@ -1163,7 +1163,7 @@ const MenuTab = memo(function MenuTab({ sections, onSave }: { sections: AdminMen
                       className={`text-base flex-shrink-0 ${item.popular ? "text-[#D4A853]" : "text-[#ddd] hover:text-[#D4A853]"}`}>★</button>
                   </div>
                   <div className="flex items-center justify-between mt-auto pt-1">
-                    <span className="font-bold text-sm text-[#8B4513]">{item.price === 0 ? "Free" : `₹${item.price}`}</span>
+                    <span className="font-bold text-sm text-[#D4380D]">{item.price === 0 ? "Free" : `₹${item.price}`}</span>
                     <div className="flex items-center gap-1.5">
                       <button onClick={() => updateItem(item.sectionId, item.id, "available", !item.available)}
                         className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${item.available ? "bg-green-100 text-green-700 hover:bg-red-100 hover:text-red-600" : "bg-red-100 text-red-600 hover:bg-green-100 hover:text-green-700"}`}>
@@ -1181,14 +1181,14 @@ const MenuTab = memo(function MenuTab({ sections, onSave }: { sections: AdminMen
 
       {dirty && (
         <div className="sticky bottom-4">
-          <div className="bg-[#8B4513] text-white rounded-2xl px-5 py-4 flex items-center justify-between shadow-xl max-w-2xl mx-auto">
+          <div className="bg-[#D4380D] text-white rounded-2xl px-5 py-4 flex items-center justify-between shadow-xl max-w-2xl mx-auto">
             <p className="font-semibold text-sm">Unsaved changes</p>
             <div className="flex gap-3">
               <button onClick={() => { setLocal(JSON.parse(JSON.stringify(sections))); setDirty(false) }}
                 className="border border-white/30 text-white/80 px-4 py-2 rounded-xl text-xs font-semibold hover:bg-white/10"
               >Discard</button>
               <button onClick={() => { onSave(local); setDirty(false) }}
-                className="bg-white text-[#8B4513] px-4 py-2 rounded-xl text-xs font-bold"
+                className="bg-white text-[#D4380D] px-4 py-2 rounded-xl text-xs font-bold"
               >💾 Save</button>
             </div>
           </div>
@@ -1243,12 +1243,12 @@ const ExtrasTab = memo(function ExtrasTab({ categories, onSave }: { categories: 
     <div className="space-y-5">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
-          <h2 className="font-playfair text-2xl font-bold text-[#8B4513]">Edit Order Extras</h2>
+          <h2 className="font-playfair text-2xl font-bold text-[#D4380D]">Edit Order Extras</h2>
           <p className="text-gray-500 text-sm mt-0.5">These are the add-on dishes customers can pick in Step 2 of booking.</p>
         </div>
         {dirty && (
           <button onClick={() => { onSave(local); setDirty(false) }}
-            className="bg-[#8B4513] text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-[#6d3410] transition-colors shadow-md"
+            className="bg-[#D4380D] text-white px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-[#6d3410] transition-colors shadow-md"
           >💾 Save Changes</button>
         )}
       </div>
@@ -1258,7 +1258,7 @@ const ExtrasTab = memo(function ExtrasTab({ categories, onSave }: { categories: 
         {local.map(cat => (
           <button key={cat.id} onClick={() => setActiveCat(cat.id)}
             className={`flex-shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-semibold transition-all whitespace-nowrap ${
-              activeCat === cat.id ? "bg-[#8B4513] text-white shadow-sm" : "bg-white border border-amber-200 text-gray-600 hover:border-[#8B4513] hover:text-[#8B4513]"
+              activeCat === cat.id ? "bg-[#D4380D] text-white shadow-sm" : "bg-white border border-red-200 text-gray-600 hover:border-[#D4380D] hover:text-[#D4380D]"
             }`}
           >
             <span>{cat.emoji}</span>{cat.label}
@@ -1268,36 +1268,36 @@ const ExtrasTab = memo(function ExtrasTab({ categories, onSave }: { categories: 
       </div>
 
       {catData && (
-        <div className="bg-white rounded-2xl border border-amber-100 shadow-sm overflow-hidden">
-          <div className="px-5 py-4 border-b border-amber-100 flex items-center justify-between">
-            <h3 className="font-playfair text-lg font-bold text-[#8B4513]">{catData.emoji} {catData.label}</h3>
+        <div className="bg-white rounded-2xl border border-red-100 shadow-sm overflow-hidden">
+          <div className="px-5 py-4 border-b border-red-100 flex items-center justify-between">
+            <h3 className="font-playfair text-lg font-bold text-[#D4380D]">{catData.emoji} {catData.label}</h3>
             <button onClick={() => setShowAddForm(v => !v)}
-              className="flex items-center gap-1.5 bg-[#8B4513] text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-[#6d3410] transition-colors"
+              className="flex items-center gap-1.5 bg-[#D4380D] text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-[#6d3410] transition-colors"
             >+ Add Item</button>
           </div>
 
           {showAddForm && (
-            <div className="bg-amber-50/80 border-b border-amber-100 px-5 py-4 grid sm:grid-cols-5 gap-3">
+            <div className="bg-red-50/80 border-b border-red-100 px-5 py-4 grid sm:grid-cols-5 gap-3">
               <input type="text" placeholder="Item name *" value={newItem.name}
                 onChange={e => setNewItem(n => ({ ...n, name: e.target.value }))}
-                className="border border-amber-200 rounded-xl px-3 py-2 text-sm bg-amber-50 focus:outline-none focus:ring-2 focus:ring-[#D4A853] sm:col-span-2"
+                className="border border-red-200 rounded-xl px-3 py-2 text-sm bg-red-50 focus:outline-none focus:ring-2 focus:ring-[#D4A853] sm:col-span-2"
               />
-              <div className="flex items-center border border-amber-200 rounded-xl overflow-hidden bg-white">
-                <span className="px-2 text-xs font-bold text-[#8B4513] bg-amber-50">₹</span>
+              <div className="flex items-center border border-red-200 rounded-xl overflow-hidden bg-white">
+                <span className="px-2 text-xs font-bold text-[#D4380D] bg-red-50">₹</span>
                 <input type="number" min={0} placeholder="Price" value={newItem.price || ""}
                   onChange={e => setNewItem(n => ({ ...n, price: Number(e.target.value) }))}
                   className="w-full px-2 py-2 text-sm focus:outline-none"
                 />
               </div>
               <select value={newItem.diet} onChange={e => setNewItem(n => ({ ...n, diet: e.target.value as "veg" | "non-veg" }))}
-                className="border border-amber-200 rounded-xl px-3 py-2 text-sm bg-amber-50 focus:outline-none focus:ring-2 focus:ring-[#D4A853]"
+                className="border border-red-200 rounded-xl px-3 py-2 text-sm bg-red-50 focus:outline-none focus:ring-2 focus:ring-[#D4A853]"
               >
                 <option value="veg">🌿 Veg</option>
                 <option value="non-veg">🍗 Non-Veg</option>
               </select>
               <div className="flex gap-2">
-                <button onClick={addItem} className="flex-1 bg-[#8B4513] text-white py-2 rounded-xl text-sm font-bold hover:bg-[#6d3410]">Add</button>
-                <button onClick={() => setShowAddForm(false)} className="border border-amber-200 text-gray-500 px-3 py-2 rounded-xl text-sm hover:text-red-500">✕</button>
+                <button onClick={addItem} className="flex-1 bg-[#D4380D] text-white py-2 rounded-xl text-sm font-bold hover:bg-[#6d3410]">Add</button>
+                <button onClick={() => setShowAddForm(false)} className="border border-red-200 text-gray-500 px-3 py-2 rounded-xl text-sm hover:text-red-500">✕</button>
               </div>
             </div>
           )}
@@ -1307,8 +1307,8 @@ const ExtrasTab = memo(function ExtrasTab({ categories, onSave }: { categories: 
               <div key={item.id}
                 className={`border rounded-2xl p-3 flex flex-col gap-2 transition-all text-center ${
                   !item.available
-                    ? "bg-gray-50 border-amber-200 opacity-60"
-                    : "bg-white border-amber-200 hover:shadow-md hover:border-[#D4A853]/50"
+                    ? "bg-gray-50 border-red-200 opacity-60"
+                    : "bg-white border-red-200 hover:shadow-md hover:border-[#D4A853]/50"
                 }`}
               >
                 {/* Emoji + star */}
@@ -1316,13 +1316,13 @@ const ExtrasTab = memo(function ExtrasTab({ categories, onSave }: { categories: 
                   <span className={`w-2 h-2 rounded-sm border flex-shrink-0 mt-1 ${item.diet === "veg" ? "border-green-600 bg-green-100" : "border-red-600 bg-red-100"}`} />
                   <span className="text-3xl flex-1 text-center">{item.emoji}</span>
                   <button onClick={() => updateItem(catData.id, item.id, "popular", !item.popular)}
-                    className={`text-sm flex-shrink-0 ${item.popular ? "text-[#D4A853]" : "text-[#e0d0bc] hover:text-[#D4A853]"}`}>★</button>
+                    className={`text-sm flex-shrink-0 ${item.popular ? "text-[#D4A853]" : "text-[#FFD0C0] hover:text-[#D4A853]"}`}>★</button>
                 </div>
                 {/* Name */}
                 <p className={`font-semibold text-xs leading-tight ${!item.available ? "line-through text-gray-400" : "text-gray-900"}`}>{item.name}</p>
                 {/* Price inline edit */}
-                <div className="flex items-center border border-amber-200 rounded-lg overflow-hidden mx-auto">
-                  <span className="px-1.5 text-[10px] font-bold text-[#8B4513] bg-amber-50">₹</span>
+                <div className="flex items-center border border-red-200 rounded-lg overflow-hidden mx-auto">
+                  <span className="px-1.5 text-[10px] font-bold text-[#D4380D] bg-red-50">₹</span>
                   <input type="number" min={0} value={item.price}
                     onChange={e => updateItem(catData.id, item.id, "price", Number(e.target.value))}
                     className="w-14 px-1 py-1 text-xs font-bold focus:outline-none text-center"
@@ -1345,14 +1345,14 @@ const ExtrasTab = memo(function ExtrasTab({ categories, onSave }: { categories: 
 
       {dirty && (
         <div className="sticky bottom-4">
-          <div className="bg-[#8B4513] text-white rounded-2xl px-5 py-4 flex items-center justify-between shadow-xl max-w-2xl mx-auto">
+          <div className="bg-[#D4380D] text-white rounded-2xl px-5 py-4 flex items-center justify-between shadow-xl max-w-2xl mx-auto">
             <p className="font-semibold text-sm">Unsaved changes</p>
             <div className="flex gap-3">
               <button onClick={() => { setLocal(JSON.parse(JSON.stringify(categories))); setDirty(false) }}
                 className="border border-white/30 text-white/80 px-4 py-2 rounded-xl text-xs font-semibold"
               >Discard</button>
               <button onClick={() => { onSave(local); setDirty(false) }}
-                className="bg-white text-[#8B4513] px-4 py-2 rounded-xl text-xs font-bold"
+                className="bg-white text-[#D4380D] px-4 py-2 rounded-xl text-xs font-bold"
               >💾 Save</button>
             </div>
           </div>
@@ -1383,17 +1383,17 @@ function SettingsTab({ onResetAll }: { onResetAll: () => void }) {
   return (
     <div className="space-y-6 max-w-2xl">
       <div>
-        <h2 className="font-playfair text-2xl font-bold text-[#8B4513]">Settings</h2>
+        <h2 className="font-playfair text-2xl font-bold text-[#D4380D]">Settings</h2>
         <p className="text-gray-500 text-sm mt-0.5">Manage admin access and data.</p>
       </div>
 
       {/* PIN change */}
-      <div className="bg-white rounded-2xl border border-amber-100 shadow-md p-6 space-y-4">
-        <h3 className="font-playfair text-lg font-bold text-[#8B4513]">🔐 Change Admin PIN</h3>
+      <div className="bg-white rounded-2xl border border-red-100 shadow-md p-6 space-y-4">
+        <h3 className="font-playfair text-lg font-bold text-[#D4380D]">🔐 Change Admin PIN</h3>
         <div>
           <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wider">Current PIN</label>
           <input type="password" value={currentPin} onChange={e => setCurrentPin(e.target.value)}
-            className="w-full border border-amber-200 rounded-xl px-4 py-2.5 text-sm bg-amber-50 focus:outline-none focus:ring-2 focus:ring-[#D4A853]"
+            className="w-full border border-red-200 rounded-xl px-4 py-2.5 text-sm bg-red-50 focus:outline-none focus:ring-2 focus:ring-[#D4A853]"
             placeholder="Enter current PIN"
           />
         </div>
@@ -1401,27 +1401,27 @@ function SettingsTab({ onResetAll }: { onResetAll: () => void }) {
           <div>
             <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wider">New PIN</label>
             <input type="password" value={newPin} onChange={e => setNewPin(e.target.value)}
-              className="w-full border border-amber-200 rounded-xl px-4 py-2.5 text-sm bg-amber-50 focus:outline-none focus:ring-2 focus:ring-[#D4A853]"
+              className="w-full border border-red-200 rounded-xl px-4 py-2.5 text-sm bg-red-50 focus:outline-none focus:ring-2 focus:ring-[#D4A853]"
               placeholder="Min 4 characters"
             />
           </div>
           <div>
             <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wider">Confirm New PIN</label>
             <input type="password" value={confirmPin} onChange={e => setConfirmPin(e.target.value)}
-              className="w-full border border-amber-200 rounded-xl px-4 py-2.5 text-sm bg-amber-50 focus:outline-none focus:ring-2 focus:ring-[#D4A853]"
+              className="w-full border border-red-200 rounded-xl px-4 py-2.5 text-sm bg-red-50 focus:outline-none focus:ring-2 focus:ring-[#D4A853]"
               placeholder="Repeat new PIN"
             />
           </div>
         </div>
         {pinMsg && <p className={`text-sm font-semibold ${pinMsg.startsWith("✅") ? "text-green-600" : "text-red-500"}`}>{pinMsg}</p>}
-        <button onClick={changePIN} className="bg-[#8B4513] text-white px-6 py-2.5 rounded-xl font-semibold text-sm hover:bg-[#6d3410] transition-colors">
+        <button onClick={changePIN} className="bg-[#D4380D] text-white px-6 py-2.5 rounded-xl font-semibold text-sm hover:bg-[#6d3410] transition-colors">
           Update PIN
         </button>
       </div>
 
       {/* How it works */}
-      <div className="bg-white rounded-2xl border border-amber-100 shadow-md p-6">
-        <h3 className="font-playfair text-lg font-bold text-[#8B4513] mb-4">ℹ️ How edits work</h3>
+      <div className="bg-white rounded-2xl border border-red-100 shadow-md p-6">
+        <h3 className="font-playfair text-lg font-bold text-[#D4380D] mb-4">ℹ️ How edits work</h3>
         <div className="space-y-3 text-sm text-gray-600">
           {[
             ["📦 Packages", "Edit price, tagline, what's included, and popular flag. Changes appear on /packages immediately after refresh."],
@@ -1453,7 +1453,7 @@ function SettingsTab({ onResetAll }: { onResetAll: () => void }) {
 
 // ─── Bookings Tab ─────────────────────────────────────────────────────────────
 const STATUS_STYLES: Record<BookingEntry["status"], string> = {
-  pending:   "bg-amber-100 text-amber-800",
+  pending:   "bg-red-100 text-red-800",
   confirmed: "bg-blue-100 text-blue-800",
   completed: "bg-green-100 text-green-800",
   cancelled: "bg-gray-100 text-gray-500",
@@ -1486,7 +1486,7 @@ const BookingsTab = memo(function BookingsTab({ bookings, onStatusChange }: {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between flex-wrap gap-3">
-        <h2 className="font-playfair text-xl font-bold text-[#8B4513]">📋 Customer Bookings</h2>
+        <h2 className="font-playfair text-xl font-bold text-[#D4380D]">📋 Customer Bookings</h2>
         <p className="text-xs text-gray-500">{bookings.length} total · {counts.pending} pending</p>
       </div>
 
@@ -1495,7 +1495,7 @@ const BookingsTab = memo(function BookingsTab({ bookings, onStatusChange }: {
         {(["all", "pending", "confirmed", "completed", "cancelled"] as const).map((s) => (
           <button key={s} onClick={() => setFilter(s)}
             className={`px-3 py-1.5 rounded-full text-xs font-semibold capitalize transition-colors ${
-              filter === s ? "bg-[#8B4513] text-white" : "bg-white border border-amber-200 text-gray-600 hover:bg-amber-50 hover:border-[#8B4513]"
+              filter === s ? "bg-[#D4380D] text-white" : "bg-white border border-red-200 text-gray-600 hover:bg-red-50 hover:border-[#D4380D]"
             }`}
           >
             {s === "all" ? "All" : s} {counts[s] > 0 && <span className="ml-1 opacity-70">({counts[s]})</span>}
@@ -1504,7 +1504,7 @@ const BookingsTab = memo(function BookingsTab({ bookings, onStatusChange }: {
       </div>
 
       {sorted.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-amber-100 p-12 text-center">
+        <div className="bg-white rounded-2xl border border-red-100 p-12 text-center">
           <p className="text-4xl mb-3">📭</p>
           <p className="text-gray-500 font-medium">No bookings yet</p>
           <p className="text-xs text-gray-400 mt-1">Bookings submitted from the website will appear here</p>
@@ -1512,7 +1512,7 @@ const BookingsTab = memo(function BookingsTab({ bookings, onStatusChange }: {
       ) : (
         <div className="space-y-3">
           {sorted.map((b) => (
-            <div key={b.id} className="bg-white rounded-2xl border border-amber-100 shadow-sm overflow-hidden">
+            <div key={b.id} className="bg-white rounded-2xl border border-red-100 shadow-sm overflow-hidden">
               {/* Header row */}
               <div className="flex items-center gap-3 px-5 py-4 cursor-pointer" onClick={() => setExpanded(expanded === b.id ? null : b.id)}>
                 <div className="flex-1 min-w-0">
@@ -1529,7 +1529,7 @@ const BookingsTab = memo(function BookingsTab({ bookings, onStatusChange }: {
                   </div>
                 </div>
                 <div className="text-right flex-shrink-0">
-                  <p className="font-bold text-[#8B4513] text-sm">₹{b.totalPerPerson}<span className="text-[10px] text-gray-400 font-normal">/pp</span></p>
+                  <p className="font-bold text-[#D4380D] text-sm">₹{b.totalPerPerson}<span className="text-[10px] text-gray-400 font-normal">/pp</span></p>
                   <p className="text-[10px] text-gray-400">₹{(b.totalPerPerson * b.guestCount).toLocaleString("en-IN")} est.</p>
                 </div>
                 <span className="text-gray-400 text-sm flex-shrink-0">{expanded === b.id ? "▲" : "▼"}</span>
@@ -1542,7 +1542,7 @@ const BookingsTab = memo(function BookingsTab({ bookings, onStatusChange }: {
                     className={`text-xs font-semibold px-3 py-1.5 rounded-full transition-colors ${
                       a.status === "cancelled" ? "bg-red-50 text-red-600 hover:bg-red-100 border border-red-200"
                       : a.status === "completed" ? "bg-green-50 text-green-700 hover:bg-green-100 border border-green-200"
-                      : "bg-[#8B4513] text-white hover:bg-[#6d3410]"
+                      : "bg-[#D4380D] text-white hover:bg-[#6d3410]"
                     }`}
                   >{a.label}</button>
                 ))}
@@ -1550,7 +1550,7 @@ const BookingsTab = memo(function BookingsTab({ bookings, onStatusChange }: {
 
               {/* Expanded details */}
               {expanded === b.id && (
-                <div className="border-t border-amber-100 px-5 py-4 bg-amber-50/40 space-y-3 text-sm">
+                <div className="border-t border-red-100 px-5 py-4 bg-red-50/40 space-y-3 text-sm">
                   <div className="grid grid-cols-2 gap-x-6 gap-y-2 text-xs">
                     <div><span className="text-gray-400">Event Type</span><p className="font-medium text-gray-800 mt-0.5">{b.eventType}</p></div>
                     <div><span className="text-gray-400">Event Date</span><p className="font-medium text-gray-800 mt-0.5">{b.eventDate}</p></div>
@@ -1562,7 +1562,7 @@ const BookingsTab = memo(function BookingsTab({ bookings, onStatusChange }: {
                       <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">Extras</p>
                       <div className="flex flex-wrap gap-1.5">
                         {b.extras.map(e => (
-                          <span key={e.id} className="bg-white border border-amber-200 text-gray-600 text-xs px-2.5 py-1 rounded-full">{e.emoji} {e.name} +₹{e.price}</span>
+                          <span key={e.id} className="bg-white border border-red-200 text-gray-600 text-xs px-2.5 py-1 rounded-full">{e.emoji} {e.name} +₹{e.price}</span>
                         ))}
                       </div>
                     </div>
@@ -1584,7 +1584,7 @@ const BookingsTab = memo(function BookingsTab({ bookings, onStatusChange }: {
                   {b.notes && (
                     <div>
                       <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Special Requests</p>
-                      <p className="text-xs text-gray-600 bg-white border border-amber-200 rounded-xl px-3 py-2">{b.notes}</p>
+                      <p className="text-xs text-gray-600 bg-white border border-red-200 rounded-xl px-3 py-2">{b.notes}</p>
                     </div>
                   )}
                 </div>
@@ -1646,7 +1646,7 @@ function ItemPickerPanel({
       <div className="relative">
         <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm pointer-events-none">🔍</span>
         <input type="text" value={search} onChange={e => setSearch(e.target.value)} placeholder="Search dishes…"
-          className="w-full pl-8 pr-8 py-2 border border-amber-200 rounded-xl text-sm bg-amber-50 focus:outline-none focus:ring-2 focus:ring-[#D4A853] placeholder:text-gray-400" />
+          className="w-full pl-8 pr-8 py-2 border border-red-200 rounded-xl text-sm bg-red-50 focus:outline-none focus:ring-2 focus:ring-[#D4A853] placeholder:text-gray-400" />
         {search && <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-xs">✕</button>}
       </div>
 
@@ -1659,8 +1659,8 @@ function ItemPickerPanel({
               <button key={sec.id} type="button" onClick={() => setActiveSection(sec.id)}
                 className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all whitespace-nowrap ${
                   activeSection === sec.id
-                    ? "bg-[#8B4513] text-white shadow-sm"
-                    : "bg-white border border-amber-200 text-gray-600 hover:border-[#8B4513] hover:text-[#8B4513]"
+                    ? "bg-[#D4380D] text-white shadow-sm"
+                    : "bg-white border border-red-200 text-gray-600 hover:border-[#D4380D] hover:text-[#D4380D]"
                 }`}
               >
                 <span>{sec.emoji}</span> {sec.label}
@@ -1681,8 +1681,8 @@ function ItemPickerPanel({
               typeFilter === t
                 ? t === "veg" ? "bg-green-600 text-white border-green-600"
                   : t === "non-veg" ? "bg-red-600 text-white border-red-600"
-                  : "bg-[#8B4513] text-white border-[#8B4513]"
-                : "bg-white text-gray-600 border-amber-200 hover:border-amber-400"
+                  : "bg-[#D4380D] text-white border-[#D4380D]"
+                : "bg-white text-gray-600 border-red-200 hover:border-amber-400"
             }`}
           >
             {t === "all" ? "All" : t === "veg" ? "🌿 Veg" : "🍗 Non-Veg"}
@@ -1701,16 +1701,16 @@ function ItemPickerPanel({
               return (
                 <button key={item.id} type="button" onClick={() => onToggle(item.name)}
                   className={`relative text-left rounded-xl border-2 p-3 transition-all ${
-                    isSel ? "border-[#8B4513] bg-[#8B4513]/5 shadow-sm" : "border-gray-200 bg-white hover:border-[#D4A853]"
+                    isSel ? "border-[#D4380D] bg-[#D4380D]/5 shadow-sm" : "border-gray-200 bg-white hover:border-[#D4A853]"
                   }`}
                 >
-                  {isSel && <span className="absolute top-2 right-2 w-4 h-4 bg-[#8B4513] rounded-full flex items-center justify-center text-white text-[9px] font-bold">✓</span>}
+                  {isSel && <span className="absolute top-2 right-2 w-4 h-4 bg-[#D4380D] rounded-full flex items-center justify-center text-white text-[9px] font-bold">✓</span>}
                   <div className="flex items-start gap-2 pr-5">
                     <span className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${item.diet === "veg" ? "bg-green-500" : "bg-red-500"}`} />
                     <div className="min-w-0">
                       <p className="font-semibold text-xs text-gray-800 leading-tight">{item.name}</p>
                       <p className="text-[10px] text-[#D4A853] mt-0.5">{item.sectionEmoji} {item.sectionLabel}</p>
-                      {item.price > 0 && <p className="text-[10px] font-semibold text-[#8B4513] mt-0.5">₹{item.price}/person</p>}
+                      {item.price > 0 && <p className="text-[10px] font-semibold text-[#D4380D] mt-0.5">₹{item.price}/person</p>}
                     </div>
                   </div>
                 </button>
@@ -1728,15 +1728,15 @@ function ItemPickerPanel({
               return (
                 <button key={item.id} type="button" onClick={() => onToggle(item.name)}
                   className={`relative text-left rounded-xl border-2 p-3 transition-all ${
-                    isSel ? "border-[#8B4513] bg-[#8B4513]/5 shadow-sm" : "border-gray-200 bg-white hover:border-[#D4A853]"
+                    isSel ? "border-[#D4380D] bg-[#D4380D]/5 shadow-sm" : "border-gray-200 bg-white hover:border-[#D4A853]"
                   }`}
                 >
-                  {isSel && <span className="absolute top-2 right-2 w-4 h-4 bg-[#8B4513] rounded-full flex items-center justify-center text-white text-[9px] font-bold">✓</span>}
+                  {isSel && <span className="absolute top-2 right-2 w-4 h-4 bg-[#D4380D] rounded-full flex items-center justify-center text-white text-[9px] font-bold">✓</span>}
                   <div className="flex items-start gap-2 pr-5">
                     <span className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${item.diet === "veg" ? "bg-green-500" : "bg-red-500"}`} />
                     <div className="min-w-0">
                       <p className="font-semibold text-xs text-gray-800 leading-tight">{item.name}</p>
-                      {item.price > 0 && <p className="text-[10px] font-semibold text-[#8B4513] mt-0.5">₹{item.price}/person</p>}
+                      {item.price > 0 && <p className="text-[10px] font-semibold text-[#D4380D] mt-0.5">₹{item.price}/person</p>}
                     </div>
                   </div>
                 </button>
@@ -1786,19 +1786,19 @@ const CharityTab = memo(function CharityTab({ entries, onSave, menuSections }: {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="font-playfair text-xl font-bold text-[#8B4513]">🙏 Charity / Community Feeds</h2>
-        <button onClick={newEntry} className="text-xs text-[#8B4513] border border-[#8B4513] px-3 py-1.5 rounded-full hover:bg-[#8B4513] hover:text-white transition-colors">+ New</button>
+        <h2 className="font-playfair text-xl font-bold text-[#D4380D]">🙏 Charity / Community Feeds</h2>
+        <button onClick={newEntry} className="text-xs text-[#D4380D] border border-[#D4380D] px-3 py-1.5 rounded-full hover:bg-[#D4380D] hover:text-white transition-colors">+ New</button>
       </div>
 
       {/* Top: ItemPicker left, Form right */}
       <div className="grid md:grid-cols-2 gap-6 items-start">
         {/* Left: Item Picker */}
-        <div className="bg-white rounded-2xl border border-amber-100 shadow-md p-5">
+        <div className="bg-white rounded-2xl border border-red-100 shadow-md p-5">
           <h3 className="font-semibold text-gray-800 text-sm mb-3">Select Dishes</h3>
           {items.length > 0 && (
             <div className="flex flex-wrap gap-1.5 mb-3">
               {items.map(it => (
-                <span key={it} className="flex items-center gap-1 bg-amber-50 border border-[#D4A853]/40 text-gray-600 text-xs px-2.5 py-1 rounded-full">
+                <span key={it} className="flex items-center gap-1 bg-red-50 border border-[#D4A853]/40 text-gray-600 text-xs px-2.5 py-1 rounded-full">
                   {it}
                   <button onClick={() => setItems(items.filter(i => i !== it))} className="text-gray-400 hover:text-red-500 ml-0.5 leading-none">×</button>
                 </span>
@@ -1813,30 +1813,30 @@ const CharityTab = memo(function CharityTab({ entries, onSave, menuSections }: {
         </div>
 
         {/* Right: Entry Form */}
-        <div className="bg-white rounded-2xl border border-amber-100 shadow-md p-5 space-y-4">
+        <div className="bg-white rounded-2xl border border-red-100 shadow-md p-5 space-y-4">
           <h3 className="font-semibold text-gray-800 text-sm">{editing ? "Edit Entry" : "Add New Entry"}</h3>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-gray-600 mb-1">Date</label>
               <input type="date" value={form.date} onChange={e => setForm({...form, date: e.target.value})}
-                className="w-full border border-amber-200 rounded-xl px-3 py-2 text-sm bg-amber-50 focus:outline-none focus:ring-2 focus:ring-[#D4A853]" />
+                className="w-full border border-red-200 rounded-xl px-3 py-2 text-sm bg-red-50 focus:outline-none focus:ring-2 focus:ring-[#D4A853]" />
             </div>
             <div>
               <label className="block text-xs font-semibold text-gray-600 mb-1">People to feed</label>
               <input type="number" min={1} value={form.members} onChange={e => setForm({...form, members: e.target.value})}
-                className="w-full border border-amber-200 rounded-xl px-3 py-2 text-sm bg-amber-50 focus:outline-none focus:ring-2 focus:ring-[#D4A853]" />
+                className="w-full border border-red-200 rounded-xl px-3 py-2 text-sm bg-red-50 focus:outline-none focus:ring-2 focus:ring-[#D4A853]" />
             </div>
           </div>
           <div>
             <label className="block text-xs font-semibold text-gray-600 mb-1">Notes (optional)</label>
             <textarea rows={3} value={form.notes} onChange={e => setForm({...form, notes: e.target.value})}
-              placeholder="Any special notes…" className="w-full border border-amber-200 rounded-xl px-3 py-2 text-sm bg-amber-50 focus:outline-none focus:ring-2 focus:ring-[#D4A853] resize-none" />
+              placeholder="Any special notes…" className="w-full border border-red-200 rounded-xl px-3 py-2 text-sm bg-red-50 focus:outline-none focus:ring-2 focus:ring-[#D4A853] resize-none" />
           </div>
-          <p className="text-xs text-amber-700 bg-amber-50 rounded-lg px-3 py-2">
+          <p className="text-xs text-red-700 bg-red-50 rounded-lg px-3 py-2">
             {items.length === 0 ? "← Select dishes from the left panel" : `${items.length} dish${items.length !== 1 ? "es" : ""} selected`}
           </p>
           <button onClick={save} disabled={!form.date || items.length === 0}
-            className="w-full bg-[#8B4513] text-white py-2.5 rounded-xl font-bold text-sm hover:bg-[#6d3410] transition-colors disabled:opacity-50">
+            className="w-full bg-[#D4380D] text-white py-2.5 rounded-xl font-bold text-sm hover:bg-[#6d3410] transition-colors disabled:opacity-50">
             {editing ? "Update Entry" : "Save Entry"}
           </button>
         </div>
@@ -1849,7 +1849,7 @@ const CharityTab = memo(function CharityTab({ entries, onSave, menuSections }: {
           <p className="text-xs text-gray-400 text-center py-8">No entries yet</p>
         ) : (
           entries.map(e => (
-            <div key={e.id} className="bg-white rounded-xl border border-amber-100 shadow-sm px-4 py-3">
+            <div key={e.id} className="bg-white rounded-xl border border-red-100 shadow-sm px-4 py-3">
               <div className="flex items-start justify-between gap-2">
                 <div>
                   <p className="font-semibold text-sm text-gray-800">📅 {e.date} <span className="text-gray-500 font-normal">· {e.members} people</span></p>
@@ -1857,7 +1857,7 @@ const CharityTab = memo(function CharityTab({ entries, onSave, menuSections }: {
                   {e.notes && <p className="text-xs text-gray-400 mt-0.5 italic">{e.notes}</p>}
                 </div>
                 <div className="flex gap-1 flex-shrink-0">
-                  <button onClick={() => loadEntry(e)} className="text-xs text-[#8B4513] border border-[#8B4513] px-2 py-1 rounded-lg hover:bg-[#8B4513] hover:text-white transition-colors">Edit</button>
+                  <button onClick={() => loadEntry(e)} className="text-xs text-[#D4380D] border border-[#D4380D] px-2 py-1 rounded-lg hover:bg-[#D4380D] hover:text-white transition-colors">Edit</button>
                   <button onClick={() => { if (confirm(`Delete charity entry for ${e.date}?\n\nThis cannot be undone.`)) onSave(entries.filter(x => x.id !== e.id)) }} className="text-xs text-red-500 border border-red-200 px-2 py-1 rounded-lg hover:bg-red-50 transition-colors">Del</button>
                 </div>
               </div>
@@ -1907,7 +1907,7 @@ const StallsTab = memo(function StallsTab({ stalls, onSave, menuSections }: { st
   }
 
   const STATUS_STYLE: Record<StallEntry["status"], string> = {
-    planned: "bg-amber-100 text-amber-800",
+    planned: "bg-red-100 text-red-800",
     active: "bg-green-100 text-green-800",
     completed: "bg-gray-100 text-gray-500",
   }
@@ -1915,19 +1915,19 @@ const StallsTab = memo(function StallsTab({ stalls, onSave, menuSections }: { st
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="font-playfair text-xl font-bold text-[#8B4513]">🏪 Stall & Event Management</h2>
-        <button onClick={newStall} className="text-xs text-[#8B4513] border border-[#8B4513] px-3 py-1.5 rounded-full hover:bg-[#8B4513] hover:text-white transition-colors">+ New Stall</button>
+        <h2 className="font-playfair text-xl font-bold text-[#D4380D]">🏪 Stall & Event Management</h2>
+        <button onClick={newStall} className="text-xs text-[#D4380D] border border-[#D4380D] px-3 py-1.5 rounded-full hover:bg-[#D4380D] hover:text-white transition-colors">+ New Stall</button>
       </div>
 
       {/* Top: ItemPicker left, Form right */}
       <div className="grid md:grid-cols-2 gap-6 items-start">
         {/* Left: Item Picker */}
-        <div className="bg-white rounded-2xl border border-amber-100 shadow-md p-5">
+        <div className="bg-white rounded-2xl border border-red-100 shadow-md p-5">
           <h3 className="font-semibold text-gray-800 text-sm mb-3">Select Items for Stall</h3>
           {form.items.length > 0 && (
             <div className="flex flex-wrap gap-1.5 mb-3">
               {form.items.map((it, idx) => (
-                <span key={idx} className="flex items-center gap-1 bg-amber-50 border border-[#D4A853]/40 text-gray-600 text-xs px-2.5 py-1 rounded-full">
+                <span key={idx} className="flex items-center gap-1 bg-red-50 border border-[#D4A853]/40 text-gray-600 text-xs px-2.5 py-1 rounded-full">
                   {it.name}{it.price > 0 ? ` ₹${it.price}` : ""}
                   <button onClick={() => setForm(f => ({...f, items: f.items.filter((_, i) => i !== idx)}))} className="text-gray-400 hover:text-red-500 ml-0.5 leading-none">×</button>
                 </span>
@@ -1951,23 +1951,23 @@ const StallsTab = memo(function StallsTab({ stalls, onSave, menuSections }: { st
         </div>
 
         {/* Right: Entry Form */}
-        <div className="bg-white rounded-2xl border border-amber-100 shadow-md p-5 space-y-4">
+        <div className="bg-white rounded-2xl border border-red-100 shadow-md p-5 space-y-4">
           <h3 className="font-semibold text-gray-800 text-sm">{editing ? "Edit Stall" : "Add New Stall"}</h3>
           <div>
             <label className="block text-xs font-semibold text-gray-600 mb-1">Stall Name</label>
             <input value={form.name} onChange={e => setForm({...form, name: e.target.value})} placeholder="e.g. Temple Main Gate Stall"
-              className="w-full border border-amber-200 rounded-xl px-3 py-2 text-sm bg-amber-50 focus:outline-none focus:ring-2 focus:ring-[#D4A853]" />
+              className="w-full border border-red-200 rounded-xl px-3 py-2 text-sm bg-red-50 focus:outline-none focus:ring-2 focus:ring-[#D4A853]" />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-gray-600 mb-1">Date</label>
               <input type="date" value={form.date} onChange={e => setForm({...form, date: e.target.value})}
-                className="w-full border border-amber-200 rounded-xl px-3 py-2 text-sm bg-amber-50 focus:outline-none focus:ring-2 focus:ring-[#D4A853]" />
+                className="w-full border border-red-200 rounded-xl px-3 py-2 text-sm bg-red-50 focus:outline-none focus:ring-2 focus:ring-[#D4A853]" />
             </div>
             <div>
               <label className="block text-xs font-semibold text-gray-600 mb-1">Shift</label>
               <select value={form.shift} onChange={e => setForm({...form, shift: e.target.value as StallEntry["shift"]})}
-                className="w-full border border-amber-200 rounded-xl px-3 py-2 text-sm bg-amber-50 focus:outline-none focus:ring-2 focus:ring-[#D4A853]">
+                className="w-full border border-red-200 rounded-xl px-3 py-2 text-sm bg-red-50 focus:outline-none focus:ring-2 focus:ring-[#D4A853]">
                 <option value="morning">Morning</option>
                 <option value="evening">Evening</option>
                 <option value="all-day">All Day</option>
@@ -1977,14 +1977,14 @@ const StallsTab = memo(function StallsTab({ stalls, onSave, menuSections }: { st
           <div>
             <label className="block text-xs font-semibold text-gray-600 mb-1">Location</label>
             <input value={form.location} onChange={e => setForm({...form, location: e.target.value})} placeholder="e.g. Durga Temple, Vijayawada"
-              className="w-full border border-amber-200 rounded-xl px-3 py-2 text-sm bg-amber-50 focus:outline-none focus:ring-2 focus:ring-[#D4A853]" />
+              className="w-full border border-red-200 rounded-xl px-3 py-2 text-sm bg-red-50 focus:outline-none focus:ring-2 focus:ring-[#D4A853]" />
           </div>
           <div>
             <label className="block text-xs font-semibold text-gray-600 mb-1">Status</label>
             <div className="flex gap-2">
               {(["planned", "active", "completed"] as const).map(s => (
                 <button key={s} onClick={() => setForm({...form, status: s})}
-                  className={`flex-1 py-1.5 rounded-lg text-xs font-semibold capitalize transition-colors ${form.status === s ? STATUS_STYLE[s] + " ring-2 ring-current/30" : "bg-amber-50 text-gray-500 hover:bg-amber-100 border border-amber-200"}`}
+                  className={`flex-1 py-1.5 rounded-lg text-xs font-semibold capitalize transition-colors ${form.status === s ? STATUS_STYLE[s] + " ring-2 ring-current/30" : "bg-red-50 text-gray-500 hover:bg-red-100 border border-red-200"}`}
                 >{s}</button>
               ))}
             </div>
@@ -1992,13 +1992,13 @@ const StallsTab = memo(function StallsTab({ stalls, onSave, menuSections }: { st
           <div>
             <label className="block text-xs font-semibold text-gray-600 mb-1">Notes (optional)</label>
             <textarea rows={2} value={form.notes} onChange={e => setForm({...form, notes: e.target.value})}
-              placeholder="Any notes…" className="w-full border border-amber-200 rounded-xl px-3 py-2 text-sm bg-amber-50 focus:outline-none focus:ring-2 focus:ring-[#D4A853] resize-none" />
+              placeholder="Any notes…" className="w-full border border-red-200 rounded-xl px-3 py-2 text-sm bg-red-50 focus:outline-none focus:ring-2 focus:ring-[#D4A853] resize-none" />
           </div>
-          <p className="text-xs text-amber-700 bg-amber-50 rounded-lg px-3 py-2">
+          <p className="text-xs text-red-700 bg-red-50 rounded-lg px-3 py-2">
             {form.items.length === 0 ? "← Select items from the left panel" : `${form.items.length} item${form.items.length !== 1 ? "s" : ""} · ₹${form.items.reduce((s, i) => s + i.price, 0).toLocaleString("en-IN")} total`}
           </p>
           <button onClick={save} disabled={!form.name.trim() || !form.date}
-            className="w-full bg-[#8B4513] text-white py-2.5 rounded-xl font-bold text-sm hover:bg-[#6d3410] transition-colors disabled:opacity-50">
+            className="w-full bg-[#D4380D] text-white py-2.5 rounded-xl font-bold text-sm hover:bg-[#6d3410] transition-colors disabled:opacity-50">
             {editing ? "Update Stall" : "Save Stall"}
           </button>
         </div>
@@ -2011,7 +2011,7 @@ const StallsTab = memo(function StallsTab({ stalls, onSave, menuSections }: { st
           <p className="text-xs text-gray-400 text-center py-8">No stalls configured yet</p>
         ) : (
           stalls.map(s => (
-            <div key={s.id} className="bg-white rounded-xl border border-amber-100 shadow-sm px-4 py-3">
+            <div key={s.id} className="bg-white rounded-xl border border-red-100 shadow-sm px-4 py-3">
               <div className="flex items-start justify-between gap-2">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
@@ -2022,7 +2022,7 @@ const StallsTab = memo(function StallsTab({ stalls, onSave, menuSections }: { st
                   <p className="text-xs text-gray-400 mt-0.5">{s.items.length} items · ₹{s.items.reduce((x, i) => x + i.price, 0).toLocaleString("en-IN")} total</p>
                 </div>
                 <div className="flex gap-1 flex-shrink-0">
-                  <button onClick={() => loadStall(s)} className="text-xs text-[#8B4513] border border-[#8B4513] px-2 py-1 rounded-lg hover:bg-[#8B4513] hover:text-white transition-colors">Edit</button>
+                  <button onClick={() => loadStall(s)} className="text-xs text-[#D4380D] border border-[#D4380D] px-2 py-1 rounded-lg hover:bg-[#D4380D] hover:text-white transition-colors">Edit</button>
                   <button onClick={() => { if (confirm(`Delete stall "${s.name}"?\n\nThis cannot be undone.`)) onSave(stalls.filter(x => x.id !== s.id)) }} className="text-xs text-red-500 border border-red-200 px-2 py-1 rounded-lg hover:bg-red-50 transition-colors">Del</button>
                 </div>
               </div>
