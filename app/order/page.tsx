@@ -26,13 +26,13 @@ const PACKAGES: Record<string, PkgEntry> = {
   },
   "non-veg-basic": {
     id: "non-veg-basic", name: "Non-Veg Basic", tag: "NON-VEG", price: 150,
-    color: "from-[#D4380D] to-[#E5622B]",
+    color: "from-primary to-primary-light",
     badgeColor: "bg-red-100 text-red-800",
     includes: ["Biryani (7 variants)", "Sambar", "Gongura Pachadi", "Curd Chutney", "Raita", "Plates & Service"],
   },
   "non-veg-premium": {
     id: "non-veg-premium", name: "Non-Veg Premium", tag: "NON-VEG", price: 180,
-    color: "from-[#5C1209] to-[#9E2D1A]",
+    color: "from-primary to-primary-mid",
     badgeColor: "bg-red-100 text-red-800",
     includes: ["Biryani (7 variants)", "Choice of Curry", "Sambar", "Gongura + Curd Chutney", "Raita", "Plates & Service"],
   },
@@ -166,16 +166,16 @@ const OrderItemPicker = memo(function OrderItemPicker({
     <div className="space-y-3">
       {/* Search bar — full width */}
       <div className="relative">
-        <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#aaa] text-sm pointer-events-none">🔍</span>
+        <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted text-sm pointer-events-none">🔍</span>
         <input
           type="text"
           value={search}
           onChange={e => setSearch(e.target.value)}
           placeholder="Search dishes…"
-          className="w-full border border-[#FFD0C0] rounded-xl pl-10 pr-9 py-2.5 text-sm bg-[#FFF8F5] focus:outline-none focus:border-[#D4380D] placeholder:text-[#b0a090]"
+          className="w-full border border-warm-border rounded-xl pl-10 pr-9 py-2.5 text-sm bg-surface focus:outline-none focus:border-primary/50 placeholder:text-text-muted"
         />
         {search.length > 0 ? (
-          <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-[#aaa] hover:text-[#555] text-lg leading-none">×</button>
+          <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-mid text-lg leading-none">×</button>
         ) : null}
       </div>
 
@@ -190,17 +190,17 @@ const OrderItemPicker = memo(function OrderItemPicker({
                 isDietActive(t)
                   ? t === "veg" ? "bg-green-600 text-white border-green-600"
                     : t === "non-veg" ? "bg-red-600 text-white border-red-600"
-                    : "bg-[#D4380D] text-white border-[#D4380D]"
-                  : t === "veg" ? "bg-white text-[#666] border-[#ddd] hover:border-green-500"
-                    : t === "non-veg" ? "bg-white text-[#666] border-[#ddd] hover:border-red-500"
-                    : "bg-white text-[#666] border-[#ddd] hover:border-[#D4380D]"
+                    : "bg-primary text-gold border-primary"
+                  : t === "veg" ? "bg-white text-text-muted border-warm-border hover:border-green-500"
+                    : t === "non-veg" ? "bg-white text-text-muted border-warm-border hover:border-red-500"
+                    : "bg-white text-text-muted border-warm-border hover:border-primary/30"
               }`}>
               {t === "all" ? "All" : t === "veg" ? "🌿 Veg" : "🍗 Non-Veg"}
             </button>
           ))}
 
           {/* Divider */}
-          <div className="w-px bg-[#FFD0C0] flex-shrink-0 my-1" />
+          <div className="w-px bg-warm-border flex-shrink-0 my-1" />
 
           {/* Section tabs */}
           {sections.map(sec => {
@@ -209,12 +209,12 @@ const OrderItemPicker = memo(function OrderItemPicker({
               <button key={sec.id} onClick={() => setActiveSection(sec.id)}
                 className={`flex-shrink-0 flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold border transition-all whitespace-nowrap ${
                   activeSection === sec.id
-                    ? "bg-[#D4380D] text-white border-[#D4380D] shadow-sm"
-                    : "bg-white text-[#555] border-[#ddd] hover:border-[#D4380D] hover:text-[#D4380D]"
+                    ? "bg-primary text-gold border-primary shadow-sm"
+                    : "bg-white text-text-muted border-warm-border hover:border-primary/30"
                 }`}>
                 {sec.emoji} {sec.label}
                 {selCount > 0 && (
-                  <span className={`w-4 h-4 rounded-full text-[9px] font-bold flex items-center justify-center ${activeSection === sec.id ? "bg-white/25 text-white" : "bg-[#D4380D] text-white"}`}>
+                  <span className={`w-4 h-4 rounded-full text-[9px] font-bold flex items-center justify-center ${activeSection === sec.id ? "bg-white/25 text-white" : "bg-primary text-gold"}`}>
                     {selCount}
                   </span>
                 )}
@@ -231,21 +231,21 @@ const OrderItemPicker = memo(function OrderItemPicker({
                 typeFilter === t
                   ? t === "veg" ? "bg-green-600 text-white border-green-600"
                     : t === "non-veg" ? "bg-red-600 text-white border-red-600"
-                    : "bg-[#D4380D] text-white border-[#D4380D]"
-                  : "bg-white text-[#666] border-[#ddd] hover:border-[#D4380D]"
+                    : "bg-primary text-gold border-primary"
+                  : "bg-white text-text-muted border-warm-border hover:border-primary/30"
               }`}>
               {t === "all" ? "All" : t === "veg" ? "🌿 Veg" : "🍗 Non-Veg"}
             </button>
           ))}
-          <span className="text-xs text-[#888] self-center ml-1">{activeItems.length} results</span>
+          <span className="text-xs text-text-muted self-center ml-1">{activeItems.length} results</span>
         </div>
       )}
 
       {/* Items — compact horizontal list */}
       {sections.length === 0 ? (
-        <p className="text-sm text-[#aaa] text-center py-8">Loading menu…</p>
+        <p className="text-sm text-text-muted text-center py-8">Loading menu…</p>
       ) : activeItems.length === 0 ? (
-        <p className="text-sm text-[#aaa] text-center py-8">No dishes found</p>
+        <p className="text-sm text-text-muted text-center py-8">No dishes found</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
           {activeItems.map(item => {
@@ -257,8 +257,8 @@ const OrderItemPicker = memo(function OrderItemPicker({
                 onClick={() => onToggle(item.name)}
                 className={`relative flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-all duration-150 ${
                   isAdded
-                    ? "bg-[#FBF4EE] border-2 border-[#D4380D] shadow-sm"
-                    : "bg-white border border-[#ece5db] hover:border-[#E89080] hover:shadow-sm"
+                    ? "bg-warm-bg border-2 border-primary shadow-sm"
+                    : "bg-white border border-warm-border hover:border-primary/30 hover:shadow-sm"
                 }`}
               >
                 {/* Diet dot */}
@@ -266,20 +266,20 @@ const OrderItemPicker = memo(function OrderItemPicker({
 
                 {/* Name + section label */}
                 <div className="flex-1 min-w-0">
-                  <p className={`text-sm font-semibold leading-tight truncate ${isAdded ? "text-[#8B1A0F]" : "text-[#1a1a1a]"}`}>{item.name}</p>
+                  <p className={`text-sm font-semibold leading-tight truncate ${isAdded ? "text-primary" : "text-text-dark"}`}>{item.name}</p>
                   {"sectionLabel" in item && isSearching && (
-                    <p className="text-[10px] text-[#aaa] mt-0.5">{(item as { sectionLabel?: string }).sectionLabel}</p>
+                    <p className="text-[10px] text-text-muted mt-0.5">{(item as { sectionLabel?: string }).sectionLabel}</p>
                   )}
                 </div>
 
                 {/* Price */}
-                <span className={`text-sm font-bold flex-shrink-0 ${isAdded ? "text-[#D4380D]" : "text-[#888]"}`}>
+                <span className={`text-sm font-bold flex-shrink-0 ${isAdded ? "text-gold" : "text-text-muted"}`}>
                   {price === 0 ? "Free" : `₹${price}`}
                 </span>
 
                 {/* Add / check */}
                 <span className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 transition-all text-xs font-bold ${
-                  isAdded ? "bg-[#D4380D] text-white" : "bg-[#FFE0D4] text-[#D4380D] hover:bg-[#D4380D] hover:text-white"
+                  isAdded ? "bg-primary text-gold" : "bg-warm-border text-primary hover:bg-primary hover:text-gold"
                 }`}>
                   {isAdded ? "✓" : "+"}
                 </span>
@@ -302,50 +302,50 @@ type HeaderProps = {
 function OrderHeader({ step, onSetStep, onGoBack }: HeaderProps) {
   const router = useRouter()
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur shadow-sm border-b border-[#FFE0D4]">
+    <header className="sticky top-0 z-40 bg-gradient-to-r from-primary to-primary-mid border-b border-white/10 shadow-lg">
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
         <button onClick={() => router.push("/")} className="flex items-center gap-2 flex-shrink-0">
-          <div className="w-9 h-9 rounded-full bg-[#D4380D] flex items-center justify-center text-base flex-shrink-0">🍛</div>
+          <div className="w-9 h-9 rounded-full bg-gold/20 flex items-center justify-center text-base flex-shrink-0">🍛</div>
           <div className="hidden sm:block">
-              <h1 className="text-base sm:text-lg font-bold text-[#D4380D] font-playfair leading-tight">
+              <h1 className="text-base sm:text-lg font-bold text-gold font-playfair leading-tight">
                 Ajay Foods &amp; Beverages
               </h1>
-              <p className="text-xs text-[#D4A853] font-medium tracking-wide">Quality Assured Foods</p>
+              <p className="text-xs text-gold/70 font-medium tracking-wide">Quality Assured Foods</p>
             </div>
         </button>
 
         <div className="flex items-center gap-1.5 text-xs">
-          <button onClick={() => router.push("/packages")} className="flex items-center gap-1.5 text-[#aaa] hover:text-[#D4380D] px-2 py-1.5 transition-colors">
-            <span className="w-4 h-4 rounded-full bg-[#D4A853] text-white flex items-center justify-center font-bold text-[10px]">✓</span>
+          <button onClick={() => router.push("/packages")} className="flex items-center gap-1.5 text-white/55 hover:text-white/90 px-2 py-1.5 transition-colors">
+            <span className="w-4 h-4 rounded-full bg-gold text-primary flex items-center justify-center font-bold text-[10px]">✓</span>
             <span className="hidden sm:inline">Package</span>
           </button>
-          <span className="text-[#ccc]">›</span>
+          <span className="text-white/30">›</span>
           {step === "details" ? (
-            <button onClick={() => onSetStep("extras")} className="flex items-center gap-1.5 px-2 py-1.5 text-[#888] hover:text-[#D4380D] transition-colors">
-              <span className="w-4 h-4 rounded-full bg-[#D4A853] text-white flex items-center justify-center font-bold text-[10px]">✓</span>
+            <button onClick={() => onSetStep("extras")} className="flex items-center gap-1.5 px-2 py-1.5 text-white/55 hover:text-white/90 transition-colors">
+              <span className="w-4 h-4 rounded-full bg-gold text-primary flex items-center justify-center font-bold text-[10px]">✓</span>
               <span className="hidden sm:inline">Add Extras</span>
             </button>
           ) : (
-            <span className={`flex items-center gap-1.5 px-2 py-1.5 rounded-full font-semibold ${step === "extras" ? "bg-[#D4380D] text-white" : "text-[#aaa]"}`}>
-              <span className="w-4 h-4 rounded-full bg-white text-[#D4380D] flex items-center justify-center font-bold text-[10px]">2</span>
+            <span className={`flex items-center gap-1.5 px-2 py-1.5 rounded-full font-semibold ${step === "extras" ? "bg-gold/20 text-gold" : "text-white/40"}`}>
+              <span className="w-4 h-4 rounded-full bg-white/20 text-white flex items-center justify-center font-bold text-[10px]">2</span>
               <span className="hidden sm:inline">Add Extras</span>
             </span>
           )}
-          <span className="text-[#ccc]">›</span>
-          <span className={`flex items-center gap-1.5 px-2 py-1.5 rounded-full font-semibold ${step === "details" ? "bg-[#D4380D] text-white" : "text-[#aaa]"}`}>
-            {step === "details" ? <span className="w-4 h-4 rounded-full bg-white text-[#D4380D] flex items-center justify-center font-bold text-[10px]">3</span> : <span className="w-4 h-4 rounded-full border border-[#ccc] flex items-center justify-center text-[10px]">3</span>}
+          <span className="text-white/30">›</span>
+          <span className={`flex items-center gap-1.5 px-2 py-1.5 rounded-full font-semibold ${step === "details" ? "bg-gold/20 text-gold" : "text-white/40"}`}>
+            {step === "details" ? <span className="w-4 h-4 rounded-full bg-white/20 text-white flex items-center justify-center font-bold text-[10px]">3</span> : <span className="w-4 h-4 rounded-full border border-white/20 text-white/40 flex items-center justify-center text-[10px]">3</span>}
             <span className="hidden sm:inline">Confirm</span>
           </span>
         </div>
 
         <div className="flex items-center gap-3 flex-shrink-0">
           <button onClick={() => router.push("/")}
-            className="text-sm text-[#888] hover:text-[#D4380D] transition-colors flex items-center gap-1">
+            className="text-sm text-white/55 hover:text-white/90 transition-colors flex items-center gap-1">
             🏠 <span className="hidden sm:inline">Home</span>
           </button>
-          <span className="text-[#FFD0C0]">|</span>
+          <span className="text-white/20">|</span>
           <button onClick={onGoBack}
-            className="text-sm text-[#888] hover:text-[#D4380D] transition-colors flex items-center gap-1">
+            className="text-sm text-white/55 hover:text-white/90 transition-colors flex items-center gap-1">
             ← {step === "details" ? "Back to Extras" : "Packages"}
           </button>
         </div>
@@ -491,15 +491,19 @@ function OrderInner() {
   // ── DONE SCREEN ────────────────────────────────────────────────────────────
   if (step === "done") {
     return (
-      <div className="min-h-screen bg-[#FFF8F5] flex items-center justify-center px-4 py-12">
-        <div className="max-w-lg w-full bg-white rounded-3xl shadow-xl overflow-hidden border border-[#FFE0D4]">
-          <div className="bg-gradient-to-br from-[#5C1209] to-[#D4380D] px-8 py-10 text-center text-white">
-            <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center text-4xl mx-auto mb-4">✅</div>
+      <div className="min-h-screen bg-warm-bg flex items-center justify-center px-4 py-12">
+        <div className="max-w-lg w-full bg-white rounded-3xl shadow-xl overflow-hidden border border-warm-border">
+          <div className="bg-gradient-to-br from-primary to-primary-light px-8 py-10 text-center text-white">
+            <div className="w-16 h-16 bg-gold/[0.12] border-2 border-gold/30 rounded-full flex items-center justify-center mx-auto mb-5">
+              <svg className="w-8 h-8 text-gold" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
             <h1 className="font-playfair text-3xl font-bold">Booking Request Sent!</h1>
-            <p className="text-white/70 mt-2">We&apos;ll call you within 24 hours to confirm</p>
-            <div className="mt-4 bg-white/10 border border-white/20 rounded-2xl px-5 py-3 inline-block">
-              <p className="text-xs text-white/60 mb-0.5">Confirmation Number</p>
-              <p className="font-playfair text-2xl font-bold text-[#D4A853]">{confirmationNo}</p>
+            <p className="text-white/75 text-sm mt-2">We&apos;ll call you within 24 hours to confirm</p>
+            <div className="mt-4 bg-gradient-to-br from-primary to-primary-light rounded-2xl px-5 py-3 inline-block border border-gold/20">
+              <p className="text-xs text-white/75 mb-0.5">Confirmation Number</p>
+              <p className="font-playfair text-xl font-bold text-gold">{confirmationNo}</p>
             </div>
           </div>
           <div className="p-6 space-y-3 text-sm">
@@ -509,22 +513,22 @@ function OrderInner() {
               { label: "Event",  value: `${form.eventType} · ${form.eventDate}` },
               { label: "Guests", value: `${guests} persons` },
             ].map(({ label, value }) => (
-              <div key={label} className="flex justify-between py-2 border-b border-[#FFE0D4]">
-                <span className="text-[#888]">{label}</span>
-                <span className="font-semibold text-right max-w-[60%]">{value}</span>
+              <div key={label} className="flex justify-between py-2 border-b border-warm-border">
+                <span className="text-text-muted">{label}</span>
+                <span className="font-semibold text-right max-w-[60%] text-text-dark">{value}</span>
               </div>
             ))}
 
             {/* Package with full includes */}
-            <div className="py-2 border-b border-[#FFE0D4]">
+            <div className="py-2 border-b border-warm-border">
               <div className="flex justify-between mb-2">
-                <span className="text-[#888]">Package</span>
-                <span className="font-semibold text-[#D4380D]">{pkg.name} — ₹{pkg.price}/person</span>
+                <span className="text-text-muted">Package</span>
+                <span className="font-semibold text-primary">{pkg.name} — ₹{pkg.price}/person</span>
               </div>
               <ul className="space-y-0.5 pl-2">
                 {pkg.includes.map((inc, i) => (
-                  <li key={i} className="flex items-start gap-1.5 text-xs text-[#555]">
-                    <span className="text-[#D4A853] flex-shrink-0">✓</span>{inc}
+                  <li key={i} className="flex items-start gap-1.5 text-xs text-text-mid">
+                    <span className="text-gold flex-shrink-0">✓</span>{inc}
                   </li>
                 ))}
               </ul>
@@ -532,15 +536,15 @@ function OrderInner() {
 
             {/* Meal preferences */}
             {Object.keys(preferences).filter(k => (preferences[k] ?? []).length > 0).length > 0 && (
-              <div className="py-2 border-b border-[#FFE0D4]">
-                <span className="text-[#888] block mb-1.5">Your Choices</span>
+              <div className="py-2 border-b border-warm-border">
+                <span className="text-text-muted block mb-1.5">Your Choices</span>
                 {(pkg.choiceGroups ?? []).map(g => {
                   const sel = preferences[g.id] ?? []
                   if (sel.length === 0) return null
                   return (
                     <div key={g.id} className="flex justify-between text-xs mb-1">
-                      <span className="text-[#888]">{g.label}</span>
-                      <span className="font-semibold text-right max-w-[55%]">{sel.join(", ")}</span>
+                      <span className="text-text-muted">{g.label}</span>
+                      <span className="font-semibold text-right max-w-[55%] text-text-dark">{sel.join(", ")}</span>
                     </div>
                   )
                 })}
@@ -549,35 +553,35 @@ function OrderInner() {
 
             {/* Extras */}
             {(selectedExtras.length > 0 || menuExtras.length > 0) && (
-              <div className="py-2 border-b border-[#FFE0D4]">
-                <span className="text-[#888] block mb-1.5">Extra Dishes ({selectedExtras.length + menuExtras.length})</span>
+              <div className="py-2 border-b border-warm-border">
+                <span className="text-text-muted block mb-1.5">Extra Dishes ({selectedExtras.length + menuExtras.length})</span>
                 <div className="flex flex-wrap gap-1">
                   {selectedExtras.map(item => (
-                    <span key={item.id} className="flex items-center gap-1 text-xs bg-[#FFF8F5] border border-[#FFD0C0] px-2 py-0.5 rounded-full text-[#555]">
-                      {item.emoji} {item.name} <span className="text-[#D4380D] font-semibold">+₹{item.price}</span>
+                    <span key={item.id} className="flex items-center gap-1 text-xs bg-warm-bg border border-warm-border px-2 py-0.5 rounded-full text-text-mid">
+                      {item.emoji} {item.name} <span className="text-primary font-semibold">+₹{item.price}</span>
                     </span>
                   ))}
                   {menuSections.flatMap(s => s.items.filter(i => menuExtras.includes(i.name)).map(item => (
-                    <span key={item.name} className="flex items-center gap-1 text-xs bg-[#FFF8F5] border border-[#FFD0C0] px-2 py-0.5 rounded-full text-[#555]">
-                      {item.name} <span className="text-[#D4380D] font-semibold">+₹{item.price}</span>
+                    <span key={item.name} className="flex items-center gap-1 text-xs bg-warm-bg border border-warm-border px-2 py-0.5 rounded-full text-text-mid">
+                      {item.name} <span className="text-primary font-semibold">+₹{item.price}</span>
                     </span>
                   )))}
                 </div>
               </div>
             )}
 
-            <div className="flex justify-between py-3 bg-[#FFF8F5] rounded-2xl px-4 -mx-4 mt-2">
-              <span className="font-bold text-[#D4380D] text-base">Estimated Total</span>
-              <span className="font-bold text-[#D4380D] text-base">₹{grandTotal.toLocaleString("en-IN")}</span>
+            <div className="flex justify-between py-3 bg-warm-bg rounded-2xl px-4 -mx-4 mt-2">
+              <span className="font-bold text-primary text-base">Estimated Total</span>
+              <span className="font-bold text-gold text-base">₹{grandTotal.toLocaleString("en-IN")}</span>
             </div>
-            <p className="text-center text-xs text-[#aaa] pt-1">Save your confirmation number for reference.</p>
+            <p className="text-center text-xs text-text-muted pt-1">Save your confirmation number for reference.</p>
             <div className="flex gap-3 pt-2">
               <button onClick={() => router.push("/packages")}
-                className="flex-1 border border-[#D4380D] text-[#D4380D] py-3 rounded-xl font-semibold hover:bg-[#D4380D] hover:text-white transition-colors text-sm">
+                className="flex-1 border border-warm-border text-text-mid py-3 rounded-full font-semibold hover:border-primary/30 transition-colors text-sm">
                 New Order
               </button>
               <button onClick={() => router.push("/")}
-                className="flex-1 bg-[#D4380D] text-white py-3 rounded-xl font-semibold hover:bg-[#6d3410] transition-colors text-sm">
+                className="mt-6 bg-gold text-primary font-bold px-8 py-3 rounded-full hover:bg-gold-light transition-colors flex-1 text-sm">
                 Go Home
               </button>
             </div>
@@ -590,13 +594,13 @@ function OrderInner() {
   // ── DETAILS SCREEN (Step 3: Review + Contact Form) ─────────────────────────
   if (step === "details") {
     return (
-      <div className="min-h-screen bg-[#FFF8F5] pb-32 md:pb-10">
+      <div className="min-h-screen bg-warm-bg pb-32 md:pb-10">
         <OrderHeader step={step} onSetStep={setStep} onGoBack={handleGoBack} />
 
         <div className="max-w-7xl mx-auto px-4 py-6">
           <div className="mb-6">
-            <h2 className="font-playfair text-2xl font-bold text-[#D4380D]">Review &amp; Confirm</h2>
-            <p className="text-[#888] text-sm mt-0.5">Check your order and fill in your contact details to submit.</p>
+            <h2 className="font-playfair text-2xl font-bold text-text-dark">Review &amp; Confirm</h2>
+            <p className="text-text-muted text-sm mt-0.5">Check your order and fill in your contact details to submit.</p>
           </div>
 
           <div className="flex gap-6 items-start flex-col lg:flex-row">
@@ -646,36 +650,36 @@ function OrderInner() {
               </div>
 
               {/* Selected Extras */}
-              <div className="bg-white rounded-2xl border border-[#FFE0D4] shadow-sm p-5">
+              <div className="bg-white rounded-2xl border border-warm-border shadow-sm p-5">
                 <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-playfair text-lg font-bold text-[#D4380D]">Extra Dishes</h3>
+                  <h3 className="font-playfair text-lg font-bold text-text-dark">Extra Dishes</h3>
                   <button onClick={() => setStep("extras")}
-                    className="text-xs text-[#D4380D] border border-[#D4380D] px-3 py-1 rounded-full hover:bg-[#D4380D] hover:text-white transition-colors font-semibold">
+                    className="text-xs text-primary border border-warm-border px-3 py-1 rounded-full hover:border-primary/30 transition-colors font-semibold">
                     Edit Extras
                   </button>
                 </div>
                 {selectedExtras.length === 0 && menuExtras.length === 0 ? (
                   <div className="text-center py-6">
-                    <p className="text-[#aaa] text-sm">No extras added</p>
-                    <button onClick={() => setStep("extras")} className="text-[#D4380D] text-sm font-semibold mt-1 underline">Add some extras →</button>
+                    <p className="text-text-muted text-sm">No extras added</p>
+                    <button onClick={() => setStep("extras")} className="text-primary text-sm font-semibold mt-1 underline">Add some extras →</button>
                   </div>
                 ) : (
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                     {selectedExtras.map((item) => (
-                      <div key={item.id} className="flex items-center gap-2 bg-[#FFF8F5] rounded-xl px-3 py-2">
+                      <div key={item.id} className="flex items-center gap-2 bg-warm-bg rounded-xl px-3 py-2">
                         <span className="text-lg">{item.emoji}</span>
                         <div className="min-w-0">
-                          <p className="text-xs font-semibold truncate">{item.name}</p>
-                          <p className="text-[10px] text-[#D4380D] font-bold">+₹{item.price}/pp</p>
+                          <p className="text-xs font-semibold truncate text-text-dark">{item.name}</p>
+                          <p className="text-[10px] text-gold font-bold">+₹{item.price}/pp</p>
                         </div>
                       </div>
                     ))}
                     {menuSections.flatMap(s => s.items.filter(i => menuExtras.includes(i.name)).map(item => (
-                      <div key={item.name} className="flex items-center gap-2 bg-[#FFF8F5] rounded-xl px-3 py-2">
+                      <div key={item.name} className="flex items-center gap-2 bg-warm-bg rounded-xl px-3 py-2">
                         <span className="text-lg">{item.diet === "veg" ? "🌿" : "🍗"}</span>
                         <div className="min-w-0">
-                          <p className="text-xs font-semibold truncate">{item.name}</p>
-                          <p className="text-[10px] text-[#D4380D] font-bold">+₹{item.price}/pp</p>
+                          <p className="text-xs font-semibold truncate text-text-dark">{item.name}</p>
+                          <p className="text-[10px] text-gold font-bold">+₹{item.price}/pp</p>
                         </div>
                       </div>
                     )))}
@@ -684,66 +688,66 @@ function OrderInner() {
               </div>
 
               {/* Cost Breakdown */}
-              <div className="bg-white rounded-2xl border border-[#FFE0D4] shadow-sm p-5">
-                <h3 className="font-playfair text-lg font-bold text-[#D4380D] mb-4">Cost Breakdown</h3>
+              <div className="bg-white rounded-2xl border border-warm-border shadow-sm p-5">
+                <h3 className="font-playfair text-lg font-bold text-text-dark mb-4">Cost Breakdown</h3>
                 <div className="space-y-2 text-sm">
-                  <div className="flex justify-between text-[#555]">
+                  <div className="flex justify-between text-text-mid">
                     <span>{pkg.name} (₹{pkg.price} × {guests} guests)</span>
                     <span className="font-medium">₹{(pkg.price * guests).toLocaleString("en-IN")}</span>
                   </div>
                   {selectedExtras.map((item) => (
-                    <div key={item.id} className="flex justify-between text-[#555]">
+                    <div key={item.id} className="flex justify-between text-text-mid">
                       <span className="flex items-center gap-1.5"><span>{item.emoji}</span>{item.name} (₹{item.price} × {guests})</span>
                       <span className="font-medium">₹{(item.price * guests).toLocaleString("en-IN")}</span>
                     </div>
                   ))}
                   {menuSections.flatMap(s => s.items.filter(i => menuExtras.includes(i.name)).map(item => (
-                    <div key={item.name} className="flex justify-between text-[#555]">
+                    <div key={item.name} className="flex justify-between text-text-mid">
                       <span>{item.name} (₹{item.price} × {guests})</span>
                       <span className="font-medium">₹{(item.price * guests).toLocaleString("en-IN")}</span>
                     </div>
                   )))}
-                  <div className="flex justify-between font-bold text-[#D4380D] text-base pt-3 border-t-2 border-[#D4A853]/40 mt-2">
+                  <div className="flex justify-between font-bold text-primary text-base pt-3 border-t-2 border-gold/40 mt-2">
                     <span>Estimated Total</span>
-                    <span>₹{grandTotal.toLocaleString("en-IN")}</span>
+                    <span className="text-gold">₹{grandTotal.toLocaleString("en-IN")}</span>
                   </div>
-                  <p className="text-[10px] text-[#aaa] text-center">Final pricing confirmed on call · Min 30 guests</p>
+                  <p className="text-[10px] text-text-muted text-center">Final pricing confirmed on call · Min 30 guests</p>
                 </div>
               </div>
             </div>
 
             {/* RIGHT: Contact Form */}
             <div className="w-full lg:w-[400px] flex-shrink-0">
-              <div className="bg-white rounded-2xl border border-[#FFE0D4] shadow-md p-6">
-                <h3 className="font-playfair text-xl font-bold text-[#D4380D] mb-5">Your Contact Details</h3>
+              <div className="bg-white rounded-2xl border border-warm-border shadow-md p-6">
+                <h3 className="font-playfair text-xl font-bold text-text-dark mb-5">Your Contact Details</h3>
                 <div className="space-y-4">
                   <div className={errors.name ? "error-field" : ""}>
-                    <label className="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wider">Your Name *</label>
+                    <label className="text-text-dark text-sm font-semibold mb-1.5 block">Your Name *</label>
                     <input type="text" placeholder="Ramesh Kumar" value={form.name}
                       onChange={(e) => { setForm(prev => ({ ...prev, name: e.target.value })); if (errors.name) setErrors({ ...errors, name: "" }) }}
-                      className={`w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#D4380D] focus:ring-2 focus:ring-[#D4380D]/10 bg-[#FFF8F5] ${errors.name ? "border-red-400" : "border-[#FFD0C0]"}`}
+                      className={`w-full bg-surface border rounded-xl px-4 py-3 text-sm text-text-dark placeholder:text-text-muted focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition ${errors.name ? "border-red-400" : "border-warm-border"}`}
                     />
                     {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
                   </div>
 
                   <div className={errors.phone ? "error-field" : ""}>
-                    <label className="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wider">Phone Number *</label>
+                    <label className="text-text-dark text-sm font-semibold mb-1.5 block">Phone Number *</label>
                     <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-[#888] font-medium">+91</span>
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-text-muted font-medium">+91</span>
                       <input type="tel" placeholder="98765 43210" maxLength={10}
                         value={form.phone}
                         onChange={(e) => { const d = e.target.value.replace(/\D/g,"").slice(0,10); setForm(prev => ({...prev,phone:d})); if(errors.phone) setErrors({...errors,phone:""}) }}
-                        className={`w-full border rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:border-[#D4380D] focus:ring-2 focus:ring-[#D4380D]/10 bg-[#FFF8F5] ${errors.phone ? "border-red-400" : "border-[#FFD0C0]"}`}
+                        className={`w-full bg-surface border rounded-xl pl-10 pr-4 py-3 text-sm text-text-dark placeholder:text-text-muted focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition ${errors.phone ? "border-red-400" : "border-warm-border"}`}
                       />
                     </div>
                     {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
                   </div>
 
                   <div className={errors.eventType ? "error-field" : ""}>
-                    <label className="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wider">Event Type *</label>
+                    <label className="text-text-dark text-sm font-semibold mb-1.5 block">Event Type *</label>
                     <select value={form.eventType}
                       onChange={(e) => { setForm(prev => ({...prev,eventType:e.target.value})); if(errors.eventType) setErrors({...errors,eventType:""}) }}
-                      className={`w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#D4380D] focus:ring-2 focus:ring-[#D4380D]/10 bg-[#FFF8F5] ${errors.eventType ? "border-red-400" : "border-[#FFD0C0]"}`}
+                      className={`w-full bg-surface border rounded-xl px-4 py-3 text-sm text-text-dark focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition ${errors.eventType ? "border-red-400" : "border-warm-border"}`}
                     >
                       <option value="">Select type…</option>
                       {EVENT_TYPES.map((t) => <option key={t}>{t}</option>)}
@@ -752,17 +756,17 @@ function OrderInner() {
                   </div>
 
                   <div className={errors.guestCount ? "error-field" : ""}>
-                    <label className="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wider">
-                      Guest Count * <span className="text-[#888] normal-case font-normal">(min 30)</span>
+                    <label className="text-text-dark text-sm font-semibold mb-1.5 block">
+                      Guest Count * <span className="text-text-muted normal-case font-normal">(min 30)</span>
                     </label>
                     <input type="number" placeholder="100" min={30} max={5000} value={form.guestCount}
                       onChange={(e) => { setForm(prev => ({...prev,guestCount:e.target.value})); if(errors.guestCount) setErrors({...errors,guestCount:""}) }}
-                      className={`w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#D4380D] focus:ring-2 focus:ring-[#D4380D]/10 bg-[#FFF8F5] ${errors.guestCount ? "border-red-400" : "border-[#FFD0C0]"}`}
+                      className={`w-full bg-surface border rounded-xl px-4 py-3 text-sm text-text-dark placeholder:text-text-muted focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition ${errors.guestCount ? "border-red-400" : "border-warm-border"}`}
                     />
                     <div className="flex gap-1 mt-1.5 flex-wrap">
                       {[50, 100, 200, 500].map((n) => (
                         <button key={n} type="button" onClick={() => setForm(prev => ({ ...prev, guestCount: String(n) }))}
-                          className={`text-[10px] px-2 py-0.5 rounded-full border transition-colors ${form.guestCount === String(n) ? "bg-[#D4380D] border-[#D4380D] text-white" : "bg-[#FFF8F5] border-[#FFD0C0] text-[#666] hover:border-[#D4380D] hover:text-[#D4380D]"}`}
+                          className={`text-[10px] px-2 py-0.5 rounded-full border transition-colors ${form.guestCount === String(n) ? "bg-primary border-primary text-gold" : "bg-surface border-warm-border text-text-muted hover:border-primary/30"}`}
                         >{n}</button>
                       ))}
                     </div>
@@ -770,43 +774,43 @@ function OrderInner() {
                   </div>
 
                   <div className={errors.eventDate ? "error-field" : ""}>
-                    <label className="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wider">Event Date *</label>
+                    <label className="text-text-dark text-sm font-semibold mb-1.5 block">Event Date *</label>
                     <input type="date" min={tomorrowStr} max={oneYearStr} value={form.eventDate}
                       onChange={(e) => { setForm(prev => ({...prev,eventDate:e.target.value})); if(errors.eventDate) setErrors({...errors,eventDate:""}) }}
-                      className={`w-full border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#D4380D] focus:ring-2 focus:ring-[#D4380D]/10 bg-[#FFF8F5] ${errors.eventDate ? "border-red-400" : "border-[#FFD0C0]"}`}
+                      className={`w-full bg-surface border rounded-xl px-4 py-3 text-sm text-text-dark placeholder:text-text-muted focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition ${errors.eventDate ? "border-red-400" : "border-warm-border"}`}
                     />
                     {errors.eventDate && <p className="text-red-500 text-xs mt-1">{errors.eventDate}</p>}
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wider">Special Requests</label>
+                    <label className="text-text-dark text-sm font-semibold mb-1.5 block">Special Requests</label>
                     <textarea rows={3} placeholder="Any other dietary requirements or special notes…" value={form.notes}
                       onChange={(e) => setForm(prev => ({...prev,notes:e.target.value}))}
-                      className="w-full border border-[#FFD0C0] rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#D4380D] focus:ring-2 focus:ring-[#D4380D]/10 bg-[#FFF8F5] resize-none"
+                      className="w-full bg-surface border border-warm-border rounded-xl px-4 py-3 text-sm text-text-dark placeholder:text-text-muted focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition resize-none"
                     />
                   </div>
 
                   {/* Cost breakdown */}
-                  <div className="bg-[#FFF8F5] border border-[#FFD0C0] rounded-xl px-4 py-3 text-xs space-y-1.5">
-                    <p className="font-semibold text-[#555] text-[11px] uppercase tracking-wider mb-2">Cost Breakdown</p>
-                    <div className="flex justify-between text-[#666]">
+                  <div className="bg-surface border border-warm-border rounded-xl px-4 py-3 text-xs space-y-1.5">
+                    <p className="font-semibold text-text-mid text-[11px] uppercase tracking-wider mb-2">Cost Breakdown</p>
+                    <div className="flex justify-between text-text-muted">
                       <span>{pkg.name} (base)</span>
                       <span>₹{pkg.price}/pp</span>
                     </div>
                     {selectedExtras.map((item) => (
-                      <div key={item.id} className="flex justify-between text-[#666]">
+                      <div key={item.id} className="flex justify-between text-text-muted">
                         <span>{item.emoji} {item.name}</span>
                         <span>+₹{item.price}/pp</span>
                       </div>
                     ))}
-                    <div className="flex justify-between font-bold text-[#D4380D] text-sm pt-1.5 border-t border-[#FFD0C0] mt-1">
+                    <div className="flex justify-between font-bold text-primary text-sm pt-1.5 border-t border-warm-border mt-1">
                       <span>Total ({guests} guests)</span>
-                      <span>₹{grandTotal.toLocaleString("en-IN")}</span>
+                      <span className="text-gold">₹{grandTotal.toLocaleString("en-IN")}</span>
                     </div>
                   </div>
 
                   <button onClick={handleSubmit} disabled={formLoading}
-                    className="w-full bg-[#D4380D] text-white py-4 rounded-xl font-bold text-sm hover:bg-[#6d3410] transition-colors shadow-md disabled:opacity-70 flex items-center justify-center gap-2"
+                    className="w-full bg-primary text-gold font-bold py-4 rounded-full shadow-[0_4px_16px_rgba(92,15,15,0.25)] hover:bg-primary-mid transition-colors disabled:opacity-70 flex items-center justify-center gap-2"
                   >
                     {formLoading ? (
                       <>
@@ -818,8 +822,8 @@ function OrderInner() {
                       </>
                     ) : "Submit Booking Request 🎉"}
                   </button>
-                  <p className="text-center text-xs text-[#aaa]">We&apos;ll call you within 24 hours to confirm.</p>
-                  <button onClick={() => setStep("extras")} className="w-full text-center text-sm text-[#888] hover:text-[#D4380D] transition-colors py-1">
+                  <p className="text-center text-xs text-text-muted">We&apos;ll call you within 24 hours to confirm.</p>
+                  <button onClick={() => setStep("extras")} className="w-full border border-warm-border text-text-mid text-sm py-3 rounded-full hover:border-primary/30 transition-colors mt-3">
                     ← Back to Extras
                   </button>
                 </div>
@@ -842,7 +846,7 @@ function OrderInner() {
 
   // ── EXTRAS SCREEN (Step 2: Add Extras) ────────────────────────────────────
   return (
-    <div className="min-h-screen bg-[#FFF8F5] pb-36 md:pb-0">
+    <div className="min-h-screen bg-warm-bg pb-36 md:pb-0">
       <OrderHeader step={step} onSetStep={setStep} onGoBack={handleGoBack} />
 
       <div className="max-w-6xl mx-auto px-4 py-5 flex gap-6 items-start">
@@ -865,15 +869,15 @@ function OrderInner() {
           </div>
 
           {/* Extra Dishes */}
-          <div className="bg-white rounded-2xl border border-[#FFE0D4] shadow-sm overflow-hidden">
+          <div className="bg-white rounded-2xl border border-warm-border shadow-sm overflow-hidden">
             <div className="px-5 pt-5 pb-5">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h2 className="font-playfair text-lg font-bold text-[#D4380D]">Add Extra Dishes <span className="text-base">✨</span></h2>
-                  <p className="text-[#aaa] text-xs mt-0.5">Optional — add any dishes from our menu</p>
+                  <h2 className="font-playfair text-xl font-bold text-text-dark border-b border-warm-border pb-3 mb-4">Add Extra Dishes <span className="text-base">✨</span></h2>
+                  <p className="text-text-muted text-xs mt-0.5">Optional — add any dishes from our menu</p>
                 </div>
                 {menuExtras.length > 0 && (
-                  <span className="bg-[#D4380D] text-white text-xs font-bold px-3 py-1.5 rounded-full flex-shrink-0 ml-3">+{menuExtras.length}</span>
+                  <span className="bg-primary text-gold text-xs font-bold px-3 py-1.5 rounded-full flex-shrink-0 ml-3">+{menuExtras.length}</span>
                 )}
               </div>
               <OrderItemPicker
@@ -887,17 +891,17 @@ function OrderInner() {
 
         {/* ── RIGHT: ORDER SUMMARY SIDEBAR ────────────────────────────── */}
         <div className="hidden md:block w-[380px] flex-shrink-0">
-          <div className="sticky top-20 bg-white rounded-2xl shadow-lg overflow-hidden border border-[#e8d8c4]">
+          <div className="sticky top-20 bg-white rounded-2xl shadow-lg overflow-hidden border border-warm-border">
             {/* Header */}
-            <div className="bg-[#8B1A0F] px-5 py-4 flex items-center justify-between">
+            <div className="bg-gradient-to-r from-primary to-primary-mid rounded-t-2xl px-5 py-4 flex items-center justify-between">
               <div className="flex items-center gap-2.5">
                 <span className="text-xl">🛒</span>
-                <h3 className="font-bold text-white text-base">Order Summary</h3>
+                <h3 className="font-playfair text-white font-bold text-lg">Order Summary</h3>
               </div>
               <div className="flex items-center gap-2.5">
                 <span className="bg-white/20 text-white text-xs font-semibold px-3 py-1 rounded-full">{_summaryTotal} items</span>
                 <button onClick={() => setSummaryEditMode(v => !v)} title={summaryEditMode ? "Done" : "Edit order"}
-                  className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${summaryEditMode ? "bg-white text-[#8B1A0F]" : "bg-white/15 text-white hover:bg-white/25"}`}>
+                  className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${summaryEditMode ? "bg-white text-primary" : "bg-white/15 text-white hover:bg-white/25"}`}>
                   {summaryEditMode
                     ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><path d="M20 6L9 17l-5-5"/></svg>
                     : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
@@ -910,23 +914,23 @@ function OrderInner() {
               {/* Package section */}
               <div className="px-5 pt-5 pb-4">
                 <div className="flex items-center gap-3 mb-4">
-                  <span className={`flex-1 text-sm font-extrabold uppercase tracking-wider ${pkg.tag === "VEG" ? "text-green-700" : "text-red-700"}`}>{pkg.name}</span>
+                  <span className={`flex-1 text-sm font-extrabold uppercase tracking-wider ${pkg.tag === "VEG" ? "text-green-700" : "text-primary"}`}>{pkg.name}</span>
                   <div className="flex items-center gap-2 flex-shrink-0">
-                    <span className="text-sm text-gray-400">👥</span>
+                    <span className="text-sm text-text-muted">👥</span>
                     <input type="number" min={30} value={form.guestCount}
                       onChange={e => setForm(prev => ({...prev, guestCount: e.target.value}))}
-                      className="w-24 border border-[#FFD0C0] rounded-lg px-3 py-1.5 text-sm text-center font-semibold text-gray-700 focus:outline-none focus:border-[#D4380D] bg-[#FFF8F5]"
+                      className="w-24 border border-warm-border rounded-lg px-3 py-1.5 text-sm text-center font-semibold text-text-dark focus:outline-none focus:border-primary/50 bg-surface"
                       placeholder="guests" />
                   </div>
                 </div>
-                <div className={`border-l-2 pl-4 space-y-2.5 ${pkg.tag === "VEG" ? "border-green-300" : "border-red-300"}`}>
+                <div className={`border-l-2 pl-4 space-y-2.5 ${pkg.tag === "VEG" ? "border-green-300" : "border-primary/30"}`}>
                   {_visibleIncludes.map((inc, i) => (
                     <div key={i} className="flex items-center gap-3">
-                      <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${pkg.tag === "VEG" ? "bg-green-400" : "bg-red-400"}`} />
-                      <span className="flex-1 text-sm text-gray-700 leading-snug">{inc}</span>
+                      <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${pkg.tag === "VEG" ? "bg-green-400" : "bg-primary/60"}`} />
+                      <span className="flex-1 text-sm text-text-dark leading-snug">{inc}</span>
                       {summaryEditMode && (
                         <button onClick={() => setRemovedIncludes(prev => [...prev, _allIncludes.indexOf(inc)])}
-                          className="w-6 h-6 rounded-full bg-red-50 flex items-center justify-center text-red-400 hover:bg-red-100 hover:text-red-600 flex-shrink-0 transition-colors text-base leading-none">–</button>
+                          className="w-6 h-6 rounded-full bg-warm-bg flex items-center justify-center text-primary/60 hover:bg-warm-border hover:text-primary flex-shrink-0 transition-colors text-base leading-none">–</button>
                       )}
                     </div>
                   ))}
@@ -935,10 +939,10 @@ function OrderInner() {
                     const shortName = _groupShortName(group.label)
                     return Array.from({ length: group.pick }, (_, i) => (
                       <div key={`${group.id}-${i}`} className="flex items-center gap-3">
-                        <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${pkg.tag === "VEG" ? "bg-green-400" : "bg-red-400"}`} />
+                        <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${pkg.tag === "VEG" ? "bg-green-400" : "bg-primary/60"}`} />
                         <select value={sel[i] ?? ""}
                           onChange={(e) => { setPreferences(prev => { const cur = [...(prev[group.id] ?? [])]; cur[i] = e.target.value; return { ...prev, [group.id]: cur } }) }}
-                          className={`w-[180px] flex-shrink-0 border rounded-lg px-3 py-1.5 text-sm font-medium focus:outline-none appearance-none cursor-pointer transition-colors ${sel[i] ? "border-green-200 bg-green-50 text-green-900" : "border-[#FFD0C0] bg-[#FFF8F5] text-gray-400"}`}
+                          className={`w-[180px] flex-shrink-0 border rounded-lg px-3 py-1.5 text-sm font-medium focus:outline-none appearance-none cursor-pointer transition-colors ${sel[i] ? "border-green-200 bg-green-50 text-green-900" : "border-warm-border bg-surface text-text-muted"}`}
                           style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`, backgroundRepeat: "no-repeat", backgroundPosition: "right 10px center", paddingRight: "28px" }}>
                           <option value="">{group.pick > 1 ? `${shortName} ${i + 1}` : shortName}</option>
                           {group.options.filter(opt => opt === sel[i] || !sel.includes(opt)).map(opt => <option key={opt} value={opt}>{opt}</option>)}
@@ -950,7 +954,7 @@ function OrderInner() {
                               cur[i] = ""
                               return { ...prev, [group.id]: cur }
                             })}
-                            className="w-6 h-6 rounded-full bg-red-50 flex items-center justify-center text-red-400 hover:bg-red-100 hover:text-red-600 flex-shrink-0 transition-colors text-base leading-none"
+                            className="w-6 h-6 rounded-full bg-warm-bg flex items-center justify-center text-primary/60 hover:bg-warm-border hover:text-primary flex-shrink-0 transition-colors text-base leading-none"
                           >–</button>
                         )}
                       </div>
@@ -961,18 +965,18 @@ function OrderInner() {
 
               {/* Extra dishes */}
               {menuExtras.length > 0 && (
-                <div className="px-5 py-4 border-t border-[#FFE0D4]">
-                  <p className="text-xs font-bold uppercase tracking-wider text-red-600 mb-3">Extra Dishes</p>
-                  <div className="border-l-2 border-red-300 pl-4 space-y-2.5">
+                <div className="px-5 py-4 border-t border-warm-border">
+                  <p className="text-xs font-bold uppercase tracking-wider text-primary mb-3">Extra Dishes</p>
+                  <div className="border-l-2 border-primary/30 pl-4 space-y-2.5">
                     {menuSections.flatMap(s => s.items.filter(i => menuExtras.includes(i.name)).map(item => (
                       <div key={item.name} className="flex items-center gap-3">
-                        <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${item.diet === "veg" ? "bg-green-400" : "bg-red-400"}`} />
-                        <span className="w-[170px] flex-shrink-0 text-sm text-gray-700 truncate">{item.name}</span>
+                        <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${item.diet === "veg" ? "bg-green-400" : "bg-primary/60"}`} />
+                        <span className="w-[170px] flex-shrink-0 text-sm text-text-dark truncate">{item.name}</span>
                         <div className="flex items-center gap-2 ml-auto flex-shrink-0">
-                          {item.price > 0 && <span className="text-xs text-red-600 font-semibold">+₹{item.price}</span>}
+                          {item.price > 0 && <span className="text-xs text-gold font-semibold">+₹{item.price}</span>}
                           {summaryEditMode && (
                             <button onClick={() => setMenuExtras(prev => prev.filter(n => n !== item.name))}
-                              className="w-6 h-6 rounded-full bg-red-50 flex items-center justify-center text-red-400 hover:bg-red-100 hover:text-red-600 flex-shrink-0 transition-colors text-base leading-none">–</button>
+                              className="w-6 h-6 rounded-full bg-warm-bg flex items-center justify-center text-primary/60 hover:bg-warm-border hover:text-primary flex-shrink-0 transition-colors text-base leading-none">–</button>
                           )}
                         </div>
                       </div>
@@ -983,15 +987,15 @@ function OrderInner() {
 
               {/* Essentials — no heading, no Free tag */}
               {essentialItems.length > 0 && (
-                <div className="px-5 py-4 border-t border-[#FFE0D4]">
-                  <div className="border-l-2 border-gray-200 pl-4 space-y-2.5">
+                <div className="px-5 py-4 border-t border-warm-border">
+                  <div className="border-l-2 border-warm-border pl-4 space-y-2.5">
                     {essentialItems.map(name => (
                       <div key={name} className="flex items-center gap-3">
-                        <span className="w-2.5 h-2.5 rounded-full flex-shrink-0 bg-gray-300" />
-                        <span className="flex-1 text-sm text-gray-500">{name}</span>
+                        <span className="w-2.5 h-2.5 rounded-full flex-shrink-0 bg-warm-border" />
+                        <span className="flex-1 text-sm text-text-muted">{name}</span>
                         {summaryEditMode && (
                           <button onClick={() => setEssentialItems(prev => prev.filter(n => n !== name))}
-                            className="w-6 h-6 rounded-full bg-red-50 flex items-center justify-center text-red-400 hover:bg-red-100 hover:text-red-600 flex-shrink-0 transition-colors text-base leading-none">–</button>
+                            className="w-6 h-6 rounded-full bg-warm-bg flex items-center justify-center text-primary/60 hover:bg-warm-border hover:text-primary flex-shrink-0 transition-colors text-base leading-none">–</button>
                         )}
                       </div>
                     ))}
@@ -1001,31 +1005,31 @@ function OrderInner() {
             </div>
 
             {/* Footer */}
-            <div className="border-t border-[#FFE0D4] px-5 py-4 bg-[#FFF8F5]">
+            <div className="border-t border-warm-border px-5 py-4 bg-surface">
               <div className="flex items-end justify-between mb-4">
                 <div>
-                  <p className="text-xs text-gray-400 mb-0.5">₹{totalPerPerson}/person × {guests} guests</p>
-                  <p className="text-xl font-bold text-[#D4380D]">₹{grandTotal.toLocaleString("en-IN")}</p>
+                  <p className="text-xs text-text-muted mb-0.5">₹{totalPerPerson}/person × {guests} guests</p>
+                  <p className="text-xl font-bold text-gold">₹{grandTotal.toLocaleString("en-IN")}</p>
                 </div>
                 {menuExtraCostPerPerson > 0 && (
                   <div className="text-right">
-                    <p className="text-[10px] text-gray-400">Extras added</p>
-                    <p className="text-sm font-semibold text-red-700">+₹{menuExtraCostPerPerson}/pp</p>
+                    <p className="text-[10px] text-text-muted">Extras added</p>
+                    <p className="text-sm font-semibold text-gold">+₹{menuExtraCostPerPerson}/pp</p>
                   </div>
                 )}
               </div>
               <button onClick={() => setStep("details")}
-                className="w-full bg-[#D4380D] text-white py-3.5 rounded-xl font-bold text-sm hover:bg-[#6d3410] transition-colors shadow-md">
+                className="w-full bg-primary text-gold font-bold py-4 rounded-full shadow-[0_4px_16px_rgba(92,15,15,0.25)] hover:bg-primary-mid transition-colors mt-4">
                 Continue to Details →
               </button>
-              <p className="text-center text-xs text-[#aaa] mt-2">Extras are optional · Skip anytime</p>
+              <p className="text-center text-xs text-text-muted mt-2">Extras are optional · Skip anytime</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* ── MOBILE BOTTOM BAR ────────────────────────────────────────────── */}
-      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-[#FFE0D4] shadow-xl z-40">
+      <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-warm-border shadow-xl z-40">
         {/* Row 1 — summary tap */}
         <button
           onClick={() => setShowSummaryDrawer(true)}
@@ -1033,19 +1037,19 @@ function OrderInner() {
         >
           <div className="flex items-center gap-2">
             <span className="text-sm">🛒</span>
-            <span className="text-xs font-semibold text-[#D4380D]">{_summaryTotal} items</span>
-            <span className="text-xs text-[#aaa]">· tap to review order</span>
+            <span className="text-xs font-semibold text-primary">{_summaryTotal} items</span>
+            <span className="text-xs text-text-muted">· tap to review order</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="font-bold text-[#D4380D] text-sm">₹{grandTotal.toLocaleString("en-IN")}</span>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D4380D" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M18 15l-6-6-6 6"/></svg>
+            <span className="font-bold text-gold text-sm">₹{grandTotal.toLocaleString("en-IN")}</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-primary"><path d="M18 15l-6-6-6 6"/></svg>
           </div>
         </button>
         {/* Row 2 — Continue */}
         <div className="px-4 pb-4">
           <button
             onClick={() => setStep("details")}
-            className="w-full bg-[#D4380D] text-white py-3.5 rounded-2xl font-bold text-base shadow-md active:scale-[0.98] transition-transform flex items-center justify-center gap-2"
+            className="w-full bg-primary text-gold py-3.5 rounded-2xl font-bold text-base shadow-[0_4px_16px_rgba(92,15,15,0.25)] active:scale-[0.98] transition-transform flex items-center justify-center gap-2"
           >
             Continue to Details
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -1060,15 +1064,15 @@ function OrderInner() {
           <div className="relative bg-white rounded-t-3xl shadow-2xl max-h-[90vh] overflow-hidden flex flex-col">
 
             {/* Header */}
-            <div className="bg-[#8B1A0F] px-5 py-4 flex items-center justify-between flex-shrink-0">
+            <div className="bg-gradient-to-r from-primary to-primary-mid rounded-t-2xl px-5 py-4 flex items-center justify-between flex-shrink-0">
               <div className="flex items-center gap-2.5">
                 <span className="text-xl">🛒</span>
-                <h3 className="font-bold text-white text-base">Order Summary</h3>
+                <h3 className="font-playfair font-bold text-white text-lg">Order Summary</h3>
               </div>
               <div className="flex items-center gap-2">
                 <span className="bg-white/20 text-white text-xs font-semibold px-3 py-1 rounded-full">{_summaryTotal} items</span>
                 <button onClick={() => setSummaryEditMode(v => !v)}
-                  className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${summaryEditMode ? "bg-white text-[#8B1A0F]" : "bg-white/15 text-white hover:bg-white/25"}`}>
+                  className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${summaryEditMode ? "bg-white text-primary" : "bg-white/15 text-white hover:bg-white/25"}`}>
                   {summaryEditMode
                     ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round"><path d="M20 6L9 17l-5-5"/></svg>
                     : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
@@ -1083,23 +1087,23 @@ function OrderInner() {
               {/* Package */}
               <div className="px-5 pt-5 pb-4">
                 <div className="flex items-center gap-3 mb-4">
-                  <span className={`flex-1 text-sm font-extrabold uppercase tracking-wider ${pkg.tag === "VEG" ? "text-green-700" : "text-red-700"}`}>{pkg.name}</span>
+                  <span className={`flex-1 text-sm font-extrabold uppercase tracking-wider ${pkg.tag === "VEG" ? "text-green-700" : "text-primary"}`}>{pkg.name}</span>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm text-gray-400">👥</span>
+                    <span className="text-sm text-text-muted">👥</span>
                     <input type="number" min={30} value={form.guestCount}
                       onChange={e => setForm(prev => ({...prev, guestCount: e.target.value}))}
-                      className="w-24 border border-[#FFD0C0] rounded-lg px-3 py-1.5 text-sm text-center font-semibold text-gray-700 focus:outline-none focus:border-[#D4380D] bg-[#FFF8F5]"
+                      className="w-24 border border-warm-border rounded-lg px-3 py-1.5 text-sm text-center font-semibold text-text-dark focus:outline-none focus:border-primary/50 bg-surface"
                       placeholder="guests" />
                   </div>
                 </div>
-                <div className={`border-l-2 pl-4 space-y-3 ${pkg.tag === "VEG" ? "border-green-300" : "border-red-300"}`}>
+                <div className={`border-l-2 pl-4 space-y-3 ${pkg.tag === "VEG" ? "border-green-300" : "border-primary/30"}`}>
                   {_visibleIncludes.map((inc, i) => (
                     <div key={i} className="flex items-center gap-3">
-                      <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${pkg.tag === "VEG" ? "bg-green-400" : "bg-red-400"}`} />
-                      <span className="flex-1 text-sm text-gray-700">{inc}</span>
+                      <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${pkg.tag === "VEG" ? "bg-green-400" : "bg-primary/60"}`} />
+                      <span className="flex-1 text-sm text-text-dark">{inc}</span>
                       {summaryEditMode && (
                         <button onClick={() => setRemovedIncludes(prev => [...prev, _allIncludes.indexOf(inc)])}
-                          className="w-6 h-6 rounded-full bg-red-50 flex items-center justify-center text-red-400 hover:bg-red-100 hover:text-red-600 flex-shrink-0 transition-colors text-base leading-none">–</button>
+                          className="w-6 h-6 rounded-full bg-warm-bg flex items-center justify-center text-primary/60 hover:bg-warm-border hover:text-primary flex-shrink-0 transition-colors text-base leading-none">–</button>
                       )}
                     </div>
                   ))}
@@ -1108,10 +1112,10 @@ function OrderInner() {
                     const shortName = _groupShortName(group.label)
                     return Array.from({ length: group.pick }, (_, i) => (
                       <div key={`${group.id}-${i}`} className="flex items-center gap-3">
-                        <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${pkg.tag === "VEG" ? "bg-green-400" : "bg-red-400"}`} />
+                        <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${pkg.tag === "VEG" ? "bg-green-400" : "bg-primary/60"}`} />
                         <select value={sel[i] ?? ""}
                           onChange={(e) => { setPreferences(prev => { const cur = [...(prev[group.id] ?? [])]; cur[i] = e.target.value; return { ...prev, [group.id]: cur } }) }}
-                          className={`flex-1 border rounded-lg px-3 py-2 text-sm font-medium focus:outline-none appearance-none cursor-pointer ${sel[i] ? "border-green-200 bg-green-50 text-green-900" : "border-[#FFD0C0] bg-[#FFF8F5] text-gray-400"}`}
+                          className={`flex-1 border rounded-lg px-3 py-2 text-sm font-medium focus:outline-none appearance-none cursor-pointer ${sel[i] ? "border-green-200 bg-green-50 text-green-900" : "border-warm-border bg-surface text-text-muted"}`}
                           style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`, backgroundRepeat: "no-repeat", backgroundPosition: "right 10px center", paddingRight: "28px" }}>
                           <option value="">{group.pick > 1 ? `${shortName} ${i + 1}` : shortName}</option>
                           {group.options.filter(opt => opt === sel[i] || !sel.includes(opt)).map(opt => <option key={opt} value={opt}>{opt}</option>)}
@@ -1123,7 +1127,7 @@ function OrderInner() {
                               cur[i] = ""
                               return { ...prev, [group.id]: cur }
                             })}
-                            className="w-6 h-6 rounded-full bg-red-50 flex items-center justify-center text-red-400 hover:bg-red-100 hover:text-red-600 flex-shrink-0 transition-colors text-base leading-none"
+                            className="w-6 h-6 rounded-full bg-warm-bg flex items-center justify-center text-primary/60 hover:bg-warm-border hover:text-primary flex-shrink-0 transition-colors text-base leading-none"
                           >–</button>
                         )}
                       </div>
@@ -1134,18 +1138,18 @@ function OrderInner() {
 
               {/* Extra dishes */}
               {menuExtras.length > 0 && (
-                <div className="px-5 py-4 border-t border-[#FFE0D4]">
-                  <p className="text-xs font-bold uppercase tracking-wider text-red-600 mb-3">Extra Dishes</p>
-                  <div className="border-l-2 border-red-300 pl-4 space-y-3">
+                <div className="px-5 py-4 border-t border-warm-border">
+                  <p className="text-xs font-bold uppercase tracking-wider text-primary mb-3">Extra Dishes</p>
+                  <div className="border-l-2 border-primary/30 pl-4 space-y-3">
                     {menuSections.flatMap(s => s.items.filter(i => menuExtras.includes(i.name)).map(item => (
                       <div key={item.name} className="flex items-center gap-3">
-                        <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${item.diet === "veg" ? "bg-green-400" : "bg-red-400"}`} />
-                        <span className="w-[170px] flex-shrink-0 text-sm text-gray-700 truncate">{item.name}</span>
+                        <span className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${item.diet === "veg" ? "bg-green-400" : "bg-primary/60"}`} />
+                        <span className="w-[170px] flex-shrink-0 text-sm text-text-dark truncate">{item.name}</span>
                         <div className="flex items-center gap-2 ml-auto flex-shrink-0">
-                          {item.price > 0 && <span className="text-xs text-red-600 font-semibold">+₹{item.price}</span>}
+                          {item.price > 0 && <span className="text-xs text-gold font-semibold">+₹{item.price}</span>}
                           {summaryEditMode && (
                             <button onClick={() => setMenuExtras(prev => prev.filter(n => n !== item.name))}
-                              className="w-6 h-6 rounded-full bg-red-50 flex items-center justify-center text-red-400 hover:bg-red-100 hover:text-red-600 flex-shrink-0 transition-colors text-base leading-none">–</button>
+                              className="w-6 h-6 rounded-full bg-warm-bg flex items-center justify-center text-primary/60 hover:bg-warm-border hover:text-primary flex-shrink-0 transition-colors text-base leading-none">–</button>
                           )}
                         </div>
                       </div>
@@ -1156,15 +1160,15 @@ function OrderInner() {
 
               {/* Essentials */}
               {essentialItems.length > 0 && (
-                <div className="px-5 py-4 border-t border-[#FFE0D4]">
-                  <div className="border-l-2 border-gray-200 pl-4 space-y-3">
+                <div className="px-5 py-4 border-t border-warm-border">
+                  <div className="border-l-2 border-warm-border pl-4 space-y-3">
                     {essentialItems.map(name => (
                       <div key={name} className="flex items-center gap-3">
-                        <span className="w-2.5 h-2.5 rounded-full flex-shrink-0 bg-gray-300" />
-                        <span className="flex-1 text-sm text-gray-500">{name}</span>
+                        <span className="w-2.5 h-2.5 rounded-full flex-shrink-0 bg-warm-border" />
+                        <span className="flex-1 text-sm text-text-muted">{name}</span>
                         {summaryEditMode && (
                           <button onClick={() => setEssentialItems(prev => prev.filter(n => n !== name))}
-                            className="w-6 h-6 rounded-full bg-red-50 flex items-center justify-center text-red-400 hover:bg-red-100 hover:text-red-600 flex-shrink-0 transition-colors text-base leading-none">–</button>
+                            className="w-6 h-6 rounded-full bg-warm-bg flex items-center justify-center text-primary/60 hover:bg-warm-border hover:text-primary flex-shrink-0 transition-colors text-base leading-none">–</button>
                         )}
                       </div>
                     ))}
@@ -1174,21 +1178,21 @@ function OrderInner() {
             </div>
 
             {/* Footer */}
-            <div className="border-t border-[#FFE0D4] px-5 py-4 bg-[#FFF8F5] flex-shrink-0">
+            <div className="border-t border-warm-border px-5 py-4 bg-surface flex-shrink-0">
               <div className="flex items-end justify-between mb-4">
                 <div>
-                  <p className="text-xs text-gray-400 mb-0.5">₹{totalPerPerson}/person × {guests} guests</p>
-                  <p className="text-xl font-bold text-[#D4380D]">₹{grandTotal.toLocaleString("en-IN")}</p>
+                  <p className="text-xs text-text-muted mb-0.5">₹{totalPerPerson}/person × {guests} guests</p>
+                  <p className="text-xl font-bold text-gold">₹{grandTotal.toLocaleString("en-IN")}</p>
                 </div>
                 {menuExtraCostPerPerson > 0 && (
                   <div className="text-right">
-                    <p className="text-[10px] text-gray-400">Extras</p>
-                    <p className="text-sm font-semibold text-red-700">+₹{menuExtraCostPerPerson}/pp</p>
+                    <p className="text-[10px] text-text-muted">Extras</p>
+                    <p className="text-sm font-semibold text-gold">+₹{menuExtraCostPerPerson}/pp</p>
                   </div>
                 )}
               </div>
               <button onClick={() => { setShowSummaryDrawer(false); setStep("details") }}
-                className="w-full bg-[#D4380D] text-white py-3.5 rounded-xl font-bold text-sm hover:bg-[#6d3410] transition-colors shadow-md">
+                className="w-full bg-primary text-gold font-bold py-4 rounded-full shadow-[0_4px_16px_rgba(92,15,15,0.25)] hover:bg-primary-mid transition-colors mt-4">
                 Continue to Details →
               </button>
             </div>
@@ -1202,10 +1206,10 @@ function OrderInner() {
 export default function OrderPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-[#FFF8F5] flex items-center justify-center">
+      <div className="min-h-screen bg-warm-bg flex items-center justify-center">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-[#D4380D] border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-[#D4380D] font-semibold">Loading…</p>
+          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+          <p className="text-primary font-semibold">Loading…</p>
         </div>
       </div>
     }>
