@@ -8,9 +8,17 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary: "#8B4513",
-        accent: "#D4A853",
-        cream: "#FDF6EC",
+        primary:        'var(--primary)',
+        'primary-mid':  'var(--primary-mid)',
+        'primary-light':'var(--primary-light)',
+        gold:           'var(--gold)',
+        'gold-light':   'var(--gold-light)',
+        'warm-bg':      'var(--bg)',
+        surface:        'var(--surface)',
+        'warm-border':  'var(--border)',
+        'text-dark':    'var(--text-dark)',
+        'text-mid':     'var(--text-mid)',
+        'text-muted':   'var(--text-muted)',
       },
       fontFamily: {
         playfair: ["var(--font-playfair)", "Georgia", "serif"],
