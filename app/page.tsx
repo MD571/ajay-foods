@@ -518,7 +518,7 @@ export default function AjayFoodsWebsite() {
             <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center text-4xl mx-auto mb-4">✅</div>
             <h2 className="font-playfair text-2xl font-bold text-primary mb-2">Booking Request Sent!</h2>
             <p className="text-text-mid text-sm mb-4">
-              Thank you! We'll call you back <strong>within 24 hours</strong> to confirm your booking.
+              Thank you! We&apos;ll call you back <strong>within 24 hours</strong> to confirm your booking.
             </p>
             <div className="bg-warm-bg rounded-2xl px-5 py-3 mb-6 inline-block">
               <p className="text-xs text-text-muted mb-0.5">Confirmation Number</p>
