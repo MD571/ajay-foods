@@ -118,14 +118,14 @@ const PACKAGES = [
   {
     id: "veg-premium", title: "Veg Premium", price: 140, unit: "/person",
     tag: "VEG", tagColor: "bg-green-100 text-green-800",
-    color: "from-[#D4A853] to-[#b88d3a]", popular: true,
+    color: "from-gold to-[#b88d3a]", popular: true,
     ideal: "Ideal for weddings & functions",
     includes: ["White Rice + Pulihora / Ghee Rice", "Sambar + Rasam + Curd", "2 Dals + 2 Curries", "2 Pachadis + 2 Thalimpus", "1 Sweet Dish", "Papad"],
   },
   {
     id: "non-veg-basic", title: "Non-Veg Basic", price: 150, unit: "/person",
     tag: "NON-VEG", tagColor: "bg-[#fde8e8] text-[#8B1A1A]",
-    color: "from-primary-light to-primary", popular: false,
+    color: "from-primary to-primary-light", popular: false,
     ideal: "Ideal for 30–150 guests",
     includes: ["Biryani (7 variants)", "Sambar", "Gongura Pachadi", "Perugu Chutney", "Curd Rice", "Plates & Service"],
   },
@@ -147,7 +147,7 @@ const TESTIMONIALS = [
   },
   {
     name: "Sunitha Rao", event: "Corporate Lunch", rating: 5,
-    avatar: "SR", color: "bg-[#D4A853]",
+    avatar: "SR", color: "bg-gold",
     text: "We order from Ajay Foods every week for our team lunches. The consistency, punctuality, and freshness is unmatched. The dal tadka and gongura chicken are office favourites. Everyone looks forward to lunch days!",
   },
   {
@@ -157,7 +157,7 @@ const TESTIMONIALS = [
   },
   {
     name: "Priya Nair", event: "Engagement Ceremony", rating: 5,
-    avatar: "PN", color: "bg-[#8B1515]",
+    avatar: "PN", color: "bg-primary-mid",
     text: "Ordered the veg premium package for our engagement. The bobbatlu and semya payasam were outstanding — just like my grandmother used to make. Guests from across Telangana complimented the authentic taste!",
   },
 ]
@@ -791,7 +791,7 @@ export default function AjayFoodsWebsite() {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/8 to-transparent" />
                   <span className="text-7xl group-hover:scale-110 transition-transform duration-300 relative z-10 drop-shadow">{item.emoji}</span>
                   {item.popular && (
-                    <span className="badge-glow absolute top-3 right-3 bg-gold/[0.15] border border-gold/30 text-[#8B6A1A] text-[9px] font-semibold px-2 py-0.5 rounded-full z-10">Popular</span>
+                    <span className="badge-glow absolute top-3 right-3 bg-gold/[0.15] border border-gold/30 text-gold text-[9px] font-semibold px-2 py-0.5 rounded-full z-10">Popular</span>
                   )}
                 </div>
                 <div className="p-4">
@@ -984,7 +984,7 @@ export default function AjayFoodsWebsite() {
                 { icon: "📧", label: "Email Us", main: "ajayfoods.co.in@gmail.com", sub: "We reply within 24 hours", href: "mailto:ajayfoods.co.in@gmail.com" },
               ].map((c, i) => (
                 <div key={c.label}
-                  className={`flex gap-4 transition-all duration-600 ${findUsView.visible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8"}`}
+                  className={`flex gap-4 transition-all duration-500 ${findUsView.visible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8"}`}
                   style={{ transitionDelay: `${150 + i * 120}ms` }}
                 >
                   <div className="w-12 h-12 rounded-xl bg-surface border border-warm-border flex items-center justify-center text-xl shadow-sm flex-shrink-0">{c.icon}</div>
