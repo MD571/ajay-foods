@@ -125,14 +125,14 @@ const PACKAGES = [
   {
     id: "non-veg-basic", title: "Non-Veg Basic", price: 150, unit: "/person",
     tag: "NON-VEG", tagColor: "bg-red-100 text-red-800",
-    color: "from-[#D4380D] to-[#6d3410]", popular: false,
+    color: "from-[#D4380D] to-[#5C0E0E]", popular: false,
     ideal: "Ideal for 30–150 guests",
     includes: ["Biryani (7 variants)", "Sambar", "Gongura Pachadi", "Perugu Chutney", "Curd Rice", "Plates & Service"],
   },
   {
     id: "non-veg-premium", title: "Non-Veg Premium", price: 180, unit: "/person",
     tag: "NON-VEG", tagColor: "bg-red-100 text-red-800",
-    color: "from-[#5C1209] to-[#9E2D1A]", popular: false,
+    color: "from-[#300808] to-[#8B1515]", popular: false,
     ideal: "Ideal for grand celebrations",
     includes: ["Biryani (7 variants)", "Choice of Curry", "Sambar + Gongura", "Perugu Chutney", "Curd Rice", "Plates & Service"],
   },
@@ -157,7 +157,7 @@ const TESTIMONIALS = [
   },
   {
     name: "Priya Nair", event: "Engagement Ceremony", rating: 5,
-    avatar: "PN", color: "bg-[#9E2D1A]",
+    avatar: "PN", color: "bg-[#8B1515]",
     text: "Ordered the veg premium package for our engagement. The bobbatlu and semya payasam were outstanding — just like my grandmother used to make. Guests from across Telangana complimented the authentic taste!",
   },
 ]
@@ -172,6 +172,39 @@ const EVENT_TYPES = [
   { value: "Anniversary", label: "🥂 Anniversary" },
   { value: "Other", label: "📅 Other" },
 ]
+
+// ─── Card 3D tilt handlers (module-level, no re-render) ──────────────────────
+function onCardTilt(e: React.MouseEvent<HTMLDivElement>) {
+  const el = e.currentTarget
+  const r  = el.getBoundingClientRect()
+  const x  = (e.clientX - r.left) / r.width
+  const y  = (e.clientY - r.top)  / r.height
+  el.style.transition = "transform 0.08s linear, box-shadow 0.2s"
+  el.style.transform  = `perspective(900px) rotateX(${(y - 0.5) * -8}deg) rotateY(${(x - 0.5) * 8}deg) scale(1.025) translateZ(10px)`
+}
+
+function onCardTiltReset(e: React.MouseEvent<HTMLDivElement>) {
+  const el = e.currentTarget
+  el.style.transition = "transform 0.55s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.4s"
+  el.style.transform  = ""
+}
+
+// ─── useInView — fires once when element enters viewport ─────────────────────
+function useInView(threshold = 0.12) {
+  const ref = useRef<HTMLElement>(null)
+  const [visible, setVisible] = useState(false)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const obs = new IntersectionObserver(
+      ([e]) => { if (e.isIntersecting) { setVisible(true); obs.disconnect() } },
+      { threshold }
+    )
+    obs.observe(el)
+    return () => obs.disconnect()
+  }, [threshold])
+  return { ref, visible }
+}
 
 // ─── Stats Section with count-up animation ────────────────────────────────────
 const STATS = [
@@ -224,22 +257,33 @@ function StatsSection() {
     return n.toLocaleString("en-IN")
   }
 
+  const pct = [100, 85, 78, 100]
+
   return (
-    <section ref={ref} className="py-12 bg-[#FFF8F5]">
+    <section ref={ref} className="py-10 bg-warm-bg">
       <div className="max-w-5xl mx-auto px-4">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {STATS.map((s, i) => (
-            <div key={s.label}
-              className={`bg-white rounded-2xl p-6 text-center shadow-sm border border-[#FFE0D4] hover:shadow-md hover:-translate-y-0.5 transition-all duration-500 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
-              style={{ transitionDelay: `${i * 100}ms` }}
-            >
-              <div className="text-3xl mb-2">{s.icon}</div>
-              <div className="font-playfair font-bold text-3xl text-[#D4380D]">
-                {visible ? fmt(i) + s.suffix : "0" + s.suffix}
+        {/* Zomato-style horizontal stats strip */}
+        <div className="bg-white rounded-2xl shadow-[0_2px_14px_rgba(92,15,15,0.07)] overflow-hidden border border-warm-border">
+          <div className="grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 divide-x-0 md:divide-x divide-warm-border">
+            {STATS.map((s, i) => (
+              <div key={s.label}
+                className={`relative flex flex-col items-center justify-center py-7 px-4 text-center transition-all duration-500 ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"} ${i % 2 === 0 && i < 2 ? "border-r border-warm-border md:border-r-0" : ""}`}
+                style={{ transitionDelay: `${i * 100}ms` }}
+              >
+                {/* Bottom fill bar */}
+                <div className="absolute bottom-0 left-4 right-4 h-0.5 bg-warm-border rounded-full overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-gold to-primary rounded-full transition-all duration-1000 ease-out"
+                    style={{ width: visible ? `${pct[i]}%` : "0%", transitionDelay: `${i * 100 + 500}ms` }}
+                  />
+                </div>
+                <div className="text-2xl mb-1.5">{s.icon}</div>
+                <div className="font-playfair font-bold text-3xl text-primary tabular-nums leading-none">
+                  {visible ? fmt(i) + s.suffix : "0" + s.suffix}
+                </div>
+                <div className="text-[10px] text-text-muted mt-1.5 font-bold tracking-[0.12em] uppercase">{s.label}</div>
               </div>
-              <div className="text-xs text-[#666] mt-1 font-medium">{s.label}</div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -272,10 +316,16 @@ export default function AjayFoodsWebsite() {
   const [menuFilter, setMenuFilter] = useState("all")
   const testimonialTimer = useRef<ReturnType<typeof setInterval> | null>(null)
 
-  // Scroll listener
+  // Scroll listener + hero parallax
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40)
-    window.addEventListener("scroll", onScroll)
+    const onScroll = () => {
+      setScrolled(window.scrollY > 40)
+      const inner = document.querySelector(".hero-parallax-inner") as HTMLElement | null
+      if (inner && window.scrollY < window.innerHeight) {
+        inner.style.transform = `translateY(${window.scrollY * 0.18}px)`
+      }
+    }
+    window.addEventListener("scroll", onScroll, { passive: true })
     return () => window.removeEventListener("scroll", onScroll)
   }, [])
 
@@ -299,6 +349,13 @@ export default function AjayFoodsWebsite() {
     document.body.style.overflow = menuModalOpen ? "hidden" : ""
     return () => { document.body.style.overflow = "" }
   }, [menuModalOpen])
+
+  // ── Section entrance views ─────────────────────────────────────────────────
+  const servicesView     = useInView()
+  const menuView         = useInView()
+  const testimonialsView = useInView()
+  const aboutView        = useInView()
+  const findUsView       = useInView()
 
   const navLinks = [
     { id: "home",     label: "Home",     href: null         },
@@ -391,7 +448,7 @@ export default function AjayFoodsWebsite() {
   const oneYearStr = new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split("T")[0]
 
   return (
-    <div className="min-h-screen bg-[#FFF8F5] text-[#1a1a1a] font-sans overflow-x-hidden">
+    <div className="min-h-screen bg-warm-bg text-text-dark font-sans overflow-x-hidden">
 
       {/* ══ FULL MENU MODAL ══════════════════════════════════════════════════ */}
       {menuModalOpen && (
@@ -399,7 +456,7 @@ export default function AjayFoodsWebsite() {
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setMenuModalOpen(false)} />
           <div className="relative bg-white w-full sm:max-w-4xl max-h-[92vh] sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden">
             {/* Header */}
-            <div className="bg-gradient-to-r from-[#5C1209] to-[#D4380D] px-6 py-5 flex items-center justify-between flex-shrink-0">
+            <div className="bg-gradient-to-r from-primary to-primary-mid px-6 py-5 flex items-center justify-between flex-shrink-0">
               <div>
                 <h2 className="font-playfair text-2xl font-bold text-white">Full Menu</h2>
                 <p className="text-white/70 text-sm">All items — prices per person</p>
@@ -407,11 +464,11 @@ export default function AjayFoodsWebsite() {
               <button onClick={() => setMenuModalOpen(false)} className="w-9 h-9 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white text-xl transition-colors">×</button>
             </div>
             {/* Category tabs */}
-            <div className="flex gap-2 overflow-x-auto px-4 py-3 border-b border-[#FFE0D4] flex-shrink-0 scrollbar-none">
+            <div className="flex gap-2 overflow-x-auto px-4 py-3 border-b border-warm-border flex-shrink-0 scrollbar-none">
               {[{ id: "all", label: "All Items", emoji: "🍽️" }, ...FULL_MENU_SECTIONS].map((cat) => (
                 <button key={cat.id} onClick={() => setMenuModalCat(cat.id)}
                   className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-semibold transition-all whitespace-nowrap ${
-                    menuModalCat === cat.id ? "bg-[#D4380D] text-white" : "bg-[#FFF8F5] text-[#555] border border-[#FFD0C0] hover:border-[#D4380D]"
+                    menuModalCat === cat.id ? "bg-primary text-white" : "bg-warm-bg text-text-mid border border-warm-border hover:border-primary"
                   }`}
                 >
                   <span>{"emoji" in cat ? cat.emoji : ""}</span> {cat.label}
@@ -422,18 +479,18 @@ export default function AjayFoodsWebsite() {
             <div className="flex-1 overflow-y-auto p-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                 {modalItems.map((item, idx) => (
-                  <div key={idx} className="flex items-center justify-between gap-3 bg-[#FFF8F5] border border-[#FFE0D4] rounded-xl px-4 py-3 hover:border-[#D4A853] transition-colors">
+                  <div key={idx} className="flex items-center justify-between gap-3 bg-warm-bg border border-warm-border rounded-xl px-4 py-3 hover:border-gold transition-colors">
                     <div className="flex items-center gap-2.5 min-w-0">
                       <span className={`w-2 h-2 rounded-full flex-shrink-0 ${item.diet === "veg" ? "bg-green-500" : "bg-red-500"}`} />
                       <div className="min-w-0">
-                        <p className="text-sm font-semibold text-[#1a1a1a] truncate">{item.name}</p>
+                        <p className="text-sm font-semibold text-text-dark truncate">{item.name}</p>
                         {"sectionLabel" in item && menuModalCat === "all" && (
-                          <p className="text-[10px] text-[#aaa]">{(item as { sectionLabel: string }).sectionLabel}</p>
+                          <p className="text-[10px] text-text-muted">{(item as { sectionLabel: string }).sectionLabel}</p>
                         )}
                       </div>
-                      {item.popular && <span className="text-[9px] bg-[#D4A853]/20 text-[#D4380D] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0">HOT</span>}
+                      {item.popular && <span className="text-[9px] bg-gold/20 text-primary font-bold px-1.5 py-0.5 rounded-full flex-shrink-0">HOT</span>}
                     </div>
-                    <span className={`text-sm font-bold flex-shrink-0 ${item.price === 0 ? "text-green-600" : "text-[#D4380D]"}`}>
+                    <span className={`text-sm font-bold flex-shrink-0 ${item.price === 0 ? "text-green-600" : "text-primary"}`}>
                       {item.price === 0 ? "Free" : `₹${item.price}`}
                     </span>
                   </div>
@@ -441,10 +498,10 @@ export default function AjayFoodsWebsite() {
               </div>
             </div>
             {/* Footer CTA */}
-            <div className="border-t border-[#FFE0D4] px-6 py-4 bg-[#FFF8F5] flex-shrink-0 flex items-center justify-between gap-4">
-              <p className="text-xs text-[#888]">All prices are per person · Minimum 30 guests · Customisable</p>
+            <div className="border-t border-warm-border px-6 py-4 bg-warm-bg flex-shrink-0 flex items-center justify-between gap-4">
+              <p className="text-xs text-text-muted">All prices are per person · Minimum 30 guests · Customisable</p>
               <button onClick={() => { setMenuModalOpen(false); router.push("/packages") }}
-                className="bg-[#D4380D] text-white px-6 py-3 rounded-xl font-semibold text-sm hover:bg-[#6d3410] transition-colors whitespace-nowrap flex-shrink-0"
+                className="bg-primary text-gold px-6 py-3 rounded-xl font-semibold text-sm hover:bg-primary-mid transition-colors whitespace-nowrap flex-shrink-0"
               >
                 Book Now →
               </button>
@@ -459,17 +516,17 @@ export default function AjayFoodsWebsite() {
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setBookingSuccess(false)} />
           <div className="relative bg-white rounded-3xl shadow-2xl max-w-md w-full p-8 text-center">
             <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center text-4xl mx-auto mb-4">✅</div>
-            <h2 className="font-playfair text-2xl font-bold text-[#D4380D] mb-2">Booking Request Sent!</h2>
-            <p className="text-[#555] text-sm mb-4">
+            <h2 className="font-playfair text-2xl font-bold text-primary mb-2">Booking Request Sent!</h2>
+            <p className="text-text-mid text-sm mb-4">
               Thank you! We'll call you back <strong>within 24 hours</strong> to confirm your booking.
             </p>
-            <div className="bg-[#FFF8F5] rounded-2xl px-5 py-3 mb-6 inline-block">
-              <p className="text-xs text-[#888] mb-0.5">Confirmation Number</p>
-              <p className="font-playfair text-2xl font-bold text-[#D4380D]">{confirmationNo}</p>
+            <div className="bg-warm-bg rounded-2xl px-5 py-3 mb-6 inline-block">
+              <p className="text-xs text-text-muted mb-0.5">Confirmation Number</p>
+              <p className="font-playfair text-2xl font-bold text-primary">{confirmationNo}</p>
             </div>
-            <p className="text-xs text-[#aaa] mb-6">Please save this number for reference.</p>
+            <p className="text-xs text-text-muted mb-6">Please save this number for reference.</p>
             <button onClick={() => setBookingSuccess(false)}
-              className="bg-[#D4380D] text-white px-8 py-3 rounded-xl font-semibold hover:bg-[#6d3410] transition-colors"
+              className="bg-primary text-gold px-8 py-3 rounded-full font-semibold hover:bg-primary-mid transition-colors"
             >
               Done
             </button>
@@ -478,85 +535,72 @@ export default function AjayFoodsWebsite() {
       )}
 
       {/* ══ NAVBAR ═══════════════════════════════════════════════════════════ */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? "bg-white/95 backdrop-blur shadow-md py-2" : "bg-[#2a1005]/85 backdrop-blur-md py-4"
-      }`}>
-        <div className="max-w-7xl mx-auto px-4 flex items-center justify-between gap-4">
+      <nav className="sticky top-0 z-50 bg-gradient-to-r from-primary to-primary-mid border-b border-white/10 shadow-lg">
+        <div className="max-w-6xl mx-auto px-4 py-2">
+        <div className="bg-white/[0.06] backdrop-blur border border-white/10 rounded-full px-5 py-2.5 flex items-center justify-between">
 
           {/* Logo */}
-          <button onClick={() => { window.scrollTo({ top: 0, behavior: "smooth" }); setActiveSection("home"); setMenuOpen(false) }} className="flex items-center gap-3 flex-shrink-0">
-            <div className="relative w-10 h-10 rounded-full overflow-hidden bg-white border-2 border-[#D4A853]/40 shadow-md flex-shrink-0">
-              <Image src="/logo.png" alt="Ajay Foods logo" fill className="object-cover" priority />
+          <button onClick={() => { window.scrollTo({ top: 0, behavior: "smooth" }); setActiveSection("home"); setMenuOpen(false) }}
+            className="flex items-center gap-2.5 flex-shrink-0"
+          >
+            <div className="relative w-9 h-9 rounded-full overflow-hidden bg-white border border-gold/40 shadow-sm flex-shrink-0">
+              <Image src="/logo.png" alt="Ajay Foods" fill className="object-cover" priority />
             </div>
             <div className="hidden sm:block">
-              <div className="hidden sm:block">
-              <h1 className="text-base sm:text-lg font-bold text-[#D4380D] font-playfair leading-tight">
-                Ajay Foods &amp; Beverages
-              </h1>
-              <p className="text-xs text-[#D4A853] font-medium tracking-wide">Quality Assured Foods</p>
-            </div>
+              <p className="font-playfair font-bold text-base leading-tight text-gold">Ajay Foods</p>
+              <p className="text-[9px] text-gold/70 font-semibold tracking-[0.14em] uppercase">& Beverages</p>
             </div>
           </button>
 
-          {/* Desktop nav links */}
-          <div className="hidden lg:flex items-center gap-6">
+          {/* Desktop nav */}
+          <div className="hidden lg:flex items-center gap-7">
             {navLinks.map((l) => (
               <button key={l.id} onClick={() => scrollTo(l.id)}
                 className={`text-sm font-medium transition-all relative group ${
-                  activeSection === l.id
-                    ? "text-[#D4A853]"
-                    : scrolled ? "text-[#1a1a1a] hover:text-[#D4380D]" : "text-white/90 hover:text-[#D4A853]"
+                  activeSection === l.id ? "text-gold" : "text-white/55 hover:text-white/90"
                 }`}
               >
                 {l.label}
-                <span className={`absolute -bottom-0.5 left-0 h-0.5 bg-[#D4A853] transition-all duration-300 ${activeSection === l.id ? "w-full" : "w-0 group-hover:w-full"}`} />
+                <span className={`absolute -bottom-0.5 left-0 h-[1.5px] bg-gold transition-all duration-300 ${activeSection === l.id ? "w-full" : "w-0 group-hover:w-full"}`} />
               </button>
             ))}
           </div>
 
-          {/* Phone + Book Now */}
-          <div className="hidden md:flex items-center gap-3">
-            <a href="tel:+919876543210"
-              className={`hidden xl:flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full border transition-colors ${
-                scrolled ? "border-[#D4380D]/30 text-[#D4380D] hover:bg-[#D4380D]/5" : "border-white/20 text-white/80 hover:text-white"
-              }`}
-            >
-              📞 +91 98765 43210
-            </a>
+          {/* CTA + Hamburger */}
+          <div className="flex items-center gap-3">
             <button onClick={() => router.push("/packages")}
-              className="bg-[#D4A853] text-[#5C1209] px-5 py-2 rounded-full text-sm font-bold hover:bg-[#e8bc6a] transition-colors shadow-md"
+              className="hidden md:block bg-gold text-primary px-5 py-2 rounded-full text-sm font-bold hover:bg-gold-light transition-colors shadow-[0_4px_12px_rgba(212,168,83,0.3)]"
             >
               Book Now
             </button>
+            <button onClick={() => setMenuOpen(!menuOpen)}
+              className="lg:hidden flex flex-col gap-[5px] p-1.5"
+              aria-label="Toggle menu"
+            >
+              <span className={`block w-5 h-0.5 transition-all bg-white ${menuOpen ? "rotate-45 translate-y-[7px]" : ""}`} />
+              <span className={`block w-5 h-0.5 transition-all bg-white ${menuOpen ? "opacity-0" : ""}`} />
+              <span className={`block w-5 h-0.5 transition-all bg-white ${menuOpen ? "-rotate-45 -translate-y-[7px]" : ""}`} />
+            </button>
           </div>
-
-          {/* Hamburger */}
-          <button onClick={() => setMenuOpen(!menuOpen)} className="lg:hidden flex flex-col gap-[5px] p-2 flex-shrink-0" aria-label="Open menu">
-            <span className={`block w-6 h-0.5 transition-all ${scrolled ? "bg-[#D4380D]" : "bg-white"} ${menuOpen ? "rotate-45 translate-y-[7px]" : ""}`} />
-            <span className={`block w-6 h-0.5 transition-all ${scrolled ? "bg-[#D4380D]" : "bg-white"} ${menuOpen ? "opacity-0" : ""}`} />
-            <span className={`block w-6 h-0.5 transition-all ${scrolled ? "bg-[#D4380D]" : "bg-white"} ${menuOpen ? "-rotate-45 -translate-y-[7px]" : ""}`} />
-          </button>
+        </div>
         </div>
 
-        {/* Mobile menu */}
+        {/* Mobile dropdown */}
         {menuOpen && (
-          <div className="lg:hidden bg-white border-t border-[#FFE0D4] shadow-xl">
-            <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col gap-1">
+          <div className="lg:hidden bg-primary/95 border-t border-white/10">
+            <div className="max-w-6xl mx-auto px-6 py-3 flex flex-col gap-0.5">
               {navLinks.map((l) => (
                 <button key={l.id} onClick={() => scrollTo(l.id)}
-                  className={`text-left text-base font-medium py-3 px-3 rounded-xl transition-colors ${
-                    activeSection === l.id ? "bg-[#D4380D]/10 text-[#D4380D] font-semibold" : "text-[#1a1a1a] hover:bg-[#FFF8F5]"
+                  className={`text-left text-sm font-medium py-2.5 px-3 rounded-xl transition-colors ${
+                    activeSection === l.id ? "bg-gold/10 text-gold font-semibold" : "text-white/70 hover:bg-white/5 hover:text-white"
                   }`}
                 >
                   {l.label}
                 </button>
               ))}
-              <div className="mt-2 pt-3 border-t border-[#FFE0D4] flex flex-col gap-2">
-                <a href="tel:+919876543210" className="flex items-center gap-2 text-sm text-[#D4380D] font-semibold px-3 py-2">
-                  📞 +91 98765 43210
-                </a>
+              <div className="mt-2 pt-3 border-t border-white/10">
                 <button onClick={() => { setMenuOpen(false); router.push("/packages") }}
-                  className="bg-[#D4A853] text-[#5C1209] px-5 py-3 rounded-xl text-sm font-bold w-full"
+                  className="w-full bg-gold text-primary py-2.5 rounded-full text-sm font-bold hover:bg-gold-light transition-colors"
                 >
                   Book Now →
                 </button>
@@ -567,89 +611,143 @@ export default function AjayFoodsWebsite() {
       </nav>
 
       {/* ══ HERO ═════════════════════════════════════════════════════════════ */}
-      <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden"
-        style={{ background: "linear-gradient(135deg, #5C1209 0%, #9E2D1A 35%, #D4380D 65%, #E5622B 100%)" }}
-      >
-        <div className="absolute top-20 right-10 w-64 h-64 rounded-full bg-[#D4A853]/10 blur-3xl" />
-        <div className="absolute bottom-20 left-10 w-80 h-80 rounded-full bg-[#D4A853]/10 blur-3xl" />
+      <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-primary via-primary-mid to-primary-light">
+        {/* Depth blobs */}
+        <div className="absolute top-16 right-12 w-72 h-72 rounded-full bg-gold/[0.08] blur-[80px] pointer-events-none" />
+        <div className="absolute bottom-24 left-8 w-96 h-96 rounded-full bg-gold/[0.06] blur-[100px] pointer-events-none" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-primary-light/20 blur-[120px] pointer-events-none" />
+        <div className="absolute -top-20 -right-20 w-72 h-72 rounded-full bg-gold/[0.05] pointer-events-none" />
+        <div className="absolute -bottom-16 -left-16 w-56 h-56 rounded-full bg-white/[0.03] pointer-events-none" />
+        {/* Noise texture overlay */}
+        <div className="hero-noise absolute inset-0 pointer-events-none opacity-60" />
+        {/* Floating food emojis */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none select-none">
-          {["🍛", "🍲", "🍮", "🥗", "🫙", "🍟", "☕", "🥬"].map((emoji, i) => (
-            <span key={i} className="absolute text-2xl opacity-10"
-              style={{ left: `${10 + i * 11}%`, top: `${15 + (i % 3) * 25}%`, animation: `float ${3 + i * 0.4}s ease-in-out infinite alternate` }}
+          {(["🍛","🍲","🍮","🥗","🫙","🍗","☕","🥬"] as const).map((emoji, i) => (
+            <span key={i} className="absolute text-3xl opacity-[0.08]"
+              style={{
+                left: `${8 + i * 11}%`,
+                top: `${12 + (i % 4) * 22}%`,
+                animation: `${["floatA","floatB","floatC","floatA","floatB","floatC","floatA","floatB"][i]} ${3.5 + i * 0.45}s ease-in-out ${i * 0.4}s infinite`,
+                filter: "blur(0.5px)",
+              }}
             >{emoji}</span>
           ))}
         </div>
-        <div className="relative z-10 text-center text-white px-4 max-w-4xl mx-auto">
-          <div className="inline-flex items-center gap-2 bg-[#D4A853]/20 border border-[#D4A853]/40 rounded-full px-4 py-1.5 mb-6">
-            <span className="text-[#D4A853] text-sm">✦</span>
-            <span className="text-[#D4A853] text-xs font-semibold tracking-widest uppercase">Traditional Telugu Cuisine</span>
-            <span className="text-[#D4A853] text-sm">✦</span>
+        {/* Main hero content — parallax target */}
+        <div className="hero-parallax-inner relative z-10 text-center text-white px-4 max-w-4xl mx-auto">
+          {/* Badge */}
+          <div className="hero-badge inline-flex items-center gap-2 bg-gold/[0.12] border border-gold/25 rounded-full px-4 py-1.5 mb-5">
+            <div className="w-1.5 h-1.5 rounded-full bg-gold" />
+            <span className="text-gold text-xs font-semibold tracking-widest uppercase">Est. 2010 · Premium Catering</span>
           </div>
-          <h1 className="font-playfair text-5xl md:text-7xl font-bold leading-tight mb-6">
-            Authentic Flavors,<br />
-            <span className="text-[#D4A853]">Unforgettable</span> Feasts
+          {/* Headline — word by word reveal */}
+          <h1 style={{ animation: 'heroFadeUp 0.7s cubic-bezier(0.16,1,0.3,1) 0.1s both' }}
+              className="font-playfair text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-4">
+            <span className="block overflow-hidden">
+              {["Authentic", "Flavors,"].map((w, i) => (
+                <span key={w} className="inline-block mr-[0.22em] last:mr-0"
+                  style={{ animation: `heroWordUp 0.75s cubic-bezier(0.16,1,0.3,1) ${0.08 + i * 0.13}s both` }}
+                >{w}</span>
+              ))}
+            </span>
+            <span className="block overflow-hidden mt-1">
+              <span className="text-gold inline-block mr-[0.22em]"
+                style={{ animation: "heroWordUp 0.75s cubic-bezier(0.16,1,0.3,1) 0.34s both" }}
+              >Unforgettable</span>
+              <span className="inline-block"
+                style={{ animation: "heroWordUp 0.75s cubic-bezier(0.16,1,0.3,1) 0.47s both" }}
+              >Feasts</span>
+            </span>
           </h1>
-          <p className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
-            From intimate family gatherings to grand celebrations — Ajay Foods brings
-            the warmth of home-cooked Telugu cuisine to every occasion.
+          <p className="hero-sub text-white/55 text-base md:text-lg leading-relaxed mt-4 max-w-md mx-auto mb-10">
+            Traditional Indian catering for weddings, events &amp; every precious celebration
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="hero-cta flex gap-3 mt-6 flex-wrap justify-center">
             <button onClick={() => router.push("/packages")}
-              className="bg-[#D4A853] text-[#5C1209] px-8 py-4 rounded-full font-bold text-base hover:bg-[#e8bc6a] transition-all shadow-xl hover:shadow-2xl hover:-translate-y-0.5 w-full sm:w-auto"
+              className="bg-gold text-primary font-bold text-sm px-7 py-3.5 rounded-full shadow-[0_4px_16px_rgba(212,168,83,0.35)] hover:bg-gold-light transition-colors"
             >
-              Book Your Event 🎉
+              Explore Packages
             </button>
             <button onClick={() => router.push("/menu")}
-              className="bg-white/10 backdrop-blur border border-white/30 text-white px-8 py-4 rounded-full font-semibold text-base hover:bg-white/20 transition-all w-full sm:w-auto"
+              className="bg-white/[0.08] text-white/80 border border-white/15 text-sm px-7 py-3.5 rounded-full hover:bg-white/15 transition-colors"
             >
-              View Our Menu 🍽️
+              View Menu
             </button>
           </div>
         </div>
         {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-white/50">
+        <div className="hero-scroll absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-white/50">
           <span className="text-xs tracking-widest uppercase">Scroll</span>
           <span className="text-xl animate-bounce">↓</span>
         </div>
         <div className="absolute bottom-0 left-0 right-0">
-          <svg viewBox="0 0 1440 80" fill="none"><path d="M0 80L60 70C120 60 240 40 360 35C480 30 600 40 720 45C840 50 960 50 1080 45C1200 40 1320 30 1380 25L1440 20V80H0Z" fill="#FFF8F5" /></svg>
+          <svg viewBox="0 0 1440 80" fill="none"><path d="M0 80L60 70C120 60 240 40 360 35C480 30 600 40 720 45C840 50 960 50 1080 45C1200 40 1320 30 1380 25L1440 20V80H0Z" fill="#FDF5EC" /></svg>
         </div>
       </section>
+
+      {/* ── Floating Stats Card ──────────────────────────────────────────────── */}
+      <div className="relative z-10 mx-4 sm:mx-8 lg:mx-auto lg:max-w-2xl -mt-8">
+        <div className="bg-white rounded-2xl shadow-[0_8px_24px_rgba(92,15,15,0.12)] border border-warm-border flex divide-x divide-warm-border">
+          {[
+            { num: '500+', label: 'Events' },
+            { num: '50+',  label: 'Dishes' },
+            { num: '12+',  label: 'Packages' },
+          ].map(({ num, label }) => (
+            <div key={label} className="flex-1 py-4 text-center">
+              <div className="font-playfair text-2xl font-bold text-text-dark">{num}</div>
+              <div className="text-text-muted text-xs uppercase tracking-widest mt-0.5">{label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
 
       {/* ══ STATS ════════════════════════════════════════════════════════════ */}
       <StatsSection />
 
       {/* ══ SERVICES ═════════════════════════════════════════════════════════ */}
-      <section id="services" className="py-20 bg-white">
+      <section id="services" ref={servicesView.ref as React.RefObject<HTMLElement>} className="py-20 bg-warm-bg">
         <div className="max-w-6xl mx-auto px-4">
-          <div className="text-center mb-14">
-            <span className="text-[#D4A853] text-sm font-semibold tracking-widest uppercase">What We Offer</span>
-            <h2 className="font-playfair text-4xl md:text-5xl font-bold text-[#D4380D] mt-2 mb-4">Our Services</h2>
-            <p className="text-[#555] max-w-xl mx-auto">We specialize in exceptional culinary experiences for every occasion, big or small.</p>
+          <div className={`text-center mb-14 transition-all duration-700 ${servicesView.visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+            <p className="text-gold text-xs font-semibold uppercase tracking-[0.2em] mb-2">What We Offer</p>
+            <h2 className="font-playfair text-2xl md:text-3xl font-bold text-text-dark mt-2 mb-3">Our Services</h2>
+            <div className={`h-0.5 bg-gradient-to-r from-gold to-primary mx-auto mb-4 transition-all duration-700 delay-300 ${servicesView.visible ? "w-16" : "w-0"}`} />
+            <p className="text-text-muted max-w-xl mx-auto">We specialize in exceptional culinary experiences for every occasion, big or small.</p>
           </div>
-          <div className="grid md:grid-cols-3 gap-8">
+          {/* Zomato-style collection cards — full bleed gradient with overlay text */}
+          <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
             {[
-              { icon: "🎊", title: "Event Catering", desc: "Weddings, birthdays, corporate events, and family functions — we handle every detail with care.", features: ["Custom menus", "On-site cooking", "Professional staff", "Full setup & cleanup"], color: "from-[#D4380D] to-[#E5622B]", link: "/packages" },
-              // { icon: "🙏", title: "Charity & Community", desc: "Dedicated morning feeds — nutritious, lovingly prepared meals served before 9 AM daily.", features: ["Fresh morning prep", "Large-scale cooking", "Flexible quantities", "Donation-based pricing"], color: "from-[#D4A853] to-[#c49840]", link: "#about" },
-              { icon: "🏪", title: "Daily Stalls", desc: "Morning and evening food stalls with fixed-price offerings — consistent quality, every day.", features: ["Twice daily service", "Fixed pricing", "Quick service", "Morning & evening"], color: "from-[#6d3410] to-[#D4380D]", link: "/menu" },
-            ].map((s) => (
-              <div key={s.title} className="group rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all hover:-translate-y-2 border border-[#FFE0D4] flex flex-col">
-                <div className={`bg-gradient-to-br ${s.color} p-8 text-white`}>
-                  <div className="text-5xl mb-4">{s.icon}</div>
-                  <h3 className="font-playfair text-2xl font-bold mb-2">{s.title}</h3>
-                  <p className="text-white/80 text-sm leading-relaxed">{s.desc}</p>
-                </div>
-                <div className="bg-white p-6 flex-1 flex flex-col">
-                  <ul className="space-y-2 flex-1">
+              { icon: "🎊", title: "Event Catering", desc: "Weddings, birthdays, corporate events — every detail handled with care.", features: ["Custom menus", "On-site cooking", "Professional staff", "Full setup & cleanup"], color: "from-primary via-primary-mid to-primary-light", link: "/packages", cta: "View Packages", tag: "Most Popular" },
+              { icon: "🏪", title: "Daily Stalls",   desc: "Morning and evening food stalls — consistent quality, every single day.",  features: ["Twice daily service", "Fixed pricing", "Quick service", "Morning & evening"],  color: "from-primary to-primary-mid", link: "/menu",     cta: "See Menu",      tag: "Daily Fresh"   },
+            ].map((s, i) => (
+              <div key={s.title}
+                className={`relative rounded-3xl overflow-hidden cursor-pointer group card-tilt shadow-xl ${servicesView.visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-12"}`}
+                style={{ height: 340, transitionProperty: "opacity, transform", transitionDuration: "0.65s", transitionTimingFunction: "cubic-bezier(0.16,1,0.3,1)", transitionDelay: `${200 + i * 150}ms` }}
+                onClick={() => router.push(s.link)}
+                onMouseMove={onCardTilt}
+                onMouseLeave={onCardTiltReset}
+              >
+                {/* Full gradient background */}
+                <div className={`absolute inset-0 bg-gradient-to-br ${s.color}`} />
+                {/* Dark overlay for text legibility */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                {/* Decorative glows */}
+                <div className="absolute -right-10 -top-10 w-48 h-48 rounded-full bg-white/5" />
+                <div className="absolute right-14 top-12 w-28 h-28 rounded-full bg-white/5" />
+                {/* Tag badge */}
+                <span className="absolute top-5 left-5 bg-gold text-primary text-[10px] font-black px-3 py-1.5 rounded-full uppercase tracking-wide shadow-md">{s.tag}</span>
+                {/* Large emoji — top right */}
+                <div className="absolute top-4 right-5 text-[80px] leading-none opacity-90 group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300 drop-shadow-2xl">{s.icon}</div>
+                {/* Content anchored to bottom */}
+                <div className="absolute bottom-0 left-0 right-0 p-7">
+                  <h3 className="font-playfair text-2xl font-bold text-white mb-1.5">{s.title}</h3>
+                  <p className="text-white/75 text-sm leading-relaxed mb-4">{s.desc}</p>
+                  <div className="flex flex-wrap gap-1.5 mb-5">
                     {s.features.map((f) => (
-                      <li key={f} className="flex items-center gap-2 text-sm text-[#444]">
-                        <span className="w-4 h-4 rounded-full bg-[#D4A853]/20 flex items-center justify-center text-[#D4380D] text-xs flex-shrink-0">✓</span>
-                        {f}
-                      </li>
+                      <span key={f} className="text-[10px] bg-white/12 backdrop-blur-sm text-white/90 px-2.5 py-1 rounded-full border border-white/15">{f}</span>
                     ))}
-                  </ul>
-                  <button onClick={() => router.push(s.link)} className="mt-5 flex items-center gap-1.5 text-[#D4380D] text-sm font-semibold hover:gap-3 transition-all group/btn">
-                    Learn more <span className="group-hover/btn:translate-x-1 transition-transform inline-block">→</span>
+                  </div>
+                  <button className="bg-white text-primary px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-gold hover:text-primary transition-all inline-flex items-center gap-1.5 shadow-sm">
+                    {s.cta} <span className="group-hover:translate-x-0.5 transition-transform inline-block">→</span>
                   </button>
                 </div>
               </div>
@@ -659,12 +757,13 @@ export default function AjayFoodsWebsite() {
       </section>
 
       {/* ══ MENU HIGHLIGHTS ══════════════════════════════════════════════════ */}
-      <section id="menu" className="py-20 bg-[#FFF8F5]">
+      <section id="menu" ref={menuView.ref as React.RefObject<HTMLElement>} className="py-20 bg-warm-bg">
         <div className="max-w-6xl mx-auto px-4">
-          <div className="text-center mb-10">
-            <span className="text-[#D4A853] text-sm font-semibold tracking-widest uppercase">Taste the Tradition</span>
-            <h2 className="font-playfair text-4xl md:text-5xl font-bold text-[#D4380D] mt-2 mb-4">Our Signature Menu</h2>
-            <p className="text-[#555] max-w-xl mx-auto">Every dish crafted with authentic spices, fresh ingredients, and generations of culinary wisdom.</p>
+          <div className={`text-center mb-10 transition-all duration-700 ${menuView.visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+            <p className="text-gold text-xs font-semibold uppercase tracking-[0.2em] mb-2">Taste the Tradition</p>
+            <h2 className="font-playfair text-2xl md:text-3xl font-bold text-text-dark mt-2 mb-3">Our Signature Menu</h2>
+            <div className={`h-0.5 bg-gradient-to-r from-gold to-primary mx-auto mb-4 transition-all duration-700 delay-300 ${menuView.visible ? "w-16" : "w-0"}`} />
+            <p className="text-text-muted max-w-xl mx-auto">Every dish crafted with authentic spices, fresh ingredients, and generations of culinary wisdom.</p>
           </div>
 
           {/* Filter tabs */}
@@ -672,7 +771,7 @@ export default function AjayFoodsWebsite() {
             {menuFilterOptions.map((opt) => (
               <button key={opt.id} onClick={() => setMenuFilter(opt.id)}
                 className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${
-                  menuFilter === opt.id ? "bg-[#D4380D] text-white shadow-md" : "bg-white border border-[#FFD0C0] text-[#555] hover:border-[#D4380D] hover:text-[#D4380D]"
+                  menuFilter === opt.id ? "bg-primary text-gold shadow-md" : "bg-white border border-warm-border text-text-mid hover:border-primary hover:text-primary"
                 }`}
               >
                 {opt.label}
@@ -680,32 +779,38 @@ export default function AjayFoodsWebsite() {
             ))}
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {filteredHomeMenu.map((item) => (
-              <div key={item.name} className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all hover:-translate-y-1 border border-[#FFE0D4] group">
-                <div className="bg-gradient-to-br from-[#fdf0e0] to-[#f5e6cc] h-36 flex items-center justify-center relative">
-                  <span className="text-6xl group-hover:scale-110 transition-transform">{item.emoji}</span>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {filteredHomeMenu.map((item, i) => (
+              <div key={item.name}
+                className={`bg-white rounded-2xl overflow-hidden group card-tilt border border-warm-border hover:shadow-[0_8px_24px_rgba(92,15,15,0.12)] transition-shadow ${menuView.visible ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-8 scale-95"}`}
+                style={{ boxShadow: "0 2px 8px rgba(92,15,15,0.06)", transitionProperty: "opacity, transform", transitionDuration: "0.6s", transitionTimingFunction: "cubic-bezier(0.16,1,0.3,1)", transitionDelay: `${i * 80}ms` }}
+                onMouseMove={onCardTilt}
+                onMouseLeave={onCardTiltReset}
+              >
+                <div className="relative bg-gradient-to-br from-surface to-warm-bg h-40 flex items-center justify-center overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/8 to-transparent" />
+                  <span className="text-7xl group-hover:scale-110 transition-transform duration-300 relative z-10 drop-shadow">{item.emoji}</span>
                   {item.popular && (
-                    <span className="absolute top-3 right-3 bg-[#D4A853] text-[#5C1209] text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Popular</span>
+                    <span className="badge-glow absolute top-3 right-3 bg-gold/[0.15] border border-gold/30 text-[#8B6A1A] text-[9px] font-semibold px-2 py-0.5 rounded-full z-10">Popular</span>
                   )}
                 </div>
                 <div className="p-4">
-                  <span className="text-[10px] text-[#D4A853] font-bold uppercase tracking-widest">{item.section.replace("-", " ")}</span>
-                  <h4 className="font-playfair font-bold text-[#D4380D] text-base mt-0.5">{item.name}</h4>
-                  <p className="text-xs text-[#666] mt-1 leading-relaxed">{item.desc}</p>
-                  <p className="text-xs font-semibold text-[#D4380D] mt-2">{item.price}</p>
+                  <span className="text-[9px] text-gold font-bold uppercase tracking-[0.15em]">{item.section.replace("-", " ")}</span>
+                  <h4 className="font-playfair font-bold text-text-dark text-sm mt-0.5 leading-tight">{item.name}</h4>
+                  <p className="text-xs text-text-muted mt-1 leading-relaxed line-clamp-2">{item.desc}</p>
+                  <p className="text-sm font-bold text-gold mt-3">{item.price}</p>
                 </div>
               </div>
             ))}
           </div>
 
           {filteredHomeMenu.length === 0 && (
-            <p className="text-center text-[#888] py-12">No items in this category. <button onClick={() => setMenuFilter("all")} className="text-[#D4380D] font-semibold underline">Show all</button></p>
+            <p className="text-center text-text-muted py-12">No items in this category. <button onClick={() => setMenuFilter("all")} className="text-primary font-semibold underline">Show all</button></p>
           )}
 
           <div className="text-center mt-10">
             <button onClick={() => setMenuModalOpen(true)}
-              className="bg-[#D4380D] text-white px-8 py-3.5 rounded-full font-semibold hover:bg-[#6d3410] transition-colors shadow-md inline-flex items-center gap-2"
+              className="bg-primary text-gold px-8 py-3.5 rounded-full font-semibold hover:bg-primary-mid transition-colors shadow-[0_2px_8px_rgba(92,15,15,0.2)] inline-flex items-center gap-2"
             >
               View Full Menu 📋
             </button>
@@ -739,7 +844,7 @@ export default function AjayFoodsWebsite() {
               <div key={pkg.id} className={`rounded-2xl overflow-hidden shadow-md hover:shadow-xl transition-all hover:-translate-y-1 border-2 ${pkg.popular ? "border-[#D4A853]" : "border-[#FFE0D4]"} relative`}>
                 {pkg.popular && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
-                    <span className="bg-[#D4A853] text-[#5C1209] text-[10px] font-bold px-3 py-1 rounded-full whitespace-nowrap shadow-md">⭐ Most Popular</span>
+                    <span className="bg-[#D4A853] text-[#300808] text-[10px] font-bold px-3 py-1 rounded-full whitespace-nowrap shadow-md">⭐ Most Popular</span>
                   </div>
                 )}
                 <div className={`bg-gradient-to-br ${pkg.color} p-6 text-white`}>
@@ -766,7 +871,7 @@ export default function AjayFoodsWebsite() {
                     ))}
                   </ul>
                   <button onClick={() => router.push(`/packages?prefill=${pkg.id}`)}
-                    className="w-full bg-[#D4380D] text-white py-2.5 rounded-xl text-sm font-semibold hover:bg-[#6d3410] transition-colors"
+                    className="w-full bg-[#D4380D] text-white py-2.5 rounded-xl text-sm font-semibold hover:bg-[#5C0E0E] transition-colors"
                   >
                     Book This Package →
                   </button>
@@ -778,92 +883,17 @@ export default function AjayFoodsWebsite() {
         </div>
       </section> */}
 
-      {/* ══ WHY CHOOSE US ════════════════════════════════════════════════════ */}
-      <section className="py-20 bg-[#FFF8F5]">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="grid md:grid-cols-2 gap-16 items-center">
-            <div>
-              <span className="text-[#D4A853] text-sm font-semibold tracking-widest uppercase">Why Ajay Foods</span>
-              <h2 className="font-playfair text-4xl md:text-5xl font-bold text-[#D4380D] mt-2 mb-6">
-                The Difference is in<br />Every Bite
-              </h2>
-              <p className="text-[#555] leading-relaxed mb-8">
-                We don&apos;t just cater food — we create memories. Authentic flavors, punctual service, and personal attention to every order.
-              </p>
-              <div className="space-y-5">
-                {[
-                  { icon: "🌿", title: "Farm-Fresh Ingredients",  desc: "Sourced daily from trusted local vendors for maximum freshness." },
-                  { icon: "👨‍🍳", title: "Experienced Chefs",       desc: "Decades of Telugu culinary expertise in every dish." },
-                  { icon: "⏰", title: "Always On Time",           desc: "Lunch shift ready by 12 PM, Dinner shift ready by 6 PM — we respect your schedule." },
-                  { icon: "🎯", title: "Customisable Menus",      desc: "Mix and match items to craft the perfect meal for your guests." },
-                ].map((w) => (
-                  <div key={w.title} className="flex gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center text-2xl flex-shrink-0 shadow-sm border border-[#FFE0D4]">{w.icon}</div>
-                    <div>
-                      <h4 className="font-semibold text-[#1a1a1a] text-sm">{w.title}</h4>
-                      <p className="text-[#666] text-xs mt-0.5 leading-relaxed">{w.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="relative h-[420px]">
-              <div className="absolute top-0 right-0 w-72 h-48 rounded-2xl bg-gradient-to-br from-[#D4380D] to-[#6d3410] shadow-xl p-6 text-white">
-                <div className="text-4xl mb-3">🍛</div>
-                <p className="font-playfair text-xl font-bold">Biryani Special</p>
-                <p className="text-white/70 text-sm mt-1">Aromatic, rich, unforgettable</p>
-              </div>
-              <div className="absolute top-28 left-0 w-72 h-48 rounded-2xl bg-gradient-to-br from-[#D4A853] to-[#c49840] shadow-xl p-6">
-                <div className="text-4xl mb-3">🎊</div>
-                <p className="font-playfair text-xl font-bold text-[#5C1209]">Grand Events</p>
-                <p className="text-[#5C1209]/70 text-sm mt-1">Serving 50 to 5000 guests</p>
-              </div>
-              <div className="absolute bottom-0 right-8 w-72 h-48 rounded-2xl bg-white border border-[#FFE0D4] shadow-xl p-6">
-                <div className="text-4xl mb-3">🙏</div>
-                <p className="font-playfair text-xl font-bold text-[#D4380D]">Community First</p>
-                <p className="text-[#666] text-sm mt-1">Daily charity feeds before 9 AM</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ══ HOW IT WORKS ═════════════════════════════════════════════════════ */}
-      {/* <section className="py-20 bg-white">
-        <div className="max-w-5xl mx-auto px-4">
-          <div className="text-center mb-14">
-            <span className="text-[#D4A853] text-sm font-semibold tracking-widest uppercase">Simple Process</span>
-            <h2 className="font-playfair text-4xl md:text-5xl font-bold text-[#D4380D] mt-2 mb-4">How It Works</h2>
-          </div>
-          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-8 relative">
-            <div className="hidden md:block absolute top-10 left-[15%] right-[15%] h-0.5 bg-gradient-to-r from-[#D4A853]/30 via-[#D4A853] to-[#D4A853]/30" />
-            {[
-              { step: "01", icon: "📞", title: "Get in Touch",    desc: "Call us or fill the booking form with your event details." },
-              { step: "02", icon: "📋", title: "Choose Package",  desc: "Pick a base package and add extra dishes to suit your taste." },
-              { step: "03", icon: "👨‍🍳", title: "We Prepare",      desc: "Our chefs get to work with fresh ingredients and love." },
-              { step: "04", icon: "🎉", title: "You Celebrate",   desc: "Enjoy your event while we handle the food, end to end." },
-            ].map((s) => (
-              <div key={s.step} className="text-center relative z-10">
-                <div className="w-20 h-20 rounded-full bg-[#FFF8F5] border-2 border-[#D4A853] shadow-md flex items-center justify-center text-3xl mx-auto mb-4">{s.icon}</div>
-                <div className="text-[#D4A853] text-xs font-bold mb-1">STEP {s.step}</div>
-                <h4 className="font-playfair font-bold text-[#D4380D] text-lg mb-2">{s.title}</h4>
-                <p className="text-[#666] text-sm leading-relaxed">{s.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section> */}
-
       {/* ══ TESTIMONIALS (CAROUSEL) ══════════════════════════════════════════ */}
-      <section className="py-20 bg-[#FFF8F5]">
+      <section ref={testimonialsView.ref as React.RefObject<HTMLElement>} className="py-20 bg-warm-bg">
         <div className="max-w-6xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <span className="text-[#D4A853] text-sm font-semibold tracking-widest uppercase">What People Say</span>
-            <h2 className="font-playfair text-4xl md:text-5xl font-bold text-[#D4380D] mt-2 mb-4">Loved by Thousands</h2>
+          <div className={`text-center mb-12 transition-all duration-700 ${testimonialsView.visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+            <p className="text-gold text-xs font-semibold uppercase tracking-[0.2em] mb-2">What People Say</p>
+            <h2 className="font-playfair text-2xl md:text-3xl font-bold text-text-dark mt-2 mb-3">Loved by Thousands</h2>
+            <div className={`h-0.5 bg-gradient-to-r from-gold to-primary mx-auto transition-all duration-700 delay-300 ${testimonialsView.visible ? "w-16" : "w-0"}`} />
           </div>
 
           {/* Unified carousel — all screen sizes */}
-          <div className="relative">
+          <div className={`relative transition-all duration-700 delay-200 ${testimonialsView.visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
             {/* Card grid: desktop shows 2 side by side, mobile shows 1 */}
             <div className="grid md:grid-cols-2 gap-6">
               {[0, 1].map((offset) => {
@@ -871,15 +901,17 @@ export default function AjayFoodsWebsite() {
                 const t = TESTIMONIALS[idx]
                 return (
                   <div key={`${testimonialIdx}-${offset}`}
-                    className={`bg-white rounded-2xl p-6 border border-[#FFE0D4] shadow-sm transition-all duration-300 ${offset === 1 ? "hidden md:block" : ""}`}
+                    className={`bg-white rounded-2xl p-6 border border-warm-border shadow-[0_2px_8px_rgba(92,15,15,0.06)] card-tilt transition-all duration-300 ${offset === 1 ? "hidden md:block" : ""}`}
+                    onMouseMove={onCardTilt}
+                    onMouseLeave={onCardTiltReset}
                   >
-                    <div className="flex gap-0.5 mb-3">{Array.from({ length: t.rating }).map((_, i) => <span key={i} className="text-[#D4A853]">★</span>)}</div>
-                    <p className="text-[#444] text-sm leading-relaxed mb-5 italic min-h-[72px]">&quot;{t.text}&quot;</p>
+                    <div className="flex gap-0.5 mb-3">{Array.from({ length: t.rating }).map((_, i) => <span key={i} className="text-gold">★</span>)}</div>
+                    <p className="text-text-mid text-sm leading-relaxed mb-5 italic min-h-[72px]">&quot;{t.text}&quot;</p>
                     <div className="flex items-center gap-3">
                       <div className={`w-10 h-10 rounded-full ${t.color} flex items-center justify-center text-white text-sm font-bold flex-shrink-0`}>{t.avatar}</div>
                       <div>
-                        <p className="font-semibold text-[#1a1a1a] text-sm">{t.name}</p>
-                        <p className="text-[#D4A853] text-xs">{t.event}</p>
+                        <p className="font-semibold text-text-dark text-sm">{t.name}</p>
+                        <p className="text-gold text-xs">{t.event}</p>
                       </div>
                     </div>
                   </div>
@@ -890,86 +922,92 @@ export default function AjayFoodsWebsite() {
             {/* Controls */}
             <div className="flex items-center justify-center gap-4 mt-6">
               <button onClick={() => { setTestimonialIdx((i) => (i - 1 + TESTIMONIALS.length) % TESTIMONIALS.length); resetTestimonialTimer() }}
-                className="w-10 h-10 rounded-full bg-white border border-[#FFD0C0] flex items-center justify-center text-[#D4380D] hover:bg-[#D4380D] hover:text-white transition-colors shadow-sm font-bold"
+                className="w-10 h-10 rounded-full bg-white border border-warm-border flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors shadow-sm font-bold"
               >←</button>
               <div className="flex gap-2">
                 {TESTIMONIALS.map((_, i) => (
                   <button key={i} onClick={() => { setTestimonialIdx(i); resetTestimonialTimer() }}
-                    className={`h-2 rounded-full transition-all duration-300 ${i === testimonialIdx ? "bg-[#D4380D] w-6" : "bg-[#FFD0C0] w-2"}`}
+                    className={`h-2 rounded-full transition-all duration-300 ${i === testimonialIdx ? "bg-primary w-6" : "bg-warm-border w-2"}`}
                   />
                 ))}
               </div>
               <button onClick={() => { setTestimonialIdx((i) => (i + 1) % TESTIMONIALS.length); resetTestimonialTimer() }}
-                className="w-10 h-10 rounded-full bg-white border border-[#FFD0C0] flex items-center justify-center text-[#D4380D] hover:bg-[#D4380D] hover:text-white transition-colors shadow-sm font-bold"
+                className="w-10 h-10 rounded-full bg-white border border-warm-border flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors shadow-sm font-bold"
               >→</button>
             </div>
-            <p className="text-center text-xs text-[#aaa] mt-2">{testimonialIdx + 1} of {TESTIMONIALS.length} · Auto-plays every 5s</p>
+            <p className="text-center text-xs text-text-muted mt-2">{testimonialIdx + 1} of {TESTIMONIALS.length} · Auto-plays every 5s</p>
           </div>
         </div>
       </section>
 
+      {/* Wave divider into dark about section */}
+      <div className="-mb-px bg-gradient-to-br from-primary via-primary-mid to-primary-light">
+        <svg viewBox="0 0 1440 56" fill="none" className="block w-full rotate-180"><path d="M0 56L48 50.7C96 45.3 192 34.7 288 29.3C384 24 480 24 576 29.3C672 34.7 768 45.3 864 50.7C960 56 1056 56 1152 50.7C1248 45.3 1344 34.7 1392 29.3L1440 24V0H0Z" fill="#FDF5EC"/></svg>
+      </div>
+
       {/* ══ ABOUT ════════════════════════════════════════════════════════════ */}
-      <section id="about" className="py-20 bg-gradient-to-br from-[#5C1209] to-[#D4380D]">
+      <section id="about" ref={aboutView.ref as React.RefObject<HTMLElement>} className="py-20 bg-gradient-to-br from-primary via-primary-mid to-primary-light">
         <div className="max-w-4xl mx-auto px-4 text-center text-white">
-          <span className="text-[#D4A853] text-sm font-semibold tracking-widest uppercase">Our Story</span>
-          <h2 className="font-playfair text-4xl md:text-5xl font-bold mt-2 mb-6">Rooted in Tradition,<br />Grown with Love</h2>
-          <p className="text-white/80 text-lg leading-relaxed max-w-2xl mx-auto mb-6">
+          <span className={`text-gold text-sm font-semibold tracking-widest uppercase transition-all duration-700 inline-block ${aboutView.visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>Our Story</span>
+          <h2 className={`font-playfair text-4xl md:text-5xl font-bold mt-2 mb-6 transition-all duration-700 delay-100 ${aboutView.visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>Rooted in Tradition,<br />Grown with Love</h2>
+          <p className={`text-white/80 text-lg leading-relaxed max-w-xl mx-auto mb-6 text-left transition-all duration-700 delay-200 ${aboutView.visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
             Ajay Foods was born from a simple belief — that food is the purest form of love.
             What started as home cooking for family gatherings has grown into one of the region&apos;s
             most trusted catering services, serving thousands of meals daily.
           </p>
-          <p className="text-white/70 text-base leading-relaxed max-w-2xl mx-auto">
+          <p className={`text-white/60 text-sm leading-relaxed max-w-xl mx-auto text-left transition-all duration-700 delay-300 ${aboutView.visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
             Our recipes are passed down through generations, our spices are sourced with care,
             and every plate is made with the same dedication as if it were for our own family.
           </p>
-          <div className="flex flex-wrap justify-center gap-4 mt-10">
-            {["Telugu Cuisine", "Fresh Daily", "Morning & Evening", "Community Focused", "15+ Years"].map((tag) => (
-              <span key={tag} className="bg-white/10 border border-white/20 text-white text-sm font-medium px-4 py-2 rounded-full">{tag}</span>
-            ))}
+          <div className={`mt-10 transition-all duration-700 delay-400 ${aboutView.visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
+            <button onClick={() => router.push("/packages")}
+              className="bg-gold text-primary font-bold px-8 py-3.5 rounded-full shadow-[0_4px_16px_rgba(212,168,83,0.35)] hover:bg-gold-light transition-colors relative z-10"
+            >
+              Book Your Event →
+            </button>
           </div>
         </div>
       </section>
 
       {/* ══ FIND US ══════════════════════════════════════════════════════════ */}
-      <section className="py-16 bg-white">
+      <section ref={findUsView.ref as React.RefObject<HTMLElement>} className="py-16 bg-warm-bg">
         <div className="max-w-5xl mx-auto px-4">
-          <div className="text-center mb-8">
-            <span className="text-[#D4A853] text-sm font-semibold tracking-widest uppercase">Our Location</span>
-            <h2 className="font-playfair text-3xl md:text-4xl font-bold text-[#D4380D] mt-2">Find Us</h2>
+          <div className={`text-center mb-8 transition-all duration-700 ${findUsView.visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
+            <p className="text-gold text-xs font-semibold uppercase tracking-[0.2em] mb-2">Our Location</p>
+            <h2 className="font-playfair text-2xl md:text-3xl font-bold text-text-dark mt-2">Find Us</h2>
           </div>
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div className="space-y-5">
-              <div className="flex gap-4">
-                <div className="w-12 h-12 rounded-xl bg-[#FFF8F5] border border-[#FFE0D4] flex items-center justify-center text-xl shadow-sm flex-shrink-0">📍</div>
-                <div>
-                  <p className="text-[#D4A853] text-xs font-semibold uppercase tracking-wider">Location</p>
-                  <p className="font-medium text-[#1a1a1a] text-sm">Hyderabad, Telangana</p>
-                  <p className="text-[#888] text-xs mt-0.5">Serving all surrounding areas</p>
+              {[
+                { icon: "📍", label: "Location", main: "Hyderabad, Telangana", sub: "Serving all surrounding areas", href: null },
+                { icon: "⏰", label: "Service Hours", main: "Morning ☀️ delivery by 12:00 PM", sub: "Evening 🌙 delivery by 6:00 PM", href: null },
+                { icon: "📧", label: "Email Us", main: "ajayfoods.co.in@gmail.com", sub: "We reply within 24 hours", href: "mailto:ajayfoods.co.in@gmail.com" },
+              ].map((c, i) => (
+                <div key={c.label}
+                  className={`flex gap-4 transition-all duration-600 ${findUsView.visible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8"}`}
+                  style={{ transitionDelay: `${150 + i * 120}ms` }}
+                >
+                  <div className="w-12 h-12 rounded-xl bg-surface border border-warm-border flex items-center justify-center text-xl shadow-sm flex-shrink-0">{c.icon}</div>
+                  <div>
+                    <p className="text-gold text-xs font-semibold uppercase tracking-wider">{c.label}</p>
+                    {c.href ? (
+                      <a href={c.href} className="font-medium text-primary text-sm hover:underline">{c.main}</a>
+                    ) : (
+                      <p className="font-medium text-text-dark text-sm">{c.main}</p>
+                    )}
+                    <p className="text-text-muted text-xs mt-0.5">{c.sub}</p>
+                  </div>
                 </div>
+              ))}
+              <div className={`transition-all duration-700 delay-500 ${findUsView.visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}>
+                <a href="https://maps.app.goo.gl/pXH84d2EoCmZ11S7A" target="_blank" rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 bg-primary text-gold px-6 py-3 rounded-xl font-semibold text-sm hover:bg-primary-mid transition-colors shadow-[0_2px_8px_rgba(92,15,15,0.2)]"
+                >
+                  📍 Get Directions on Google Maps
+                </a>
               </div>
-              <div className="flex gap-4">
-                <div className="w-12 h-12 rounded-xl bg-[#FFF8F5] border border-[#FFE0D4] flex items-center justify-center text-xl shadow-sm flex-shrink-0">⏰</div>
-                <div>
-                  <p className="text-[#D4A853] text-xs font-semibold uppercase tracking-wider">Service Hours</p>
-                  <p className="font-medium text-[#1a1a1a] text-sm">Morning ☀️ delivery by 12:00 PM</p>
-                  <p className="text-[#888] text-xs mt-0.5">Evening 🌙 delivery by 6:00 PM</p>
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <div className="w-12 h-12 rounded-xl bg-[#FFF8F5] border border-[#FFE0D4] flex items-center justify-center text-xl shadow-sm flex-shrink-0">📧</div>
-                <div>
-                  <p className="text-[#D4A853] text-xs font-semibold uppercase tracking-wider">Email Us</p>
-                  <a href="mailto:ajayfoods.co.in@gmail.com" className="font-medium text-[#D4380D] text-sm hover:underline">ajayfoods.co.in@gmail.com</a>
-                  <p className="text-[#888] text-xs mt-0.5">We reply within 24 hours</p>
-                </div>
-              </div>
-              <a href="https://maps.app.goo.gl/pXH84d2EoCmZ11S7A" target="_blank" rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-[#D4380D] text-white px-6 py-3 rounded-xl font-semibold text-sm hover:bg-[#6d3410] transition-colors shadow-md"
-              >
-                📍 Get Directions on Google Maps
-              </a>
             </div>
-            <div className="rounded-2xl overflow-hidden shadow-lg border border-[#FFE0D4] aspect-video">
+            <div className={`rounded-2xl overflow-hidden shadow-lg border border-warm-border aspect-video transition-all duration-700 delay-300 ${findUsView.visible ? "opacity-100 translate-x-0" : "opacity-0 translate-x-8"}`}>
               <iframe
                 src="https://maps.google.com/maps?q=Hyderabad,Telangana,India&output=embed&z=12"
                 className="w-full h-full"
@@ -1121,7 +1159,7 @@ export default function AjayFoodsWebsite() {
                 ) : null}
 
                 <button type="submit" disabled={formLoading}
-                  className="w-full bg-[#D4380D] text-white py-4 rounded-xl font-semibold text-sm hover:bg-[#6d3410] transition-colors shadow-md disabled:opacity-70 flex items-center justify-center gap-2"
+                  className="w-full bg-[#D4380D] text-white py-4 rounded-xl font-semibold text-sm hover:bg-[#5C0E0E] transition-colors shadow-md disabled:opacity-70 flex items-center justify-center gap-2"
                 >
                   {formLoading ? (
                     <>
@@ -1138,17 +1176,17 @@ export default function AjayFoodsWebsite() {
       </section> */}
 
       {/* ══ FOOTER ═══════════════════════════════════════════════════════════ */}
-      <footer className="bg-[#1a0a03] text-white py-14">
+      <footer className="bg-primary text-white/60 py-14">
         <div className="max-w-6xl mx-auto px-4">
           <div className="grid md:grid-cols-4 gap-10 mb-10">
             <div className="md:col-span-2">
               <div className="flex items-center gap-3 mb-4">
-                <div className="relative w-10 h-10 rounded-full overflow-hidden bg-white border border-[#D4A853]/30">
+                <div className="relative w-10 h-10 rounded-full overflow-hidden bg-white border border-gold/30">
                   <Image src="/logo.png" alt="Ajay Foods logo" fill className="object-cover" />
                 </div>
                 <div>
-                  <p className="font-playfair font-bold text-xl text-white">Ajay Foods</p>
-                  <p className="text-[10px] text-[#D4A853] tracking-widest uppercase">& Beverages</p>
+                  <p className="font-playfair font-bold text-xl text-gold">Ajay Foods</p>
+                  <p className="text-[10px] text-gold/60 tracking-widest uppercase">& Beverages</p>
                 </div>
               </div>
               <p className="text-white/60 text-sm leading-relaxed max-w-xs">
@@ -1180,7 +1218,7 @@ export default function AjayFoodsWebsite() {
               <ul className="space-y-2">
                 {navLinks.map((l) => (
                   <li key={l.id}>
-                    <button onClick={() => scrollTo(l.id)} className="text-white/60 text-sm hover:text-[#D4A853] transition-colors">{l.label}</button>
+                    <button onClick={() => scrollTo(l.id)} className="text-white/40 hover:text-gold transition-colors text-sm">{l.label}</button>
                   </li>
                 ))}
               </ul>
@@ -1196,8 +1234,8 @@ export default function AjayFoodsWebsite() {
               </ul>
             </div>
           </div>
-          <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3">
-            <p className="text-white/40 text-xs">© {new Date().getFullYear()} Ajay Foods & Beverages. All rights reserved.</p>
+          <div className="border-white/10 border-t pt-6 flex flex-col sm:flex-row justify-between items-center gap-3">
+            <p className="text-white/30 text-xs">© {new Date().getFullYear()} Ajay Foods & Beverages. All rights reserved.</p>
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
                 <span className="text-white/40 text-xs">Made with</span>
@@ -1209,7 +1247,7 @@ export default function AjayFoodsWebsite() {
                 className="text-white/20 hover:text-white/50 text-xs transition-colors flex items-center gap-1 group"
                 title="Owner Login"
               >
-                <span className="group-hover:text-[#D4A853] transition-colors">⚙</span>
+                <span className="group-hover:text-gold transition-colors">⚙</span>
                 <span>Owner Login</span>
               </button>
             </div>
@@ -1217,11 +1255,20 @@ export default function AjayFoodsWebsite() {
         </div>
       </footer>
 
+      {/* ── Floating call button (mobile) ──────────────────────────────────── */}
+      <a href="tel:+919876543210"
+        className="pulse-ring fixed bottom-24 right-4 z-50 md:hidden rounded-full bg-gold text-primary flex items-center justify-center shadow-xl text-xl"
+        style={{ width: 52, height: 52 }}
+        aria-label="Call us"
+      >
+        📞
+      </a>
+
       {/* ── Mobile sticky CTA bar ───────────────────────────────────────────── */}
-      <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-white border-t border-[#FFE0D4] shadow-[0_-4px_20px_rgba(0,0,0,0.08)] px-4 py-3">
+      <div className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-white border-t border-warm-border shadow-[0_-4px_20px_rgba(92,15,15,0.08)] px-4 py-3">
         <button
           onClick={() => router.push("/packages")}
-          className="w-full bg-[#D4380D] text-white py-3 rounded-xl font-bold text-sm shadow-sm active:scale-95 transition-transform"
+          className="w-full bg-primary text-gold py-3 rounded-full font-bold text-sm shadow-sm active:scale-95 transition-transform"
         >
           Book Now
         </button>
