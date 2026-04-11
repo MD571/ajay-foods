@@ -255,7 +255,7 @@ const OrderItemPicker = memo(function OrderItemPicker({
               <button
                 key={item.name}
                 onClick={() => onToggle(item.name)}
-                className={`relative flex items-center gap-3 px-4 py-3 rounded-xl text-left transition-all duration-150 ${
+                className={`relative flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-all duration-150 ${
                   isAdded
                     ? "bg-warm-bg border-2 border-primary shadow-sm"
                     : "bg-white border border-warm-border hover:border-primary/30 hover:shadow-sm"
@@ -278,7 +278,7 @@ const OrderItemPicker = memo(function OrderItemPicker({
                 </span>
 
                 {/* Add / check */}
-                <span className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 transition-all text-xs font-bold ${
+                <span className={`w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 transition-all text-xs font-bold ${
                   isAdded ? "bg-primary text-gold" : "bg-warm-border text-primary hover:bg-primary hover:text-gold"
                 }`}>
                   {isAdded ? "✓" : "+"}
@@ -333,7 +333,7 @@ function OrderHeader({ step, onSetStep, onGoBack }: HeaderProps) {
           )}
           <span className="text-white/30">›</span>
           <span className={`flex items-center gap-1.5 px-2 py-1.5 rounded-full font-semibold ${step === "details" ? "bg-gold/20 text-gold" : "text-white/40"}`}>
-            {step === "details" ? <span className="w-4 h-4 rounded-full bg-white/20 text-white flex items-center justify-center font-bold text-[10px]">3</span> : <span className="w-4 h-4 rounded-full border border-white/20 text-white/40 flex items-center justify-center text-[10px]">3</span>}
+            {step === "details" ? <span className="w-4 h-4 rounded-full bg-white/20 text-white flex items-center justify-center font-bold text-[10px]">3</span> : <span className="w-4 h-4 rounded-full bg-warm-border/30 text-white/40 flex items-center justify-center text-[10px]">3</span>}
             <span className="hidden sm:inline">Confirm</span>
           </span>
         </div>
@@ -627,7 +627,7 @@ function OrderInner() {
                   <ul className="grid grid-cols-2 gap-x-4 gap-y-1">
                     {pkg.includes.map((item, i) => (
                       <li key={i} className="flex items-start gap-1.5 text-xs text-white/90">
-                        <span className="text-[#D4A853] flex-shrink-0 mt-0.5">✓</span>{item}
+                        <span className="text-gold flex-shrink-0 mt-0.5">✓</span>{item}
                       </li>
                     ))}
                   </ul>
@@ -640,7 +640,7 @@ function OrderInner() {
                         if (sel.length === 0) return null
                         return (
                           <p key={g.id} className="text-xs text-white/80 mb-0.5">
-                            <span className="font-semibold text-[#D4A853]">{g.label}:</span> {sel.join(", ")}
+                            <span className="font-semibold text-gold">{g.label}:</span> {sel.join(", ")}
                           </p>
                         )
                       })}
