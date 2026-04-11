@@ -62,9 +62,9 @@ const PACKAGES = [
     tagline: "Classic Biryani Feast",
     price: 150,
     color: "from-primary to-primary-light",
-    lightColor: "bg-red-50",
+    lightColor: "bg-primary/5",
     textColor: "text-text-dark",
-    badgeColor: "bg-red-100 text-red-800",
+    badgeColor: "bg-[#fde8e8] text-[#8B1A1A]",
     image: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=600&q=80",
     alt: "Chicken biryani",
     popular: false,
@@ -85,9 +85,9 @@ const PACKAGES = [
     tagline: "Grand Celebration Feast",
     price: 180,
     color: "from-primary via-primary-mid to-primary-light",
-    lightColor: "bg-red-50",
+    lightColor: "bg-primary/5",
     textColor: "text-text-dark",
-    badgeColor: "bg-red-100 text-red-800",
+    badgeColor: "bg-[#fde8e8] text-[#8B1A1A]",
     image: "https://images.unsplash.com/photo-1585937421612-70a008356fbe?w=600&q=80",
     alt: "Indian non-veg feast",
     popular: false,
@@ -207,7 +207,7 @@ function PackagesInner() {
             ].map((l) => (
               <button key={l.path} onClick={() => router.push(l.path)}
                 className={`px-3 py-1.5 rounded-full font-medium transition-colors ${
-                  l.active ? "bg-primary text-white" : "text-text-mid hover:text-primary hover:bg-red-50"
+                  l.active ? "bg-primary text-white" : "text-text-mid hover:text-primary hover:bg-primary/5"
                 }`}
               >{l.label}</button>
             ))}
@@ -237,7 +237,7 @@ function PackagesInner() {
                 { label: "📦 Packages", path: "/packages" },
               ].map((l) => (
                 <button key={l.path} onClick={() => { router.push(l.path); setNavOpen(false) }}
-                  className="text-left px-3 py-2.5 rounded-xl text-sm font-medium text-text-dark hover:bg-red-50 hover:text-primary transition-colors"
+                  className="text-left px-3 py-2.5 rounded-xl text-sm font-medium text-text-dark hover:bg-primary/5 hover:text-primary transition-colors"
                 >{l.label}</button>
               ))}
               <button onClick={() => { router.push("/packages"); setNavOpen(false) }}
