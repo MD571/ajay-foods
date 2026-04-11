@@ -124,14 +124,14 @@ const PACKAGES = [
   },
   {
     id: "non-veg-basic", title: "Non-Veg Basic", price: 150, unit: "/person",
-    tag: "NON-VEG", tagColor: "bg-red-100 text-red-800",
-    color: "from-[#D4380D] to-[#5C0E0E]", popular: false,
+    tag: "NON-VEG", tagColor: "bg-[#fde8e8] text-[#8B1A1A]",
+    color: "from-primary-light to-primary", popular: false,
     ideal: "Ideal for 30–150 guests",
     includes: ["Biryani (7 variants)", "Sambar", "Gongura Pachadi", "Perugu Chutney", "Curd Rice", "Plates & Service"],
   },
   {
     id: "non-veg-premium", title: "Non-Veg Premium", price: 180, unit: "/person",
-    tag: "NON-VEG", tagColor: "bg-red-100 text-red-800",
+    tag: "NON-VEG", tagColor: "bg-[#fde8e8] text-[#8B1A1A]",
     color: "from-[#300808] to-[#8B1515]", popular: false,
     ideal: "Ideal for grand celebrations",
     includes: ["Biryani (7 variants)", "Choice of Curry", "Sambar + Gongura", "Perugu Chutney", "Curd Rice", "Plates & Service"],
@@ -142,7 +142,7 @@ const PACKAGES = [
 const TESTIMONIALS = [
   {
     name: "Ramesh Reddy", event: "Wedding Reception", rating: 5,
-    avatar: "RR", color: "bg-[#D4380D]",
+    avatar: "RR", color: "bg-primary",
     text: "The biryani was absolutely phenomenal! Every guest kept asking for the recipe. Ajay Foods made our wedding day truly unforgettable. The team arrived on time, set up everything perfectly, and the food stayed fresh throughout the evening. Highly recommended!",
   },
   {
@@ -481,7 +481,7 @@ export default function AjayFoodsWebsite() {
                 {modalItems.map((item, idx) => (
                   <div key={idx} className="flex items-center justify-between gap-3 bg-warm-bg border border-warm-border rounded-xl px-4 py-3 hover:border-gold transition-colors">
                     <div className="flex items-center gap-2.5 min-w-0">
-                      <span className={`w-2 h-2 rounded-full flex-shrink-0 ${item.diet === "veg" ? "bg-green-500" : "bg-red-500"}`} />
+                      <span className={`w-2 h-2 rounded-full flex-shrink-0 ${item.diet === "veg" ? "bg-green-500" : "bg-[#8B1A1A]"}`} />
                       <div className="min-w-0">
                         <p className="text-sm font-semibold text-text-dark truncate">{item.name}</p>
                         {"sectionLabel" in item && menuModalCat === "all" && (
@@ -1239,7 +1239,7 @@ export default function AjayFoodsWebsite() {
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
                 <span className="text-white/40 text-xs">Made with</span>
-                <span className="text-red-400">❤️</span>
+                <span className="text-gold/60">❤️</span>
                 <span className="text-white/40 text-xs">in Hyderabad</span>
               </div>
               <button
